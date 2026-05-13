@@ -1980,6 +1980,17 @@ p {
   .showcase-card {
     max-width: 360px;
   }
+
+  .footer {
+    padding: 70px 0;
+    padding-left: 90px;
+    padding-right: 90px;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2xl);
+  }
 }
 
 @media (max-width: 768px) {
@@ -2115,6 +2126,58 @@ p {
 
   .stat__number {
     font-size: 2rem;
+  }
+
+  .float-whatsapp, .float-scrollup {
+    bottom: 1rem;
+    width: 44px;
+    height: 44px;
+  }
+  .float-whatsapp { left: 0.75rem; }
+  .float-scrollup { right: 0.75rem; }
+  .float-whatsapp svg { width: 24px; height: 24px; }
+  .float-scrollup svg { width: 20px; height: 20px; }
+
+  .footer {
+    padding: 40px 15px;
+    padding-left: 70px;
+    padding-right: 70px;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .footer__col h4 {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer__col ul li {
+    font-size: 0.85rem;
+  }
+}
+
+/* ── Large Desktop Screens ── */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1320px;
+  }
+
+  .footer {
+    padding: 80px 0;
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3xl);
+  }
+
+  .puja-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -2957,6 +3020,17 @@ p {
   .float-scrollup { right: 1rem; }
   .float-whatsapp svg { width: 28px; height: 28px; }
   .float-scrollup svg { width: 22px; height: 22px; }
+
+  .footer {
+    padding: 50px 20px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
 }
 
 /* ── Print ── */

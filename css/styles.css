@@ -2181,6 +2181,32 @@ p {
   }
 }
 
+/* ── Responsive Images ── */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Responsive Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ── Flexible Typography ── */
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 4vw, 2.8rem); }
+h3 { font-size: clamp(1.2rem, 3vw, 2rem); }
+p { font-size: clamp(0.9rem, 2vw, 1rem); }
+
+/* ── Responsive Containers ── */
+.container {
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+  max-width: 100%;
+}
+
 /* ── Scrollbar Styling ── */
 ::-webkit-scrollbar {
   width: 8px;

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anahad by Shrey — 16 Years of Devotion in Jain Singing</title>
+  <meta name="description" content="Anahad by Shrey — Professional Jain devotional singer with 16 years of experience in Jain stutis, puja vidhi singing, bhajans, stavans, and paryushan events. Book Shrey for your sacred occasion.">
+  <meta name="keywords" content="Jain singer, Jain puja, devotional singing, bhajan, stuti, stavan, paryushan, snatra puja, Jain music, Anahad by Shrey">
+  <meta name="author" content="Anahad by Shrey">
+  <meta property="og:title" content="Anahad by Shrey — Jain Devotional Singer">
+  <meta property="og:description" content="Professional Jain devotional singer with 16 years of experience. Book for pujas, bhajans, and ceremonies.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🙏</text></svg>">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="navbar navbar--light" id="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        Anahad <span>by Shrey</span>
+      </a>
+      <div class="navbar__links" id="navLinks">
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- HERO SECTION — Split Layout -->
+  <section class="hero hero--split hero--photo" id="hero">
+    <div class="hero__bg">
+      <img src="assets/images/shrey_bg.jpeg" alt="Shrey performing live at a devotional event" class="hero__bg-image" id="heroBg">
+    </div>
+    <div class="hero__overlay hero__overlay--light"></div>
+
+    <div class="container hero__split-grid">
+      <!-- LEFT: Empty spacer to reveal Shrey's photo -->
+      <div></div>
+
+      <!-- RIGHT: Text Content -->
+      <div class="hero__content hero__content--right">
+        <p class="hero__pretitle">✦ Sacred Devotional Music ✦</p>
+        <h1 class="hero__title">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
+        <p class="hero__tagline">
+          Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
+        </p>
+        <div class="hero__buttons">
+          <a href="services.html" class="btn btn--primary">🙏 Book a Puja</a>
+          <a href="about.html" class="btn btn--outline">Discover More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- INTRO AND SERVICES SECTION -->
+  <section class="section section--cream" id="intro">
+    <div class="container">
+      <div class="about__grid">
+        <!-- LEFT: Photo -->
+        <div class="about__image-wrapper reveal reveal--left">
+          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xl); border: 2px solid var(--gold-light);">
+            <img src="assets/images/shrey_pic_1.jpeg" alt="Shrey singing devotional stutis" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block;">
+          </div>
+        </div>
+
+        <!-- RIGHT: Popular Puja Services -->
+        <div class="reveal reveal--right">
+          <div class="section-header" style="text-align: center; margin-bottom: var(--space-xl); margin-top: 0;">
+            <p class="hero__pretitle" style="margin-top: 0; color: var(--saffron); animation: none; opacity: 1;">✦ Sacred Services ✦</p>
+            <h2 style="font-size: 2.2rem; margin-top: 10px;">Popular Puja Services</h2>
+            <div class="ornament" style="justify-content: center; margin: 15px 0;">
+              <span class="ornament__icon">✦</span>
+            </div>
+            <p>Experience divine devotion through traditional Jain ceremonies.</p>
+          </div>
+          
+          <div class="puja-grid stagger-children" id="featuredPujas" style="grid-template-columns: repeat(2, 1fr); gap: var(--space-sm);">
+            <!-- Loaded dynamically -->
+          </div>
+          
+          <div style="margin-top: var(--space-2xl);">
+            <a href="services.html" class="btn btn--maroon">View All Services →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>Words of Appreciation</h2>
+        <div class="ornament">
+          <span class="ornament__icon">✦</span>
+        </div>
+      </div>
+      <div class="testimonial-carousel" id="testimonialCarousel">
+        <button class="carousel-btn carousel-btn--prev" id="testimonialPrev">‹</button>
+        <button class="carousel-btn carousel-btn--next" id="testimonialNext">›</button>
+        <div class="testimonial-track" id="testimonialTrack">
+          <div class="testimonial">
+            <p class="testimonial__quote">
+              Shrey's devotional singing touched everyone's heart at our Paryushan celebration. 
+              His deep connection with the stutis and his melodious voice created an unforgettable 
+              spiritual experience for our entire sangha.
+            </p>
+            <p class="testimonial__author">— A Devoted Client</p>
+            <p class="testimonial__role">Paryushan Event Organizer</p>
+          </div>
+          <div class="testimonial">
+            <p class="testimonial__quote">
+              We have been inviting Shrey for our temple's Snatra Puja for the past several years. 
+              His knowledge of traditional puja vidhi combined with his soulful voice makes every 
+              ceremony truly divine.
+            </p>
+            <p class="testimonial__author">— Temple Trust Member</p>
+            <p class="testimonial__role">Jain Derasar Trust</p>
+          </div>
+          <div class="testimonial">
+            <p class="testimonial__quote">
+              The Panch Kalyanak ceremony that Shrey performed for our family was beyond beautiful. 
+              His dedication, professionalism, and the emotion he brings to every stuti left everyone 
+              in awe. Highly recommended!
+            </p>
+            <p class="testimonial__author">— A Grateful Family</p>
+            <p class="testimonial__role">Private Puja Ceremony</p>
+          </div>
+          <div class="testimonial">
+            <p class="testimonial__quote">
+              Shrey has been the voice of our Navpad Oli celebrations year after year. 
+              His commitment to preserving the authenticity of Jain devotional music while 
+              keeping the audience engaged is truly remarkable.
+            </p>
+            <p class="testimonial__author">— Jain Community Leader</p>
+            <p class="testimonial__role">Navpad Oli Celebration</p>
+          </div>
+        </div>
+        <div class="carousel-controls" id="testimonialDots"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-banner__content reveal">
+        <h2>Ready to Create a <span>Sacred Experience</span>?</h2>
+        <p>Book Shrey for your next Jain ceremony, puja, or devotional event and experience the divine through music.</p>
+        <a href="services.html" class="btn btn--primary">Explore Services</a>
+        <a href="contact.html" class="btn btn--outline">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="footer footer--full">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <span class="footer__brand-name">Anahad by Shrey</span>
+          <p>Bringing the divine closer through the sacred sounds of Jain tradition. 16 years of devotion in sacred music.</p>
+          <div class="contact__social" style="margin-top: var(--space-lg);">
+            <a href="https://youtube.com/@shahshrey_?feature=shared" target="_blank" rel="noopener" class="social-link" aria-label="YouTube">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/singershrey_?igsh=OHJnOXkwd3ZuYmd5" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/shahshrey19" target="_blank" rel="noopener" class="social-link" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer__col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Shrey</a></li>
+            <li><a href="services.html">Puja Services</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Snatra Puja</a></li>
+            <li><a href="services.html">Panch Kalyanak</a></li>
+            <li><a href="services.html">Paryushan Puja</a></li>
+            <li><a href="services.html">Mangal Divo</a></li>
+            <li><a href="services.html">Custom Events</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+919409429354">+91 94094 29354</a></li>
+            <li><a href="https://wa.me/919409429354?text=Namaste%20Shrey%2C%20I%20would%20like%20to%20inquire%20about%20booking%20your%20devotional%20singing%20services%20for%20a%20puja%2Fevent.%20Could%20you%20please%20provide%20more%20details%3F%20Thank%20you%21" target="_blank">WhatsApp</a></li>
+            <li><a href="mailto:info@anahad.com">Email Us</a></li>
+            <li><a href="contact.html">Send Inquiry</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2024 Anahad by Shrey | Designed with devotion 🙏</p>
+        <div class="footer__bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script>
+    // Load 3 featured pujas on homepage
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('data/pujas.json');
+        const pujas = await response.json();
+        const featured = pujas.slice(0, 4);
+        const grid = document.getElementById('featuredPujas');
+        if (!grid) return;
+        grid.innerHTML = featured.map((puja, i) => {
+          let imageContent = '';
+          let dotsContent = '';
+          
+          if (puja.previewImages && puja.previewImages.length > 0) {
+            const slides = puja.previewImages.map(img => `<div class="puja-card__slide"><img src="${img}" alt="${puja.name}" loading="lazy"></div>`).join('');
+            imageContent = `<div class="puja-card__slider-track">${slides}</div>`;
+            if (puja.previewImages.length > 1) {
+              const dots = puja.previewImages.map((_, i) => `<span class="puja-card__dot ${i === 0 ? 'active' : ''}"></span>`).join('');
+              dotsContent = `<div class="puja-card__dots">${dots}</div>`;
+            }
+          } else if (puja.image) {
+            imageContent = `<div class="puja-card__slider-track"><div class="puja-card__slide"><img src="${puja.image}" alt="${puja.name}" loading="lazy"></div></div>`;
+          } else {
+            imageContent = `<div class="puja-card__placeholder"><span class="puja-card__placeholder-icon">🙏</span><span class="puja-card__placeholder-text">Add Image</span></div>`;
+          }
+
+          return `
+          <a href="services.html" class="puja-card reveal" style="--stagger-index: ${i}; text-decoration: none;">
+            <div class="puja-card__image-wrapper" style="overflow: hidden; aspect-ratio: 4 / 3;" onmouseenter="startHoverSlider(this)" onmouseleave="stopHoverSlider(this)">
+              ${imageContent}
+              ${dotsContent}
+            </div>
+            <div class="puja-card__content" style="padding: 0.8rem 0.5rem; text-align: center;">
+              <h3 class="puja-card__name" style="margin-bottom: 2px; font-size: 1.1rem;">${puja.name}</h3>
+              <span class="puja-card__name-gujarati" style="margin-bottom: 0; font-size: 0.85rem;">${puja.nameGujarati}</span>
+            </div>
+          </a>
+          `;
+        }).join('');
+        // Re-observe reveals
+        grid.querySelectorAll('.reveal').forEach(el => {
+          const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+          }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
+          obs.observe(el);
+        });
+      } catch(e) { console.error('Error loading featured pujas:', e); }
+    });
+  </script>
+
+  <!-- Floating Action Buttons -->
+  <a href="https://wa.me/919409429354?text=Namaste%20Shrey%2C%20I%20would%20like%20to%20inquire%20about%20booking%20your%20devotional%20singing%20services%20for%20a%20puja%2Fevent.%20Could%20you%20please%20provide%20more%20details%3F%20Thank%20you%21" target="_blank" class="float-whatsapp" aria-label="Chat with Shrey on WhatsApp">
+    <svg viewBox="0 0 448 512">
+      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" fill="currentColor"/>
+    </svg>
+  </a>
+  <button class="float-scrollup" id="scrollTopBtn" aria-label="Scroll to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+    <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+</body>
+</html>

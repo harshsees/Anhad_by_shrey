@@ -1266,7 +1266,7 @@ p {
 .puja-card {
   background: var(--white);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: all 0.4s ease-out;

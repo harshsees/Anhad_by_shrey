@@ -1395,6 +1395,102 @@ p {
 }
 
 /* ══════════════════════════════════════════
+   BOOKING STEPS — Professional Layout
+   ══════════════════════════════════════════ */
+
+.booking-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4xl);
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Centered connector line */
+.booking-steps::before {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--text-muted), transparent);
+  z-index: 0;
+}
+
+.booking-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transition: all var(--transition-normal);
+}
+
+.booking-step:hover {
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Professional step circle */
+.booking-step__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background: var(--white);
+  border: 2px solid var(--saffron);
+  color: var(--saffron);
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  border-radius: 50%;
+  margin-bottom: var(--space-2xl);
+  box-shadow: 0 4px 12px rgba(212, 136, 31, 0.12);
+  transition: all 0.3s ease;
+}
+
+.booking-step:hover .booking-step__number {
+  background: var(--saffron);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(212, 136, 31, 0.25);
+  transform: scale(1.1);
+}
+
+/* Professional emoji icon */
+.booking-step__icon {
+  font-size: 0;
+  display: none;
+}
+
+/* Title styling */
+.booking-step__title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--maroon);
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Description with clean typography */
+.booking-step__text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 280px;
+}
+
+/* ══════════════════════════════════════════
    PUJA DETAIL MODAL
    ══════════════════════════════════════════ */
 
@@ -2136,6 +2232,22 @@ p {
     display: none;
   }
 
+  /* Booking Steps - Tablet */
+  .booking-steps {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3xl);
+  }
+
+  .booking-steps::before {
+    display: none;
+  }
+
+  .booking-step__number {
+    width: 80px;
+    height: 80px;
+    font-size: 1.5rem;
+  }
+
   .hero__title {
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
@@ -2264,6 +2376,36 @@ p {
 
   .stat {
     padding: var(--space-md);
+  }
+
+  /* Booking Steps - Mobile */
+  .booking-steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  .booking-steps::before {
+    display: none;
+  }
+
+  .booking-step {
+    padding: 0;
+  }
+
+  .booking-step__number {
+    width: 70px;
+    height: 70px;
+    font-size: 1.2rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .booking-step__title {
+    font-size: 1.1rem;
+  }
+
+  .booking-step__text {
+    font-size: 0.9rem;
+    max-width: 100%;
   }
 
   .stat__number {

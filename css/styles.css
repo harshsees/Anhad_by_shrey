@@ -1269,13 +1269,13 @@ p {
   overflow: hidden;
   box-shadow: var(--shadow-md);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s ease-out;
   position: relative;
   border: 2px solid transparent;
 }
 
 .puja-card:hover {
-  transform: translateY(-12px) scale(1.02);
+  transform: translateY(-15px);
   box-shadow: var(--shadow-xl), 0 0 20px rgba(212, 136, 31, 0.2);
   border-color: var(--saffron);
   border: 2px solid var(--saffron);

@@ -38,25 +38,27 @@
   </nav>
 
 
-  <!-- HERO SECTION — Split Layout -->
-  <section class="hero hero--split hero--photo" id="hero">
+  <!-- HERO TITLE BAR -->
+  <div class="hero__title-bar">
+    <p class="hero__title-bar-text">16 Years of Devotion to Sacred Music</p>
+  </div>
+
+  <!-- HERO SECTION — Full Width Image -->
+  <section class="hero hero--full hero--photo" id="hero">
     <div class="hero__bg">
       <img src="assets/images/shrey_bg.jpeg" 
            srcset="assets/images/shrey_bg.jpeg 320w, assets/images/shrey_bg.jpeg 640w, assets/images/shrey_bg.jpeg 1280w" 
-           sizes="(max-width: 768px) 100vw, 50vw" 
+           sizes="100vw" 
            alt="Shrey performing live at a devotional event" 
            class="hero__bg-image" 
            id="heroBg"
            loading="lazy">
     </div>
-    <div class="hero__overlay hero__overlay--light"></div>
+    <div class="hero__overlay hero__overlay--dark"></div>
 
-    <div class="container hero__split-grid">
-      <!-- LEFT: Empty spacer to reveal Shrey's photo -->
-      <div></div>
-
-      <!-- RIGHT: Text Content -->
-      <div class="hero__content hero__content--right">
+    <div class="container hero__content-wrapper">
+      <!-- Text Content Overlay -->
+      <div class="hero__content hero__content--overlay">
         <p class="hero__pretitle">✦ Sacred Devotional Music ✦</p>
         <h1 class="hero__title">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
         <p class="hero__tagline">

@@ -1395,93 +1395,6 @@ p {
 }
 
 /* ══════════════════════════════════════════
-   BOOKING STEPS SECTION
-   ══════════════════════════════════════════ */
-
-.booking-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3xl);
-  position: relative;
-}
-
-.booking-steps::before {
-  content: '';
-  position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  z-index: 0;
-}
-
-.booking-step {
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  background: var(--white);
-  padding: var(--space-2xl) var(--space-lg);
-  border-radius: var(--radius-lg);
-  border: 2px solid transparent;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-sm);
-}
-
-.booking-step:hover {
-  border-color: var(--saffron);
-  border: 2px solid var(--saffron);
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(212, 136, 31, 0.15);
-  transform: translateY(-8px);
-}
-
-.booking-step__number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, var(--saffron), var(--gold));
-  color: var(--white);
-  font-family: var(--font-heading);
-  font-size: 2.5rem;
-  font-weight: 700;
-  border-radius: var(--radius-full);
-  margin: 0 auto var(--space-lg);
-  box-shadow: var(--shadow-lg);
-  transition: transform 0.2s ease;
-}
-
-.booking-step:hover .booking-step__number {
-  animation: iconScale 0.2s ease forwards;
-}
-
-.booking-step__icon {
-  display: block;
-  font-size: 2rem;
-  margin-bottom: var(--space-md);
-  transition: all 0.2s ease;
-}
-
-.booking-step:hover .booking-step__icon {
-  animation: iconScale 0.2s ease forwards;
-}
-
-.booking-step__title {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  color: var(--maroon);
-  margin-bottom: var(--space-md);
-}
-
-.booking-step__text {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ══════════════════════════════════════════
    PUJA DETAIL MODAL
    ══════════════════════════════════════════ */
 
@@ -2223,16 +2136,6 @@ p {
     display: none;
   }
 
-  /* Booking Steps - Tablet */
-  .booking-steps {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-2xl);
-  }
-
-  .booking-steps::before {
-    display: none;
-  }
-
   .hero__title {
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
@@ -2357,26 +2260,6 @@ p {
 
   .puja-grid {
     grid-template-columns: 1fr;
-  }
-
-  /* Booking Steps - Mobile */
-  .booking-steps {
-    grid-template-columns: 1fr;
-    gap: var(--space-2xl);
-  }
-
-  .booking-steps::before {
-    display: none;
-  }
-
-  .booking-step {
-    padding: var(--space-xl) var(--space-lg);
-  }
-
-  .booking-step__number {
-    width: 70px;
-    height: 70px;
-    font-size: 2rem;
   }
 
   .stat {

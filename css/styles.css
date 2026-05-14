@@ -1424,15 +1424,16 @@ p {
   padding: var(--space-2xl) var(--space-lg);
   border-radius: var(--radius-lg);
   border: 2px solid transparent;
-  transition: all var(--transition-normal);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .booking-step:hover {
   border-color: var(--saffron);
   border: 2px solid var(--saffron);
   box-shadow: var(--shadow-lg), 0 0 20px rgba(212, 136, 31, 0.15);
-  transform: translateY(-8px);
+  transform: translateY(-12px);
 }
 
 .booking-step__number {

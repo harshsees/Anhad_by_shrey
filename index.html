@@ -41,7 +41,13 @@
   <!-- HERO SECTION — Split Layout -->
   <section class="hero hero--split hero--photo" id="hero">
     <div class="hero__bg">
-      <img src="assets/images/shrey_bg.jpeg" alt="Shrey performing live at a devotional event" class="hero__bg-image" id="heroBg">
+      <img src="assets/images/shrey_bg.jpeg" 
+           srcset="assets/images/shrey_bg.jpeg 320w, assets/images/shrey_bg.jpeg 640w, assets/images/shrey_bg.jpeg 1280w" 
+           sizes="(max-width: 768px) 100vw, 50vw" 
+           alt="Shrey performing live at a devotional event" 
+           class="hero__bg-image" 
+           id="heroBg"
+           loading="lazy">
     </div>
     <div class="hero__overlay hero__overlay--light"></div>
 
@@ -76,7 +82,12 @@
         <!-- LEFT: Photo -->
         <div class="about__image-wrapper reveal reveal--left">
           <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xl); border: 2px solid var(--gold-light);">
-            <img src="assets/images/shrey_pic_1.jpeg" alt="Shrey singing devotional stutis" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block;">
+            <img src="assets/images/shrey_pic_1.jpeg" 
+                 srcset="assets/images/shrey_pic_1.jpeg 320w, assets/images/shrey_pic_1.jpeg 640w, assets/images/shrey_pic_1.jpeg 1280w" 
+                 sizes="(max-width: 768px) 100vw, 50vw" 
+                 alt="Shrey singing devotional stutis" 
+                 style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block;"
+                 loading="lazy">
           </div>
         </div>
 

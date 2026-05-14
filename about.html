@@ -44,7 +44,13 @@
         <div class="about__image-wrapper reveal reveal--left">
           <div class="about__image-decor about__image-decor--top"></div>
           <div class="about__image-frame">
-            <img src="assets/images/shrey-portrait.jpg" alt="Shrey performing Jain devotional music" class="about__portrait" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: inherit; display: block;">
+            <img src="assets/images/shrey-portrait.jpg" 
+                 srcset="assets/images/shrey-portrait.jpg 320w, assets/images/shrey-portrait.jpg 640w, assets/images/shrey-portrait.jpg 1280w" 
+                 sizes="(max-width: 768px) 100vw, 50vw" 
+                 alt="Shrey performing Jain devotional music" 
+                 class="about__portrait" 
+                 style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: inherit; display: block;"
+                 loading="lazy">
           </div>
           <div class="about__image-decor about__image-decor--bottom"></div>
         </div>

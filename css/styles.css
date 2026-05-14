@@ -1965,6 +1965,25 @@ p {
    ══════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
+  /* Responsive Images - Large Tablet */
+  .hero__bg-image {
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .about__image-wrapper {
+    max-width: 100%;
+  }
+
+  .gallery-item img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .puja-card__slide img {
+    aspect-ratio: 4 / 3;
+  }
+
   .about__grid {
     gap: var(--space-2xl);
   }
@@ -2000,6 +2019,34 @@ p {
 
   .container {
     padding: 0 var(--space-lg);
+  }
+
+  /* Responsive Images - Tablet */
+  .hero__bg-image {
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .about__image-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .about__portrait {
+    width: 100%;
+    height: auto;
+  }
+
+  .gallery-item img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .puja-card__slide img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .modal__gallery-item img {
+    aspect-ratio: 1 / 1;
   }
 
   .about__grid {
@@ -2097,6 +2144,71 @@ p {
 }
 
 @media (max-width: 480px) {
+  /* Responsive Images - Mobile */
+  .hero__bg-image {
+    height: 250px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .about__image-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .about__portrait {
+    width: 100%;
+    height: auto;
+  }
+
+  .gallery-item img {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+  }
+
+  .puja-card__slide img {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+  }
+
+  .modal__gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .modal__gallery-item img {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+  }
+
+  .modal__hero-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+
+  .lightbox__image {
+    max-width: 95vw;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+  }
+
+  .lightbox__close {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox__nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox__nav--prev { left: var(--space-sm); }
+  .lightbox__nav--next { right: var(--space-sm); }
+
   .about__stats {
     grid-template-columns: 1fr;
   }
@@ -2165,6 +2277,24 @@ p {
     max-width: 1320px;
   }
 
+  /* Responsive Images - Large Desktop */
+  .hero__bg-image {
+    height: 600px;
+    object-fit: cover;
+  }
+
+  .gallery-item img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .puja-card__slide img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .modal__gallery-item img {
+    aspect-ratio: 1 / 1;
+  }
+
   .footer {
     padding: 80px 0;
     padding-left: 120px;
@@ -2184,6 +2314,75 @@ p {
 /* ── Responsive Images ── */
 img {
   max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Hero Background Image - Responsive */
+.hero__bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* About Portrait Images */
+.about__portrait {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Gallery Images */
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Card Images */
+.puja-card__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Modal Images */
+.modal__gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.modal__hero-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Lightbox Images */
+.lightbox__image {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Responsive Image Container */
+picture {
+  display: block;
+  width: 100%;
+}
+
+picture img {
+  width: 100%;
   height: auto;
   display: block;
 }

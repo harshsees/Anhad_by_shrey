@@ -27,13 +27,35 @@ function initNavbar() {
   if (hero) {
     // Homepage: navbar starts transparent
     navbar.classList.remove('scrolled');
+    
+    let lastScrollPosition = 0;
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 80) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
+      const currentScrollPosition = window.pageYOffset;
+
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Hide navbar when scrolling down
+          if (currentScrollPosition > lastScrollPosition && currentScrollPosition > 100) {
+            navbar.classList.add('navbar-hidden');
+          } else {
+            navbar.classList.remove('navbar-hidden');
+          }
+
+          // Add scrolled background after 80px
+          if (currentScrollPosition > 80) {
+            navbar.classList.add('scrolled');
+          } else {
+            navbar.classList.remove('scrolled');
+          }
+
+          lastScrollPosition = currentScrollPosition;
+          ticking = false;
+        });
+        ticking = true;
       }
-    });
+    }, { passive: true });
   }
   // Inner pages already have .scrolled in HTML
 

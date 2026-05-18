@@ -238,7 +238,8 @@ p {
   width: 100%;
   z-index: 1000;
   padding: var(--space-md) 0;
-  transition: all var(--transition-normal);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(0);
 }
 
 .navbar.scrolled {
@@ -247,6 +248,10 @@ p {
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-md);
   padding: var(--space-sm) 0;
+}
+
+.navbar.navbar-hidden {
+  transform: translateY(-100%);
 }
 
 .navbar__inner {

@@ -3529,6 +3529,15 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   right: 18%;
 }
 
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
 .ceremony-feature {
   position: absolute;
   display: flex;
@@ -3537,13 +3546,15 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   text-align: center;
   animation-delay: var(--reveal-delay, 0s);
   z-index: 2;
+  animation: float-slow 5s ease-in-out infinite;
 }
 
-/* Professional balanced positioning */
+/* Staggered floating timing */
 .ceremony-feature--1 {
   top: 120px;
   left: 8%;
   width: 240px;
+  animation-delay: 0s;
 }
 
 .ceremony-feature--2 {
@@ -3551,12 +3562,14 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   left: 50%;
   transform: translateX(-50%);
   width: 300px;
+  animation-delay: 0.5s;
 }
 
 .ceremony-feature--3 {
   top: 180px;
   right: 6%;
   width: 240px;
+  animation-delay: 1s;
 }
 
 /* Visual Section with Curved Shape */

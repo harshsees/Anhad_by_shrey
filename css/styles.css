@@ -3432,12 +3432,133 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   }
 }
 
+/* ══════════════════════════════════════════
+   DYNAMIC TITLE BAR
+   ══════════════════════════════════════════ */
+
+.dynamic-titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  width: 100%;
+  padding: 1rem 0;
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.95) 0%, rgba(218, 165, 32, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.dynamic-titlebar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dynamic-titlebar__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dynamic-titlebar__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.dynamic-titlebar__subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+  animation: titlebar-fade-in 0.8s ease-out;
+}
+
+.dynamic-titlebar__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: titlebar-fade-in 0.8s ease-out 0.1s both;
+}
+
+.dynamic-titlebar__accent {
+  display: inline-block;
+  width: 40px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1px;
+  animation: titlebar-fade-in 0.8s ease-out 0.2s both;
+}
+
+.dynamic-titlebar__scroll-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: titlebar-bounce-indicator 2s ease-in-out infinite;
+}
+
+@keyframes titlebar-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes titlebar-bounce-indicator {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(4px);
+  }
+}
+
+.dynamic-titlebar.scrolling .dynamic-titlebar__scroll-indicator {
+  opacity: 1;
+}
+
+.dynamic-titlebar.dark-mode {
+  background: linear-gradient(135deg, rgba(40, 30, 10, 0.95) 0%, rgba(60, 50, 20, 0.95) 100%);
+}
+
 /* ── Print ── */
 @media print {
   .navbar,
   .hero__scroll,
   .modal-overlay,
-  .lightbox {
+  .lightbox,
+  .dynamic-titlebar {
     display: none;
   }
 
@@ -3449,5 +3570,19 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   .section {
     padding: var(--space-xl) 0;
     page-break-inside: avoid;
+  }
+}
+
+@media (max-width: 768px) {
+  .dynamic-titlebar {
+    padding: 0.75rem 0;
+  }
+
+  .dynamic-titlebar__title {
+    font-size: 1.2rem;
+  }
+
+  .dynamic-titlebar__subtitle {
+    font-size: 0.75rem;
   }
 }

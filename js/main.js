@@ -6,7 +6,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
-  initDynamicTitlebar();
   initScrollAnimations();
   initTestimonialCarousel();
   initSmoothScroll();
@@ -60,38 +59,6 @@ function initNavbar() {
     navOverlay.classList.remove('visible');
     document.body.classList.remove('modal-open');
   }
-}
-
-
-/* ── Dynamic Title Bar ── */
-function initDynamicTitlebar() {
-  const titlebar = document.getElementById('dynamicTitlebar');
-  if (!titlebar) return;
-
-  let scrollTimeout;
-  let lastScrollPosition = 0;
-  const SCROLL_THRESHOLD = 150;
-
-  window.addEventListener('scroll', () => {
-    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (currentScrollPosition > SCROLL_THRESHOLD) {
-      titlebar.classList.add('hidden');
-    } else {
-      titlebar.classList.remove('hidden');
-    }
-
-    if (currentScrollPosition > 50) {
-      titlebar.classList.add('scrolling');
-    } else {
-      titlebar.classList.remove('scrolling');
-    }
-
-    lastScrollPosition = currentScrollPosition;
-
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {}, 150);
-  }, { passive: true });
 }
 
 

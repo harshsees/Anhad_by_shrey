@@ -3603,17 +3603,17 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations */
 .ceremony-feature__shape--1 {
-  border-radius: 45% 40% 35% 50% / 50% 35% 40% 45%;
+  border-radius: 60% 50% 45% 65% / 65% 45% 50% 60%;
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .ceremony-feature__shape--2 {
-  border-radius: 45% 40% 35% 50% / 50% 35% 40% 45%;
+  border-radius: 60% 50% 45% 65% / 65% 45% 50% 60%;
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .ceremony-feature__shape--3 {
-  border-radius: 45% 40% 35% 50% / 50% 35% 40% 45%;
+  border-radius: 60% 50% 45% 65% / 65% 45% 50% 60%;
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 

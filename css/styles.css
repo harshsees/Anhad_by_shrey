@@ -3454,7 +3454,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 }
 
 /* ══════════════════════════════════════════
-   CEREMONY EXPLORER — Theme Structure
+   CEREMONY EXPLORER — Minimal Theme
    ══════════════════════════════════════════ */
 
 .ceremony-explorer {
@@ -3506,12 +3506,12 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   animation-delay: var(--reveal-delay, 0s);
 }
 
-/* Visual Section with Curved Shape — BIGGER */
+/* Visual Section with Curved Shape */
 .ceremony-feature__visual {
   position: relative;
   width: 340px;
   height: 340px;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3528,6 +3528,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   align-items: center;
   justify-content: center;
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
 }
 
 .ceremony-feature:hover .ceremony-feature__shape {
@@ -3563,44 +3564,14 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   }
 }
 
-/* Content Section */
-.ceremony-feature__content {
-  flex: 1;
-}
-
+/* Title Only */
 .ceremony-feature__title {
   font-family: var(--font-heading);
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--maroon);
-  margin-bottom: var(--space-md);
   letter-spacing: 0.5px;
-}
-
-.ceremony-feature__desc {
-  font-size: 1.05rem;
-  color: var(--text-body);
-  line-height: 1.6;
-  margin-bottom: var(--space-lg);
-  font-weight: 500;
-}
-
-.ceremony-feature__cta {
-  display: inline-block;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--saffron);
-  text-decoration: none;
-  letter-spacing: 0.5px;
-  transition: all var(--transition-normal);
-  padding: 12px 0;
-  border-bottom: 3px solid transparent;
-}
-
-.ceremony-feature__cta:hover {
-  color: var(--maroon);
-  border-bottom-color: var(--saffron);
-  transform: translateX(6px);
+  margin: 0;
 }
 
 /* ── CONCLUSION SECTION ── */
@@ -3636,18 +3607,8 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   font-family: var(--font-heading);
   font-size: 2.2rem;
   color: var(--white);
-  margin: 0 0 var(--space-md) 0;
+  margin: 0 0 var(--space-xl) 0;
   letter-spacing: 0.5px;
-  position: relative;
-  z-index: 2;
-}
-
-.ceremony-conclusion__card p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.95);
-  line-height: 1.8;
-  max-width: 600px;
-  margin: 0 auto var(--space-2xl);
   position: relative;
   z-index: 2;
 }
@@ -3696,7 +3657,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   .ceremony-feature__visual {
     width: 280px;
     height: 280px;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
   }
 
   .ceremony-feature__shape {
@@ -3712,20 +3673,13 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
     font-size: 1.5rem;
   }
 
-  .ceremony-feature__desc {
-    font-size: 1rem;
-  }
-
   .ceremony-conclusion__card {
     padding: var(--space-2xl);
   }
 
   .ceremony-conclusion__card h3 {
     font-size: 1.8rem;
-  }
-
-  .ceremony-conclusion__card p {
-    font-size: 1rem;
+    margin-bottom: var(--space-lg);
   }
 }
 
@@ -3748,7 +3702,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
     font-size: 1.3rem;
   }
 
-  .ceremony-feature__desc {
-    font-size: 0.95rem;
+  .ceremony-conclusion__card h3 {
+    font-size: 1.6rem;
   }
 }

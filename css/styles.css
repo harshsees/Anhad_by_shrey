@@ -3554,12 +3554,12 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   justify-content: center;
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 
-    0 2px 4px rgba(139, 58, 74, 0.15),
-    0 8px 16px rgba(139, 58, 74, 0.25),
-    0 20px 40px rgba(139, 58, 74, 0.35),
-    0 35px 70px rgba(166, 77, 92, 0.4);
+    0 4px 8px rgba(139, 58, 74, 0.2),
+    0 12px 24px rgba(139, 58, 74, 0.3),
+    0 24px 48px rgba(166, 77, 92, 0.4),
+    0 40px 80px rgba(166, 77, 92, 0.5);
 }
 
 .ceremony-feature:hover .ceremony-feature__shape {

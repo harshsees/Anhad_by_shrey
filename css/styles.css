@@ -1265,8 +1265,8 @@ p {
 
 .puja-card {
   background: var(--white);
-  border-radius: var(--radius-lg);
-  overflow: visible;
+  border-radius: 24px;
+  overflow: hidden;
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: all 0.4s ease-out;
@@ -1287,6 +1287,7 @@ p {
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 10;
+  border-radius: 24px 24px 0 0;
 }
 
 .puja-card__image {

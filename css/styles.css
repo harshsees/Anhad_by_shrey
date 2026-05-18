@@ -3572,15 +3572,18 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations */
 .ceremony-feature__shape--1 {
-  border-radius: 24px;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  border-radius: 0;
 }
 
 .ceremony-feature__shape--2 {
-  border-radius: 24px;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  border-radius: 0;
 }
 
 .ceremony-feature__shape--3 {
-  border-radius: 24px;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  border-radius: 0;
 }
 
 .ceremony-feature__icon {

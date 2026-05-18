@@ -3603,18 +3603,18 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations */
 .ceremony-feature__shape--1 {
-  border-radius: 16px;
-  clip-path: none;
+  border-radius: 20% 20% 18% 22% / 22% 18% 20% 20%;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .ceremony-feature__shape--2 {
-  border-radius: 16px;
-  clip-path: none;
+  border-radius: 20% 20% 18% 22% / 22% 18% 20% 20%;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .ceremony-feature__shape--3 {
-  border-radius: 16px;
-  clip-path: none;
+  border-radius: 20% 20% 18% 22% / 22% 18% 20% 20%;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
 }
 
 .ceremony-feature__icon {

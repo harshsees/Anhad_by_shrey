@@ -3498,9 +3498,52 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 .ceremony-grid {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 700px;
   margin: var(--space-3xl) 0;
   z-index: 1;
+}
+
+/* Decorative Lines */
+.ceremony-decor-line {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  left: 0;
+  opacity: 0.6;
+}
+
+.ceremony-decor-line--top {
+  top: -40px;
+}
+
+.ceremony-decor-line--bottom {
+  bottom: 0;
+}
+
+/* Decorative Diamonds */
+.ceremony-decor-diamond {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #C08B95;
+  opacity: 0.4;
+  transform: rotate(45deg);
+  z-index: 0;
+}
+
+.ceremony-decor-diamond--1 {
+  top: 100px;
+  left: 12%;
+}
+
+.ceremony-decor-diamond--2 {
+  top: 280px;
+  left: 42%;
+}
+
+.ceremony-decor-diamond--3 {
+  bottom: 150px;
+  right: 18%;
 }
 
 .ceremony-feature {
@@ -3510,26 +3553,27 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   align-items: center;
   text-align: center;
   animation-delay: var(--reveal-delay, 0s);
+  z-index: 2;
 }
 
 /* Professional balanced positioning */
 .ceremony-feature--1 {
-  top: 120px;
-  left: 8%;
-  width: 280px;
+  top: 100px;
+  left: 5%;
+  width: 220px;
 }
 
 .ceremony-feature--2 {
-  top: 20px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
+  width: 320px;
 }
 
 .ceremony-feature--3 {
   top: 180px;
-  right: 6%;
-  width: 280px;
+  right: 5%;
+  width: 220px;
 }
 
 /* Visual Section with Curved Shape */

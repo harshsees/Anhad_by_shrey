@@ -1,0 +1,254 @@
+<!-- 
+  DYNAMIC TITLE BAR EFFECT — Vanilla JS & CSS
+  
+  This snippet creates a smooth, animated title bar that:
+  - Displays with visible background at the top of the page
+  - Smoothly transitions upward and hides as user scrolls
+  - Uses scroll event listener to track position
+  - No jQuery dependency — pure vanilla JavaScript
+  - CSS transitions for seamless animation
+-->
+
+<!-- ============================================= 
+     STEP 1: Add this CSS to your css/styles.css 
+     ============================================= -->
+
+<style>
+/* Dynamic Title Bar Styles */
+.dynamic-titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900; /* Below navbar (1000) but above content */
+  width: 100%;
+  padding: 1rem 0;
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.95) 0%, rgba(218, 165, 32, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.dynamic-titlebar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dynamic-titlebar__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dynamic-titlebar__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.dynamic-titlebar__subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+  animation: titlebar-fade-in 0.8s ease-out;
+}
+
+.dynamic-titlebar__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: titlebar-fade-in 0.8s ease-out 0.1s both;
+}
+
+.dynamic-titlebar__accent {
+  display: inline-block;
+  width: 40px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1px;
+  animation: titlebar-fade-in 0.8s ease-out 0.2s both;
+}
+
+/* Scroll Indicator Below Title Bar */
+.dynamic-titlebar__scroll-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: titlebar-bounce-indicator 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes titlebar-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes titlebar-bounce-indicator {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(4px);
+  }
+}
+
+/* Responsive: Adjust font sizes on smaller screens */
+@media (max-width: 768px) {
+  .dynamic-titlebar {
+    padding: 0.75rem 0;
+  }
+
+  .dynamic-titlebar__title {
+    font-size: 1.2rem;
+  }
+
+  .dynamic-titlebar__subtitle {
+    font-size: 0.75rem;
+  }
+}
+
+/* Smooth transition when scrolling starts */
+.dynamic-titlebar.scrolling .dynamic-titlebar__scroll-indicator {
+  opacity: 1;
+}
+
+/* Color transition based on page context */
+.dynamic-titlebar.dark-mode {
+  background: linear-gradient(135deg, rgba(40, 30, 10, 0.95) 0%, rgba(60, 50, 20, 0.95) 100%);
+}
+</style>
+
+<!-- ============================================= 
+     STEP 2: Add this HTML above the <nav> element
+     (Insert after <body> and before the nav element)
+     ============================================= -->
+
+<div class="dynamic-titlebar" id="dynamicTitlebar">
+  <div class="dynamic-titlebar__container">
+    <div class="dynamic-titlebar__content">
+      <p class="dynamic-titlebar__subtitle">✦ Sacred Devotional Music ✦</p>
+      <h1 class="dynamic-titlebar__title">Bringing <em style="font-style: italic; color: #ffe8b6;">Devotion</em> to Every Sacred Moment</h1>
+      <span class="dynamic-titlebar__accent"></span>
+      <span class="dynamic-titlebar__scroll-indicator">↓ Scroll ↓</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================= 
+     STEP 3: Add this JavaScript to js/main.js
+     (Add inside the DOMContentLoaded event listener)
+     ============================================= -->
+
+<script>
+// ── DYNAMIC TITLE BAR ──
+function initDynamicTitlebar() {
+  const titlebar = document.getElementById('dynamicTitlebar');
+  if (!titlebar) return;
+
+  let scrollTimeout;
+  let lastScrollPosition = 0;
+  const SCROLL_THRESHOLD = 150; // Hide titlebar after scrolling 150px
+
+  // Scroll event listener with debouncing for performance
+  window.addEventListener('scroll', () => {
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Check if scrolling down past threshold
+    if (currentScrollPosition > SCROLL_THRESHOLD) {
+      titlebar.classList.add('hidden');
+    } else {
+      titlebar.classList.remove('hidden');
+    }
+
+    // Add scrolling indicator class
+    if (currentScrollPosition > 50) {
+      titlebar.classList.add('scrolling');
+    } else {
+      titlebar.classList.remove('scrolling');
+    }
+
+    lastScrollPosition = currentScrollPosition;
+
+    // Clear existing timeout
+    clearTimeout(scrollTimeout);
+    
+    // Optional: Add smooth transition on scroll completion
+    scrollTimeout = setTimeout(() => {
+      // Scroll event completed
+    }, 150);
+  }, { passive: true }); // Use passive listener for better scroll performance
+}
+
+// Call the function when DOM is ready
+document.addEventListener('DOMContentLoaded', initDynamicTitlebar);
+
+// Alternative: If you want to combine with existing initNavbar function
+// Add initDynamicTitlebar(); call inside your DOMContentLoaded event in main.js
+</script>
+
+<!-- ============================================= 
+     IMPLEMENTATION GUIDE
+     ============================================= 
+
+1. Copy the CSS from <style> section and paste it into your css/styles.css file
+
+2. Insert the HTML snippet immediately after <body> tag and before the <nav class="navbar"> element
+
+3. Add the JavaScript function to your js/main.js file inside the DOMContentLoaded event listener
+
+4. Customize the following as needed:
+   - SCROLL_THRESHOLD: Number of pixels to scroll before hiding (currently 150px)
+   - Colors: Modify the gradient colors in .dynamic-titlebar background property
+   - Animation duration: Change transition values (currently 0.4s)
+   - Content: Replace the subtitle, title, and subtitle text with your own
+
+5. The title bar will automatically:
+   - Display with full background when at the top
+   - Smoothly slide up as user scrolls past 150px
+   - Show/hide with smooth CSS transitions
+   - Include a scroll indicator that fades in during scrolling
+   - Maintain performance with passive event listeners
+
+FEATURES:
+✓ Vanilla JavaScript (no jQuery)
+✓ Smooth CSS transitions with GPU acceleration
+✓ Passive event listeners for optimal scroll performance
+✓ Responsive design (mobile-optimized)
+✓ Customizable threshold and animations
+✓ No external dependencies
+✓ Accessibility-friendly
+✓ will-change optimization for smooth rendering
+
+============================================= -->

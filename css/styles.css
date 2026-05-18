@@ -171,6 +171,7 @@ p {
 
 .section--cream {
   background-color: var(--cream);
+  padding-bottom: 24px;
 }
 
 .section--maroon {
@@ -3463,7 +3464,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
    ══════════════════════════════════════════ */
 
 .ceremony-explorer {
-  padding: 0 0 var(--space-4xl) 0;
+  padding: 96px 0 var(--space-4xl) 0;
   background: linear-gradient(180deg, var(--ivory) 0%, rgba(245, 235, 217, 0.5) 100%);
   position: relative;
   overflow: hidden;

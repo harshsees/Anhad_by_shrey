@@ -3613,9 +3613,8 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   right: -8px;
   width: 80px;
   height: 60px;
-  background: linear-gradient(135deg, rgba(107, 29, 42, 0.4) 0%, rgba(107, 29, 42, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(107, 29, 42, 0.9) 0%, rgba(107, 29, 42, 1) 100%);
   border-radius: 50%;
-  box-shadow: -3px -3px 10px rgba(107, 29, 42, 0.25), inset -2px -2px 8px rgba(107, 29, 42, 0.2);
   z-index: 10;
   pointer-events: none;
 }

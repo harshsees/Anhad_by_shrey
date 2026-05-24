@@ -3620,18 +3620,18 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-  border-radius: 15px;
+  clip-path: none;
+  border-radius: 50px;
 }
 
 .ceremony-feature__shape--2 {
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-  border-radius: 15px;
+  clip-path: none;
+  border-radius: 50px;
 }
 
 .ceremony-feature__shape--3 {
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-  border-radius: 15px;
+  clip-path: none;
+  border-radius: 50px;
 }
 
 .ceremony-feature__icon {

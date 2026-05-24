@@ -3620,17 +3620,17 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
-  border-radius: 35% 65% 60% 40% / 40% 60% 35% 65%;
+  border-radius: 0;
   clip-path: none;
 }
 
 .ceremony-feature__shape--2 {
-  border-radius: 38% 62% 58% 42% / 42% 58% 38% 62%;
+  border-radius: 0;
   clip-path: none;
 }
 
 .ceremony-feature__shape--3 {
-  border-radius: 40% 60% 55% 45% / 45% 55% 40% 60%;
+  border-radius: 0;
   clip-path: none;
 }
 

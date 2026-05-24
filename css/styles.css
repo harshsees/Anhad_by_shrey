@@ -3655,7 +3655,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* ── CONCLUSION SECTION ── */
 .ceremony-conclusion {
-  margin-top: var(--space-4xl);
+  margin-top: var(--space-lg);
   position: relative;
   z-index: 2;
 }

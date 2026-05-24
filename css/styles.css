@@ -3608,13 +3608,12 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 .ceremony-feature__shape::after {
   content: '';
   position: absolute;
-  bottom: -15px;
-  right: 25px;
-  width: 90px;
-  height: 70px;
-  background: linear-gradient(135deg, rgba(107, 29, 42, 0.95) 0%, rgba(107, 29, 42, 0.9) 100%);
-  border-radius: 70% 30% 30% 30%;
-  box-shadow: inset -3px -3px 8px rgba(0, 0, 0, 0.2), -5px -5px 12px rgba(0, 0, 0, 0.2);
+  bottom: -20px;
+  right: 30px;
+  width: 100px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(107, 29, 42, 1) 0%, rgba(107, 29, 42, 0.8) 100%);
+  border-radius: 50%;
   z-index: 10;
   pointer-events: none;
 }
@@ -3633,19 +3632,19 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
-  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
+  clip-path: none;
   border-radius: 60px;
   overflow: visible;
 }
 
 .ceremony-feature__shape--2 {
-  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
+  clip-path: none;
   border-radius: 60px;
   overflow: visible;
 }
 
 .ceremony-feature__shape--3 {
-  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
+  clip-path: none;
   border-radius: 60px;
   overflow: visible;
 }

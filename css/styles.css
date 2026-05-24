@@ -3609,12 +3609,12 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   content: '';
   position: absolute;
   bottom: -15px;
-  right: -10px;
-  width: 120px;
-  height: 90px;
-  background: linear-gradient(135deg, rgba(180, 180, 180, 0.9) 0%, rgba(150, 150, 150, 1) 100%);
-  border-radius: 50%;
-  box-shadow: -5px -5px 15px rgba(0, 0, 0, 0.25);
+  right: 25px;
+  width: 90px;
+  height: 70px;
+  background: linear-gradient(135deg, rgba(200, 200, 200, 0.95) 0%, rgba(150, 150, 150, 0.9) 100%);
+  border-radius: 70% 30% 30% 30%;
+  box-shadow: inset -3px -3px 8px rgba(0, 0, 0, 0.2), -5px -5px 12px rgba(0, 0, 0, 0.2);
   z-index: 10;
   pointer-events: none;
 }
@@ -3633,21 +3633,21 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
-  clip-path: none;
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
   border-radius: 50px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .ceremony-feature__shape--2 {
-  clip-path: none;
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
   border-radius: 50px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .ceremony-feature__shape--3 {
-  clip-path: none;
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 85%, 70% 95%, 50% 100%, 0 100%);
   border-radius: 50px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .ceremony-feature__icon {

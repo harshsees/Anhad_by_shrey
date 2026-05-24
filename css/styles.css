@@ -3584,7 +3584,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 .ceremony-feature__visual {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 5;
   margin-bottom: var(--space-lg);
   display: flex;
   align-items: center;
@@ -3613,9 +3613,9 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   right: -8px;
   width: 80px;
   height: 60px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(200, 200, 200, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(107, 29, 42, 0.4) 0%, rgba(107, 29, 42, 0.6) 100%);
   border-radius: 50%;
-  box-shadow: -3px -3px 10px rgba(0, 0, 0, 0.2), inset -2px -2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: -3px -3px 10px rgba(107, 29, 42, 0.25), inset -2px -2px 8px rgba(107, 29, 42, 0.2);
   z-index: 10;
   pointer-events: none;
 }

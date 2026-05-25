@@ -3620,13 +3620,13 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
   clip-path: none;
-  border-radius: 60px;
+  border-radius: 200px;
   overflow: visible;
 }
 
 .ceremony-feature__shape--2 {
   clip-path: none;
-  border-radius: 60px;
+  border-radius: 200px;
   overflow: visible;
 }
 

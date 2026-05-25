@@ -3615,6 +3615,7 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 200px;
 }
 
 /* Individual Shape Variations - Premium Aesthetic */

@@ -3605,6 +3605,20 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   overflow: visible;
 }
 
+.ceremony-feature__shape::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 15px;
+  width: 80px;
+  height: 60px;
+  background: var(--saffron-light);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: -8px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
 .ceremony-feature:hover .ceremony-feature__shape {
   transform: translateY(-15px) scale(1.06);
 }

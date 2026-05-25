@@ -3591,6 +3591,20 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   justify-content: center;
 }
 
+.ceremony-feature__visual::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  width: 100px;
+  height: 80px;
+  background: var(--saffron-light);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.25);
+  z-index: 20;
+}
+
 .ceremony-feature__shape {
   position: relative;
   width: 100%;
@@ -3603,20 +3617,6 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   overflow: visible;
-}
-
-.ceremony-feature__shape::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  right: 15px;
-  width: 80px;
-  height: 60px;
-  background: var(--saffron-light);
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  box-shadow: -8px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 10;
 }
 
 .ceremony-feature:hover .ceremony-feature__shape {

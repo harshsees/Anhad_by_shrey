@@ -1,0 +1,76 @@
+/* PeelImageHolder Component Styles */
+
+.peel-image-holder {
+  /* Container sizing */
+  min-width: 200px;
+  max-width: 400px;
+  aspect-ratio: 320 / 520;
+  
+  /* Rendering quality */
+  shape-rendering: crispEdges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive sizing */
+.peel-image-holder {
+  /* Scale responsively */
+  width: 100%;
+  height: auto;
+}
+
+/* Ensure parent context allows SVG to expand */
+.peel-image-holder-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 320 / 520;
+}
+
+/* Hover effect on the peel (optional) */
+.peel-image-holder:hover .peel-back {
+  opacity: 1;
+  animation: peel-curl 0.6s ease-out;
+}
+
+/* Subtle curl animation */
+@keyframes peel-curl {
+  0% {
+    opacity: 0.92;
+    transform: translateX(0px) translateY(0px);
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.92;
+    transform: translateX(2px) translateY(2px);
+  }
+}
+
+/* Alternative: Static hover lift effect */
+.peel-image-holder:hover .peel-shadow {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+}
+
+/* Accessibility - focus state for keyboard navigation */
+.peel-image-holder:focus-visible {
+  outline: 3px solid #D4881F;
+  outline-offset: 4px;
+  border-radius: 20px;
+}
+
+/* Print styles */
+@media print {
+  .peel-image-holder {
+    max-width: 100%;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .peel-image-holder {
+    filter: brightness(1.05);
+  }
+}

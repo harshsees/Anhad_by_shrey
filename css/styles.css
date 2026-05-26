@@ -3609,12 +3609,15 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   right: 8px;
   width: 120px;
   height: 90px;
-  background: transparent;
+  background: linear-gradient(135deg, var(--saffron-light) 0%, var(--saffron) 50%, #C97D1F 100%);
   border-radius: 50% 50% 30% 50%;
   transform: rotate(-35deg) skew(-5deg);
-  box-shadow: none;
+  box-shadow: 
+    -15px 15px 25px rgba(0, 0, 0, 0.3),
+    -8px 8px 12px rgba(0, 0, 0, 0.15),
+    inset 2px 2px 8px rgba(255, 255, 255, 0.3);
   z-index: 20;
-  display: none;
+  display: block;
 }
 
 .ceremony-feature__shape {

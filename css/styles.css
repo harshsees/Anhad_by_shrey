@@ -3599,9 +3599,6 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   width: 100px;
   height: 6px;
   background: transparent;
-  border: 3px solid #3B7FE8;
-  border-radius: 50%;
-  transform: rotate(-35deg);
   z-index: 19;
 }
 
@@ -3613,7 +3610,6 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   width: 120px;
   height: 90px;
   background: linear-gradient(135deg, #FFFFFF 0%, #E8E8E8 50%, #C0C0C0 100%);
-  border: 4px solid #3B7FE8;
   border-radius: 50% 50% 30% 50%;
   transform: rotate(-35deg) skew(-5deg);
   box-shadow: 

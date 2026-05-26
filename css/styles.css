@@ -3643,27 +3643,52 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 200px;
-  overflow: hidden;
 }
 
 /* Individual Shape Variations - Premium Aesthetic */
 .ceremony-feature__shape--1 {
-  clip-path: none;
-  border-radius: 200px;
+  clip-path: polygon(
+    0% 40%,
+    0% 100%,
+    85% 100%,
+    100% 85%,
+    100% 40%,
+    50% 0%,
+    0% 40%
+  );
+  border-radius: 0;
   overflow: visible;
+  background: #000;
 }
 
 .ceremony-feature__shape--2 {
-  clip-path: none;
-  border-radius: 200px;
+  clip-path: polygon(
+    0% 40%,
+    0% 100%,
+    85% 100%,
+    100% 85%,
+    100% 40%,
+    50% 0%,
+    0% 40%
+  );
+  border-radius: 0;
   overflow: visible;
+  background: #000;
 }
 
 .ceremony-feature__shape--3 {
-  clip-path: none;
-  border-radius: 200px;
+  clip-path: polygon(
+    0% 40%,
+    0% 100%,
+    85% 100%,
+    100% 85%,
+    100% 40%,
+    50% 0%,
+    0% 40%
+  );
+  border-radius: 0;
   overflow: visible;
+  background: #000;
 }
 
 .ceremony-feature__icon {

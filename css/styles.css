@@ -3591,6 +3591,20 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   justify-content: center;
 }
 
+.ceremony-feature__visual::before {
+  content: '';
+  position: absolute;
+  bottom: 35px;
+  right: -15px;
+  width: 100px;
+  height: 6px;
+  background: transparent;
+  border: 3px solid #3B7FE8;
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  z-index: 19;
+}
+
 .ceremony-feature__visual::after {
   content: '';
   position: absolute;
@@ -3598,13 +3612,14 @@ p { font-size: clamp(0.9rem, 2vw, 1rem); }
   right: 8px;
   width: 120px;
   height: 90px;
-  background: linear-gradient(135deg, var(--saffron-light) 0%, #E8C57F 50%, #F5D89F 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #E8E8E8 50%, #C0C0C0 100%);
+  border: 4px solid #3B7FE8;
   border-radius: 50% 50% 30% 50%;
   transform: rotate(-35deg) skew(-5deg);
   box-shadow: 
     -15px 15px 25px rgba(0, 0, 0, 0.3),
     -8px 8px 12px rgba(0, 0, 0, 0.15),
-    inset 2px 2px 8px rgba(255, 255, 255, 0.4);
+    inset 2px 2px 8px rgba(255, 255, 255, 0.6);
   z-index: 20;
 }
 

@@ -10,6 +10,13 @@
   <meta property="og:title" content="Anahad by Shrey — Jain Devotional Singer">
   <meta property="og:description" content="Professional Jain devotional singer with 16 years of experience. Book for pujas, bhajans, and ceremonies.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.anahadbyshrey.com/assets/images/shrey_bg.jpeg">
+  <meta property="og:url" content="https://www.anahadbyshrey.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Anahad by Shrey — Jain Devotional Singer">
+  <meta name="twitter:description" content="Professional Jain devotional singer with 16 years of experience. Book for pujas, bhajans, and ceremonies.">
+  <meta name="twitter:image" content="https://www.anahadbyshrey.com/assets/images/shrey_bg.jpeg">
+  <link rel="canonical" href="https://www.anahadbyshrey.com/">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🙏</text></svg>">
 </head>
@@ -29,7 +36,7 @@
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact</a>
       </div>
-      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
+      <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
         <span></span>
         <span></span>
         <span></span>
@@ -94,7 +101,7 @@
         <!-- RIGHT: Popular Puja Services -->
         <div class="reveal reveal--right">
           <div class="section-header" style="text-align: center; margin-bottom: var(--space-xl); margin-top: 0;">
-            <p class="hero__pretitle" style="margin-top: 0; color: var(--saffron); animation: none; opacity: 1;">✦ Sacred Services ✦</p>
+            <p class="hero__pretitle" style="margin-top: 0;">✦ Sacred Services ✦</p>
             <h2 style="font-size: 2.2rem; margin-top: 10px;">Popular Puja Services</h2>
             <div class="ornament" style="justify-content: center; margin: 15px 0;">
               <span class="ornament__icon">✦</span>
@@ -153,7 +160,7 @@
           <div class="ceremony-feature__visual">
             <div
               class="js-peel-holder"
-              data-src="images/picture_2.jpeg"
+              data-src="images/picture_3.jpeg"
               data-alt="By Scale"
               data-title="By Scale"
               data-scroll-peel-id="scale"
@@ -168,7 +175,7 @@
           <div class="ceremony-feature__visual">
             <div
               class="js-peel-holder"
-              data-src="images/picture_2.jpeg"
+              data-src="images/picture_5.jpeg"
               data-alt="By Experience"
               data-title="By Experience"
               data-scroll-peel-id="experience"
@@ -308,10 +315,10 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <p>© 2024 Anahad by Shrey | Designed with devotion 🙏</p>
+        <p>© <span class="footer__year">2024</span> Anahad by Shrey | Designed with devotion 🙏</p>
         <div class="footer__bottom-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
         </div>
       </div>
     </div>
@@ -325,6 +332,8 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/vendor/lenis.min.js"></script>
+  <script src="js/smooth-scroll.js"></script>
   <script src="js/main.js"></script>
   <script>
     // Load 3 featured pujas on homepage

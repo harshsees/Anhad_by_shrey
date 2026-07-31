@@ -64,9 +64,10 @@ function initLightbox() {
 
   function openLightbox() {
     if (currentImages.length === 0) return;
-    
+
     lightbox.classList.add('active');
     document.body.classList.add('modal-open');
+    window.lenis?.stop();
     updateLightboxImage();
 
     // Hide nav if single image
@@ -78,6 +79,7 @@ function initLightbox() {
   function closeLightbox() {
     lightbox.classList.remove('active');
     document.body.classList.remove('modal-open');
+    window.lenis?.start();
   }
 
   function updateLightboxImage() {

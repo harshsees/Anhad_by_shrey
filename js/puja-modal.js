@@ -205,7 +205,8 @@ function initModal(pujas) {
     // Show modal
     modal.classList.add('active');
     document.body.classList.add('modal-open');
-    
+    window.lenis?.stop();
+
     // Reset scroll position of modal content
     modalContent.scrollTop = 0;
   }
@@ -213,5 +214,6 @@ function initModal(pujas) {
   function closeModal() {
     modal.classList.remove('active');
     document.body.classList.remove('modal-open');
+    window.lenis?.start();
   }
 }

@@ -6,14 +6,84 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
+  initScrollEffects();
   initScrollAnimations();
   initPeelImageHolders();
   initTestimonialCarousel();
   initSmoothScroll();
   initFaqAccordion();
   initGalleryFilters();
-  initFloatingActions();
+  initFooterYear();
+  initContactForm();
+  initStatCounters();
+  initMagneticButtons();
+  initCardSpotlight();
 });
+
+/* ── Stat Counters (count-up when scrolled into view) ── */
+function initStatCounters() {
+  const stats = document.querySelectorAll('.stat__number');
+  if (!stats.length) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const animateCount = (el) => {
+    const match = el.textContent.trim().match(/^([\d,]+)(.*)$/);
+    if (!match) return;
+    const target = parseInt(match[1].replace(/,/g, ''), 10);
+    const suffix = match[2];
+    if (!target) return;
+
+    const duration = 1200;
+    const start = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString() + suffix;
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCount(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  stats.forEach(el => observer.observe(el));
+}
+
+/* ── Contact Form (guards against the Formspree ID not being set yet) ── */
+function initContactForm() {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  const status = document.getElementById('contactFormStatus');
+
+  form.addEventListener('submit', (e) => {
+    if (form.action.includes('YOUR_FORMSPREE_ID')) {
+      e.preventDefault();
+      if (status) {
+        status.textContent = 'Online booking isn\'t connected yet — please reach out on WhatsApp or call +91 94094 29354 and we\'ll respond right away.';
+        status.classList.add('visible');
+      }
+    }
+  });
+}
+
+/* ── Footer Year ── */
+function initFooterYear() {
+  document.querySelectorAll('.footer__year').forEach(el => {
+    el.textContent = new Date().getFullYear();
+  });
+}
 
 /* ── Navbar ── */
 function initNavbar() {
@@ -23,49 +93,18 @@ function initNavbar() {
   const navOverlay = document.getElementById('navOverlay');
   const links = navLinks.querySelectorAll('a');
 
-  // Only apply scroll effect on homepage (hero page)
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    // Homepage: navbar starts transparent
-    navbar.classList.remove('scrolled');
-    
-    let lastScrollPosition = 0;
-    let ticking = false;
-
-    window.addEventListener('scroll', () => {
-      const currentScrollPosition = window.pageYOffset;
-
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          // Hide navbar when scrolling down
-          if (currentScrollPosition > lastScrollPosition && currentScrollPosition > 100) {
-            navbar.classList.add('navbar-hidden');
-          } else {
-            navbar.classList.remove('navbar-hidden');
-          }
-
-          // Add scrolled background after 80px
-          if (currentScrollPosition > 80) {
-            navbar.classList.add('scrolled');
-          } else {
-            navbar.classList.remove('scrolled');
-          }
-
-          lastScrollPosition = currentScrollPosition;
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-  }
-  // Inner pages already have .scrolled in HTML
-
   // Hamburger menu
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('open');
-    navLinks.classList.toggle('open');
+    const isOpen = navLinks.classList.toggle('open');
     navOverlay.classList.toggle('visible');
     document.body.classList.toggle('modal-open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+    if (isOpen) {
+      window.lenis?.stop();
+    } else {
+      window.lenis?.start();
+    }
   });
 
   // Close menu on overlay click
@@ -81,27 +120,93 @@ function initNavbar() {
     navLinks.classList.remove('open');
     navOverlay.classList.remove('visible');
     document.body.classList.remove('modal-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    window.lenis?.start();
   }
 }
 
 
-/* ── Floating Actions ── */
-function initFloatingActions() {
+/* ── Scroll Effects ── consolidated navbar show/hide + scrolled state,
+   hero parallax, and scroll-to-top button visibility onto a single
+   scroll-update path: Lenis's 'scroll' event when smooth scroll is
+   active, or a single rAF-throttled native listener otherwise (never
+   both, to avoid double/racing updates). */
+function initScrollEffects() {
+  const navbar = document.getElementById('navbar');
   const scrollTopBtn = document.getElementById('scrollTopBtn');
-  if (!scrollTopBtn) return;
-  
-  window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 400) {
-      scrollTopBtn.classList.add('visible');
-    } else {
-      scrollTopBtn.classList.remove('visible');
+  const hero = document.querySelector('.hero');
+  const heroBg = hero ? hero.querySelector('.hero__bg') : null;
+  const heroContent = hero ? hero.querySelector('.hero__content') : null;
+
+  let lastScrollPosition = 0;
+
+  const update = (scrollY) => {
+    // Navbar show/hide + scrolled background — homepage only (inner
+    // pages carry .scrolled in HTML from the start, see initNavbar).
+    if (hero && navbar) {
+      if (scrollY > lastScrollPosition && scrollY > 100) {
+        navbar.classList.add('navbar-hidden');
+      } else {
+        navbar.classList.remove('navbar-hidden');
+      }
+      if (scrollY > 80) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      lastScrollPosition = scrollY;
     }
-  });
+
+    // Scroll-to-top button visibility
+    if (scrollTopBtn) {
+      if (scrollY > 400) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+    }
+
+    // Hero parallax (subtle)
+    if (hero) {
+      const heroHeight = hero.offsetHeight;
+      if (scrollY < heroHeight) {
+        if (heroBg) {
+          heroBg.style.transform = `translateY(${scrollY * 0.3}px)`;
+        }
+        if (heroContent) {
+          heroContent.style.opacity = 1 - (scrollY / heroHeight) * 1.2;
+          heroContent.style.transform = `translateY(${scrollY * 0.15}px)`;
+        }
+      }
+    }
+  };
+
+  if (window.lenis) {
+    window.lenis.on('scroll', (lenis) => update(lenis.animatedScroll));
+  } else {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        update(window.pageYOffset);
+        ticking = false;
+      });
+    }, { passive: true });
+  }
 }
 
 
-/* ── Smooth Scroll (for same-page anchors only) ── */
+/* ── Smooth Scroll (for same-page anchors + scroll-to-top button) ── */
 function initSmoothScroll() {
+  const scrollToTarget = (targetPosition) => {
+    if (window.lenis) {
+      window.lenis.scrollTo(targetPosition);
+    } else {
+      window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+    }
+  };
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -111,13 +216,16 @@ function initSmoothScroll() {
         e.preventDefault();
         const navHeight = document.getElementById('navbar').offsetHeight;
         const targetPosition = target.offsetTop - navHeight;
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
+        scrollToTarget(targetPosition);
       }
     });
   });
+
+  const scrollTopBtn = document.getElementById('scrollTopBtn');
+  if (scrollTopBtn) {
+    scrollTopBtn.removeAttribute('onclick');
+    scrollTopBtn.addEventListener('click', () => scrollToTarget(0));
+  }
 }
 
 
@@ -438,26 +546,9 @@ function initGalleryFilters() {
 }
 
 
-/* ── Parallax Effect on Hero (subtle) ── */
-window.addEventListener('scroll', () => {
-  const hero = document.querySelector('.hero');
-  if (!hero) return;
-  
-  const scrolled = window.pageYOffset;
-  const heroHeight = hero.offsetHeight;
-  
-  if (scrolled < heroHeight) {
-    const bg = hero.querySelector('.hero__bg');
-    if (bg) {
-      bg.style.transform = `translateY(${scrolled * 0.3}px)`;
-    }
-    const content = hero.querySelector('.hero__content');
-    if (content) {
-      content.style.opacity = 1 - (scrolled / heroHeight) * 1.2;
-      content.style.transform = `translateY(${scrolled * 0.15}px)`;
-    }
-  }
-});
+/* Hero parallax is now handled inside initScrollEffects() above, driven
+   by Lenis's scroll event when active (or the rAF-throttled native
+   fallback), instead of its own unthrottled listener. */
 
 /* ── Hover Slider for Puja Cards ── */
 const sliderTimers = new Map();
@@ -521,3 +612,56 @@ window.stopHoverSlider = function(wrapper) {
     }, 50);
   }
 };
+
+
+/* ── Magnetic Buttons (mouse-only, reduced-motion aware) ──
+   Buttons pull slightly toward the cursor on hover and spring back on
+   leave. Skipped on touch/coarse-pointer devices and under
+   prefers-reduced-motion. The pull itself rides the CSS transform
+   transition already defined on .btn (see css/styles.css) — no inline
+   transition juggling needed. */
+function initMagneticButtons() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (reduceMotion || !canHover) return;
+
+  const strength = 0.3;
+  const maxOffset = 10;
+
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const offsetX = Math.max(-maxOffset, Math.min(maxOffset, x * strength));
+      const offsetY = Math.max(-maxOffset, Math.min(maxOffset, y * strength));
+      btn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    });
+  });
+}
+
+
+/* ── Card Spotlight (mouse-only, reduced-motion aware) ──
+   Puja/why cards get a soft glow that follows the cursor, driven by
+   --mouse-x/--mouse-y custom properties consumed by a ::before layer
+   in css/styles.css. Same gating as the magnetic buttons above.
+   Delegated on document because .puja-card is rendered asynchronously
+   (puja-modal.js fetches data/pujas.json after DOMContentLoaded), so a
+   direct querySelectorAll here would miss it. */
+function initCardSpotlight() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (reduceMotion || !canHover) return;
+
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.puja-card, .why-card');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+  });
+}

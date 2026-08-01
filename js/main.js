@@ -134,7 +134,9 @@ function initNavbar() {
 function initScrollEffects() {
   const navbar = document.getElementById('navbar');
   const scrollTopBtn = document.getElementById('scrollTopBtn');
-  const hero = document.querySelector('.hero');
+  // #heroStory is the homepage's cinematic hero (js/hero-story.js owns its
+  // internal motion); .hero is the legacy selector, kept as a fallback.
+  const hero = document.getElementById('heroStory') || document.querySelector('.hero');
   const heroBg = hero ? hero.querySelector('.hero__bg') : null;
   const heroContent = hero ? hero.querySelector('.hero__content') : null;
 
@@ -449,6 +451,9 @@ function initTestimonialCarousel() {
     dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, i) => {
       dot.classList.toggle('active', i === currentIndex);
     });
+    // Lets js/section-motion.js sync the testimonials background glow to
+    // the active quote without this module knowing anything about GSAP.
+    document.dispatchEvent(new CustomEvent('testimonial:change', { detail: { index: currentIndex, total } }));
   }
 
   prevBtn.addEventListener('click', () => {

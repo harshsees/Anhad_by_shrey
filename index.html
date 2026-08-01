@@ -45,56 +45,74 @@
   </nav>
 
 
-  <!-- HERO SECTION — Split Layout -->
-  <section class="hero hero--split hero--photo" id="hero">
-    <div class="hero__bg">
-      <img src="assets/images/shrey_bg.jpeg" 
-           srcset="assets/images/shrey_bg.jpeg 320w, assets/images/shrey_bg.jpeg 640w, assets/images/shrey_bg.jpeg 1280w" 
-           sizes="(max-width: 768px) 100vw, 50vw" 
-           alt="Shrey performing live at a devotional event" 
-           class="hero__bg-image" 
-           id="heroBg"
-           loading="lazy">
+  <!-- HERO STORY — Scenes 1-3: opening mic sequence → travel → hero reveal.
+       Pinned via ScrollTrigger in js/hero-story.js. All decorative layers
+       are aria-hidden; the real content (h1, tagline, CTAs) is always in
+       the DOM so screen readers and no-motion users get it directly. -->
+  <section class="hero-story" id="heroStory" aria-label="Anahad by Shrey">
+    <div class="hero-story__backdrop" aria-hidden="true"></div>
+    <div class="hero-story__particles" id="heroParticles" aria-hidden="true"></div>
+    <div class="hero-story__glow" id="heroGlow" aria-hidden="true"></div>
+
+    <div class="hero-story__photo-wrap" id="heroPhotoWrap" aria-hidden="true">
+      <img src="images/hero-image.jpeg" alt="" class="hero-story__photo" id="heroPhoto">
+      <div class="hero-story__photo-vignette"></div>
+      <div class="hero-story__photo-sweep" id="heroSweep"></div>
     </div>
-    <div class="hero__overlay hero__overlay--light"></div>
 
-    <div class="container hero__split-grid">
-      <!-- LEFT: Empty spacer to reveal Shrey's photo -->
-      <div></div>
+    <div class="mic-focus" id="micFocus" aria-hidden="true">
+      <img src="images/hero-image.jpeg" alt="" class="mic-focus__img" id="micFocusImg">
+      <span class="mic-focus__ring"></span>
+    </div>
 
-      <!-- RIGHT: Text Content -->
-      <div class="hero__content hero__content--right">
-        <p class="hero__pretitle">✦ Sacred Devotional Music ✦</p>
-        <h1 class="hero__title">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
-        <p class="hero__tagline">
-          Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
-        </p>
-        <div class="hero__buttons">
-          <a href="services.html" class="btn btn--primary">🙏 Book a Puja</a>
-          <a href="about.html" class="btn btn--outline">Discover More</a>
-        </div>
+    <div class="hero-story__opening" id="heroOpening" aria-hidden="true">
+      <p class="hero-story__eyebrow">✦ Sacred Devotional Music ✦</p>
+      <p class="hero-story__opening-title" id="heroOpeningTitle">Every Voice<br>Finds Its <em>Anahad</em></p>
+    </div>
+
+    <div class="hero-story__content" id="heroContent">
+      <p class="hero-story__pretitle" id="heroPretitle">✦ Sacred Devotional Music ✦</p>
+      <h1 class="hero-story__title" id="heroTitle">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
+      <p class="hero-story__tagline" id="heroTagline">
+        Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
+      </p>
+      <div class="hero-story__buttons" id="heroButtons">
+        <a href="services.html" class="btn btn--primary btn--glass">🙏 Book a Puja</a>
+        <a href="about.html" class="btn btn--outline btn--glass">Discover More</a>
+      </div>
+      <div class="hero-story__social-proof" id="heroSocialProof">
+        <span>16 Years of Devotion</span><span class="hero-story__dot">✦</span><span>500+ Sacred Ceremonies</span>
       </div>
     </div>
 
-    <div class="hero__scroll">
+    <div class="hero-story__scroll-cue" id="heroScrollCue" aria-hidden="true">
       <span>Scroll</span>
-      <div class="hero__scroll-line"></div>
+      <div class="hero-story__scroll-line"></div>
     </div>
   </section>
+
+  <!-- Scene 4: the mic detaches from the settled hero and travels down to
+       land on the mic in the #intro photo — position:fixed so it can
+       cross the section boundary. -->
+  <div class="mic-echo" id="micEcho" aria-hidden="true">
+    <img src="images/hero-image.jpeg" alt="" class="mic-echo__img mic-echo__img--from" id="micEchoFrom">
+    <img src="assets/images/shrey_pic_1.jpeg" alt="" class="mic-echo__img mic-echo__img--to" id="micEchoTo">
+  </div>
 
   <!-- INTRO AND SERVICES SECTION -->
   <section class="section section--cream" id="intro">
     <div class="container">
       <div class="about__grid">
         <!-- LEFT: Photo -->
-        <div class="about__image-wrapper reveal reveal--left">
-          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xl); border: 2px solid var(--gold-light);">
-            <img src="assets/images/shrey_pic_1.jpeg" 
-                 srcset="assets/images/shrey_pic_1.jpeg 320w, assets/images/shrey_pic_1.jpeg 640w, assets/images/shrey_pic_1.jpeg 1280w" 
-                 sizes="(max-width: 768px) 100vw, 50vw" 
-                 alt="Shrey singing devotional stutis" 
+        <div class="about__image-wrapper reveal reveal--left" id="introImageWrapper">
+          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-xl); border: 2px solid var(--gold-light);" id="introImageFrame">
+            <img src="assets/images/shrey_pic_1.jpeg"
+                 srcset="assets/images/shrey_pic_1.jpeg 320w, assets/images/shrey_pic_1.jpeg 640w, assets/images/shrey_pic_1.jpeg 1280w"
+                 sizes="(max-width: 768px) 100vw, 50vw"
+                 alt="Shrey singing devotional stutis"
                  style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block;"
-                 loading="lazy">
+                 loading="lazy"
+                 id="introPhoto">
           </div>
         </div>
 
@@ -102,7 +120,7 @@
         <div class="reveal reveal--right">
           <div class="section-header" style="text-align: center; margin-bottom: var(--space-xl); margin-top: 0;">
             <p class="hero__pretitle" style="margin-top: 0;">✦ Sacred Services ✦</p>
-            <h2 style="font-size: 2.2rem; margin-top: 10px;">Popular Puja Services</h2>
+            <h2 id="introHeading" style="font-size: 2.2rem; margin-top: 10px;">Popular Puja Services</h2>
             <div class="ornament" style="justify-content: center; margin: 15px 0;">
               <span class="ornament__icon">✦</span>
             </div>
@@ -127,14 +145,14 @@
     <div class="container">
       <!-- SUBHEADING -->
       <div class="section-header reveal">
-        <h2>Choose Your Journey</h2>
+        <h2 id="ceremonyHeading">Choose Your Journey</h2>
         <div class="ornament">
           <span class="ornament__icon">✦</span>
         </div>
       </div>
 
       <!-- THREE FEATURE SECTIONS -->
-      <div class="ceremony-grid">
+      <div class="ceremony-grid" id="ceremonyGrid">
         <!-- Decorative Diamonds -->
         <div class="ceremony-decor-diamond ceremony-decor-diamond--1"></div>
         <div class="ceremony-decor-diamond ceremony-decor-diamond--2"></div>
@@ -198,6 +216,7 @@
 
   <!-- TESTIMONIALS -->
   <section class="section" id="testimonials">
+    <div class="testimonial-stage-glow" id="testimonialStageGlow" aria-hidden="true"></div>
     <div class="container">
       <div class="section-header reveal">
         <h2>Words of Appreciation</h2>
@@ -253,13 +272,14 @@
 
 
   <!-- CTA BANNER -->
-  <section class="cta-banner">
+  <section class="cta-banner" id="ctaBanner">
+    <div class="cta-banner__particles" id="ctaParticles" aria-hidden="true"></div>
     <div class="container">
       <div class="cta-banner__content reveal">
-        <h2>Ready to Create a <span>Sacred Experience</span>?</h2>
+        <h2 id="ctaHeading">Ready to Create a <span>Sacred Experience</span>?</h2>
         <p>Book Shrey for your next Jain ceremony, puja, or devotional event and experience the divine through music.</p>
-        <a href="services.html" class="btn btn--primary">Explore Services</a>
-        <a href="contact.html" class="btn btn--outline">Get In Touch</a>
+        <a href="services.html" class="btn btn--primary btn--glass">Explore Services</a>
+        <a href="contact.html" class="btn btn--outline btn--glass">Get In Touch</a>
       </div>
     </div>
   </section>
@@ -333,8 +353,14 @@
 
   <!-- Scripts -->
   <script src="js/vendor/lenis.min.js"></script>
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/scrolltrigger.min.js"></script>
   <script src="js/smooth-scroll.js"></script>
+  <script src="js/motion/reveal-utils.js"></script>
+  <script src="js/motion/particles.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/hero-story.js"></script>
+  <script src="js/section-motion.js"></script>
   <script>
     // Load 3 featured pujas on homepage
     document.addEventListener('DOMContentLoaded', async () => {

@@ -134,9 +134,9 @@ function initNavbar() {
 function initScrollEffects() {
   const navbar = document.getElementById('navbar');
   const scrollTopBtn = document.getElementById('scrollTopBtn');
-  // #heroStory is the homepage's cinematic hero (js/hero-story.js owns its
-  // internal motion); .hero is the legacy selector, kept as a fallback.
-  const hero = document.getElementById('heroStory') || document.querySelector('.hero');
+  // #heroMark opens the homepage's cinematic hero (js/hero-story.js owns its
+  // internal motion); .hero is the legacy selector used by the inner pages.
+  const hero = document.getElementById('heroMark') || document.querySelector('.hero');
   const heroBg = hero ? hero.querySelector('.hero__bg') : null;
   const heroContent = hero ? hero.querySelector('.hero__content') : null;
 

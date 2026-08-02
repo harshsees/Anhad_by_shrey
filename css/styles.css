@@ -4162,29 +4162,45 @@ table {
    ScrollTrigger + the existing Lenis instance).
    ══════════════════════════════════════════════════════════ */
 
-/* ── Hero Story Stage ── */
-.hero-story {
+/* ── Scene 1: the mark ── */
+.hero-mark {
   position: relative;
   height: 100vh;
   min-height: 560px;
   overflow: hidden;
   background: var(--maroon-dark);
   isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hero-story__backdrop {
+.hero-mark__backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(120% 90% at 50% 12%, rgba(201, 168, 76, 0.22), transparent 60%),
-    linear-gradient(160deg, var(--maroon-dark) 0%, #2a0a10 55%, #180509 100%);
+    radial-gradient(110% 85% at 50% 40%, rgba(201, 168, 76, 0.20), transparent 62%),
+    linear-gradient(168deg, #2f0c13 0%, var(--maroon-dark) 42%, #180509 100%);
 }
 
-.hero-story__particles {
+.hero-mark__aura {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(74vmin, 780px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(232, 213, 163, 0.28), rgba(201, 168, 76, 0.07) 52%, transparent 70%);
+  filter: blur(6px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-mark__particles {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -4194,160 +4210,231 @@ table {
   display: block;
 }
 
-.hero-story__glow {
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: min(58vw, 620px);
-  height: min(58vw, 620px);
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(232, 213, 163, 0.32), rgba(201, 168, 76, 0.08) 55%, transparent 72%);
-  filter: blur(4px);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.hero-story__photo-wrap {
-  position: absolute;
-  inset: 0;
+.hero-mark__stack {
+  position: relative;
   z-index: 3;
-  clip-path: circle(0% at 33.8% 38%);
-}
-
-.hero-story__photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transform: scale(1.08);
-  will-change: transform;
-}
-
-.hero-story__photo-vignette {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(24, 5, 9, 0.55) 0%, rgba(24, 5, 9, 0.22) 28%, rgba(24, 5, 9, 0.4) 55%, rgba(24, 5, 9, 0.3) 70%, rgba(24, 5, 9, 0.82) 100%),
-    radial-gradient(60% 55% at 50% 48%, rgba(24, 5, 9, 0.38), transparent 72%),
-    radial-gradient(120% 90% at 50% 100%, rgba(24, 5, 9, 0.5), transparent 60%);
-}
-
-.hero-story__photo-sweep {
-  position: absolute;
-  inset: -20%;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 244, 214, 0.22) 48%, transparent 62%);
-  transform: translateX(-130%);
-  pointer-events: none;
-}
-
-/* ── Traveling mic (Scenes 1-3) ── */
-.mic-focus {
-  position: absolute;
-  left: 50%;
-  top: 44%;
-  width: clamp(160px, 22vw, 260px);
-  height: clamp(195px, 27vw, 316px);
-  border-radius: 999px;
-  overflow: hidden;
-  z-index: 5;
-  box-shadow:
-    0 0 0 1px rgba(232, 213, 163, 0.35),
-    0 30px 80px rgba(0, 0, 0, 0.55),
-    0 0 60px rgba(201, 168, 76, 0.35);
-}
-
-.mic-focus__img {
-  position: absolute;
-  max-width: none;
-  max-height: none;
-  will-change: transform;
-}
-
-.mic-focus__ring {
-  position: absolute;
-  inset: -16%;
-  border-radius: 50%;
-  border: 1px solid rgba(232, 213, 163, 0.4);
-  animation: micPulse 2.6s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes micPulse {
-  0%, 100% { transform: scale(1); opacity: 0.55; }
-  50% { transform: scale(1.12); opacity: 0.15; }
-}
-
-/* ── Scene 1: opening typography ── */
-.hero-story__opening {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding-top: clamp(3rem, 9vw, 6.5rem);
   text-align: center;
-  pointer-events: none;
+  padding: 0 var(--space-xl);
+  will-change: transform, opacity;
 }
 
-.hero-story__eyebrow {
+.hero-mark__logo {
+  width: min(38vmin, 320px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 44px rgba(201, 168, 76, 0.38));
+}
+
+.hero-mark__eyebrow {
   font-family: var(--font-body);
   color: var(--gold-light);
   letter-spacing: 4px;
   text-transform: uppercase;
-  font-size: 0.85rem;
-  margin-bottom: 1.4rem;
+  font-size: 0.8rem;
+  margin-top: var(--space-xl);
 }
 
-.hero-story__opening-title {
+.hero-mark__line {
   font-family: var(--font-heading);
   color: var(--cream);
-  font-size: clamp(2.4rem, 7vw, 5.2rem);
-  line-height: 1.1;
+  font-size: clamp(1.9rem, 5vw, 3.4rem);
+  line-height: 1.15;
   font-weight: 500;
+  margin-top: var(--space-md);
 }
 
-.hero-story__opening-title em {
+.hero-mark__line em {
   color: var(--gold-light);
   font-style: italic;
 }
 
-.split-word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-}
-
-.split-word__inner {
-  display: inline-block;
-  will-change: transform, opacity;
-}
-
-/* ── Scene 3: settled hero content ── */
-.hero-story__content {
+.hero-mark__cue {
   position: absolute;
-  inset: 0;
-  z-index: 7;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 var(--space-xl);
+  gap: var(--space-sm);
+  color: var(--gold-light);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero-mark__cue-line {
+  width: 1px;
+  height: 40px;
+  background: rgba(232, 213, 163, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-mark__cue-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gold-light);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+/* ── The travelling mic (fixed: crosses the section boundary) ──
+   Sized once here; js/hero-story.js only ever scales/rotates/moves it, so
+   the drop stays on the compositor. */
+.hero-mic {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 62px;
+  height: 200px;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero-mic__art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.55));
+}
+
+.hero-mic__glow {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  width: 280%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 213, 163, 0.5), rgba(201, 168, 76, 0.1) 46%, transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The catch. Positioned on his hand by JS each tick. */
+.hero-flash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 46vmin;
+  height: 46vmin;
+  margin: -23vmin 0 0 -23vmin;
+  border-radius: 50%;
+  z-index: 29;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle,
+    rgba(255, 248, 232, 0.95) 0%,
+    rgba(232, 213, 163, 0.58) 26%,
+    rgba(201, 168, 76, 0.18) 48%,
+    rgba(201, 168, 76, 0) 70%);
+}
+
+/* ── Scene 2: the canvas sequence stage ── */
+.hero-stage {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--maroon-dark);
+  isolation: isolate;
+}
+
+.hero-stage__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(201, 168, 76, 0.16), transparent 62%),
+    linear-gradient(160deg, #2a0a10 0%, #1d0709 58%, #120406 100%);
+}
+
+.hero-stage__frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-stage__poster,
+.hero-stage__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Fallback still, in case the sequence never loads (it sits under the
+   canvas, which is opaque and only fades in once frame 001 has painted).
+   object-position mirrors Motion.micAnchors.heroSeq.focal. */
+.hero-stage__poster {
+  object-fit: cover;
+  object-position: 42% 34%;
+}
+
+.hero-stage__canvas {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.hero-stage.is-painted .hero-stage__canvas {
+  opacity: 1;
+}
+
+.hero-stage__vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(24, 5, 9, 0.62) 0%, rgba(24, 5, 9, 0.1) 24%, rgba(24, 5, 9, 0) 52%, rgba(24, 5, 9, 0.72) 100%),
+    radial-gradient(120% 90% at 50% 100%, rgba(24, 5, 9, 0.45), transparent 62%);
+  pointer-events: none;
+}
+
+/* Darkens the copy side only, and only once the copy is on its way in. */
+.hero-stage__scrim {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(90deg,
+    rgba(24, 5, 9, 0) 28%,
+    rgba(24, 5, 9, 0.55) 50%,
+    rgba(24, 5, 9, 0.9) 70%);
+  pointer-events: none;
+}
+
+/* ── Scene 2: hero copy, right column, clear of the subject ── */
+.hero-stage__copy {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  transform: translateY(-50%);
+  right: max(var(--space-2xl), calc((100% - 1280px) / 2 + var(--space-xl)));
+  width: min(46ch, 40%);
+  text-align: left;
   opacity: 0;
 }
 
-.hero-story__pretitle {
+.hero-stage__pretitle {
+  display: inline-block;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: 3.5px;
   color: var(--gold-light);
   margin-bottom: var(--space-lg);
-  padding: 0.5rem 1.2rem;
+  padding: 0.45rem 1.1rem;
   border: 1px solid rgba(232, 213, 163, 0.35);
   border-radius: var(--radius-full);
   backdrop-filter: blur(10px);
@@ -4355,37 +4442,35 @@ table {
   background: rgba(24, 5, 9, 0.25);
 }
 
-.hero-story__title {
+.hero-stage__title {
   font-family: var(--font-heading);
-  font-size: clamp(2.6rem, 7vw, 5rem);
+  font-size: clamp(2.1rem, 3.6vw, 3.6rem);
   font-weight: 400;
-  line-height: 1.12;
+  line-height: 1.14;
   color: var(--white);
   margin-bottom: var(--space-lg);
-  max-width: 18ch;
-  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.45);
 }
 
-.hero-story__title em {
+.hero-stage__title em {
   font-style: italic;
   color: var(--gold-light);
   font-weight: 500;
 }
 
-.hero-story__tagline {
+.hero-stage__tagline {
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   color: rgba(245, 235, 217, 0.92);
-  max-width: 540px;
-  margin: 0 auto var(--space-2xl);
-  line-height: 1.8;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  max-width: 46ch;
+  margin-bottom: var(--space-2xl);
+  line-height: 1.75;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
-.hero-story__buttons {
+.hero-stage__buttons {
   display: flex;
   gap: var(--space-lg);
-  justify-content: center;
   flex-wrap: wrap;
   margin-bottom: var(--space-xl);
 }
@@ -4399,59 +4484,34 @@ table {
   background: rgba(245, 235, 217, 0.08);
 }
 
-.hero-story__social-proof {
+.hero-stage__proof {
   display: flex;
   align-items: center;
   gap: var(--space-md);
   color: var(--gold-light);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
-.hero-story__dot {
+.hero-stage__dot {
   opacity: 0.6;
 }
 
-/* ── Scroll cue ── */
-.hero-story__scroll-cue {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  color: var(--gold-light);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.hero-story__scroll-line {
-  width: 1px;
-  height: 40px;
-  background: rgba(232, 213, 163, 0.4);
-  position: relative;
+.split-word {
+  display: inline-block;
   overflow: hidden;
+  vertical-align: top;
 }
 
-.hero-story__scroll-line::after {
-  content: '';
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--gold-light);
-  animation: scrollLine 2s ease-in-out infinite;
+.split-word__inner {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
-/* ── Scene 4: mic echo (fixed, travels into #intro) ── */
+/* ── Scene 3: mic echo (fixed, travels into #intro) ── */
 .mic-echo {
   position: fixed;
   top: 0;
@@ -4542,56 +4602,91 @@ table {
   z-index: 1;
 }
 
-/* ── Responsive: no pin, shorter/simpler travel on small screens ── */
+/* ── Responsive: no pin, and the sequence letterboxes into a 16:9 band with
+   the copy stacked below it, so the crop never has to choose between Shrey
+   and the words. ── */
 @media (max-width: 899px) {
-  .hero-story {
+  .hero-mark {
     height: 100svh;
-    min-height: 620px;
+    min-height: 600px;
   }
 
-  .mic-focus {
-    width: clamp(120px, 34vw, 180px);
-    height: clamp(150px, 42vw, 220px);
-    top: 40%;
+  .hero-mark__logo {
+    width: min(58vmin, 260px);
   }
 
-  .hero-story__opening {
-    padding-top: clamp(2.5rem, 12vw, 4rem);
+  .hero-stage {
+    height: 100svh;
+    min-height: 660px;
   }
 
-  .hero-story__title {
-    max-width: 16ch;
+  .hero-stage__frame {
+    inset: auto 0 auto 0;
+    top: clamp(72px, 14vh, 130px);
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .hero-stage__vignette {
+    background: linear-gradient(180deg, rgba(24, 5, 9, 0.5) 0%, rgba(24, 5, 9, 0) 38%, rgba(24, 5, 9, 0.55) 100%);
+  }
+
+  .hero-stage__scrim {
+    background: linear-gradient(180deg, rgba(24, 5, 9, 0) 42%, rgba(24, 5, 9, 0.85) 100%);
+  }
+
+  .hero-stage__copy {
+    top: auto;
+    bottom: clamp(28px, 7vh, 72px);
+    left: var(--space-lg);
+    right: var(--space-lg);
+    width: auto;
+    transform: none;
+    text-align: center;
+  }
+
+  .hero-stage__tagline {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-stage__buttons,
+  .hero-stage__proof {
+    justify-content: center;
+  }
+
+  .hero-mic {
+    width: 46px;
+    height: 148px;
   }
 }
 
 @media (max-width: 560px) {
-  .hero-story__glow {
-    width: 70vw;
-    height: 70vw;
+  .hero-mark__aura {
+    width: 86vmin;
+  }
+
+  .hero-stage__tagline {
+    font-size: 0.95rem;
   }
 }
 
-/* ── Reduced motion: settled state, no pin/travel/particles ── */
+/* ── Reduced motion: settled state, no pin/travel/particles. The canvas is
+   parked on the final frame by js/hero-story.js. ── */
 @media (prefers-reduced-motion: reduce) {
-  .hero-story__opening,
-  .mic-focus,
-  .hero-story__particles,
-  .hero-story__glow,
-  .hero-story__scroll-cue,
-  .hero-story__photo-sweep,
+  .hero-mark__particles,
+  .hero-mark__cue,
+  .hero-mic,
+  .hero-flash,
   .mic-echo {
     display: none;
   }
 
-  .hero-story__photo-wrap {
-    clip-path: none;
+  .hero-stage__scrim {
+    opacity: 1;
   }
 
-  .hero-story__photo {
-    transform: none;
-  }
-
-  .hero-story__content {
+  .hero-stage__copy {
     opacity: 1;
   }
 
@@ -4605,4 +4700,19 @@ table {
   .ceremony-feature--3.reveal {
     transform: none;
   }
+}
+
+/* Same settled state when the motion libraries are unavailable — set by
+   js/hero-story.js, which can't rely on the media query alone. */
+.hero-no-motion .hero-mark__particles,
+.hero-no-motion .hero-mark__cue,
+.hero-no-motion .hero-mic,
+.hero-no-motion .hero-flash,
+.hero-no-motion .mic-echo {
+  display: none;
+}
+
+.hero-no-motion .hero-stage__scrim,
+.hero-no-motion .hero-stage__copy {
+  opacity: 1;
 }

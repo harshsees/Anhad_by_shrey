@@ -1,0 +1,5 @@
+# Raw build inputs for the hero canvas sequence. The frames themselves are
+# committed under assets/hero-seq/; these are the originals they were derived
+# from and are far too large to keep in history.
+images/*.zip
+images/*.mp4

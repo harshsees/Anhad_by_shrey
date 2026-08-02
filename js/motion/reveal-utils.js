@@ -97,19 +97,61 @@
     };
   };
 
+  /**
+   * The rectangle an `object-fit: cover` image occupies inside a box, with a
+   * configurable focal point (fx/fy in 0..1 decide how the overflow is split
+   * between the two sides — 0.5/0.5 is plain `object-position: center`).
+   * Returned in box-local px. The hero canvas draws with exactly this rect,
+   * so mapping a source-image fraction onto the screen is the same math in
+   * both places.
+   */
+  Motion.coverRect = function (boxW, boxH, srcW, srcH, fx, fy) {
+    const scale = Math.max(boxW / srcW, boxH / srcH);
+    const w = srcW * scale;
+    const h = srcH * scale;
+    return {
+      x: (boxW - w) * fx,
+      y: (boxH - h) * fy,
+      w,
+      h,
+    };
+  };
+
+  Motion.clamp01 = function (v) {
+    return v < 0 ? 0 : v > 1 ? 1 : v;
+  };
+
+  Motion.lerp = function (a, b, t) {
+    return a + (b - a) * t;
+  };
+
+  // Local easing helpers so the mic path can be driven from an onUpdate
+  // callback (it needs live geometry every tick) instead of a tween.
+  Motion.ease = {
+    inQuad: (t) => t * t,
+    outCubic: (t) => 1 - Math.pow(1 - t, 3),
+    inOutCubic: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+  };
+
   // Known mic anchor points (fraction of source-image dimensions) used by
-  // hero-story.js and section-motion.js. Tuned by eye against the real
-  // photos; kept in one place so re-tuning doesn't require touching the
-  // animation logic itself.
+  // hero-story.js and section-motion.js. Measured against the real frames;
+  // kept in one place so re-tuning doesn't require touching the animation
+  // logic itself.
   Motion.micAnchors = {
-    hero: {
-      src: 'images/hero-image.jpeg',
-      naturalW: 4160,
-      naturalH: 2773,
-      cx: 0.338,
-      cy: 0.38,
-      boxW: 0.085,
-      boxH: 0.155,
+    // The homepage hero canvas sequence (assets/hero-seq/**). Source frames
+    // are 1920x1080 stills of Shrey performing.
+    heroSeq: {
+      naturalW: 1920,
+      naturalH: 1080,
+      // How the sequence is cropped when the stage is wider/taller than 16:9.
+      // Biased up and slightly left so he stays clear of the copy column.
+      focal: { x: 0.42, y: 0.34 },
+      // Frame 001 — the mic held high in his raised hand. This is where the
+      // mic falling out of the logo scene has to land, so the overlay and the
+      // photographed mic are the same object at the moment of the cut.
+      land: { cx: 0.5685, cy: 0.239, length: 0.163, rotation: -38.3 },
+      // Frame 075 — the mic settled at his mouth. Start of the #intro hand-off.
+      rest: { cx: 0.333, cy: 0.385, boxW: 0.09, boxH: 0.155 },
     },
     intro: {
       src: 'assets/images/shrey_pic_1.jpeg',

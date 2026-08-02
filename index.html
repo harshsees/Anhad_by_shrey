@@ -19,6 +19,9 @@
   <link rel="canonical" href="https://www.anahadbyshrey.com/">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🙏</text></svg>">
+  <!-- Hero scene 1 art and the sequence's first frame are above the fold. -->
+  <link rel="preload" as="image" href="images/logo-mark.png">
+  <link rel="preload" as="image" href="assets/images/hero-seq-poster.jpg">
 </head>
 <body>
 
@@ -45,57 +48,101 @@
   </nav>
 
 
-  <!-- HERO STORY — Scenes 1-3: opening mic sequence → travel → hero reveal.
-       Pinned via ScrollTrigger in js/hero-story.js. All decorative layers
-       are aria-hidden; the real content (h1, tagline, CTAs) is always in
-       the DOM so screen readers and no-motion users get it directly. -->
-  <section class="hero-story" id="heroStory" aria-label="Anahad by Shrey">
-    <div class="hero-story__backdrop" aria-hidden="true"></div>
-    <div class="hero-story__particles" id="heroParticles" aria-hidden="true"></div>
-    <div class="hero-story__glow" id="heroGlow" aria-hidden="true"></div>
+  <!-- HERO SCENE 1 — the mark holds the frame and releases the mic.
+       Pinned via ScrollTrigger in js/hero-story.js. -->
+  <section class="hero-mark" id="heroMark" aria-label="Anahad by Shrey">
+    <div class="hero-mark__backdrop" aria-hidden="true"></div>
+    <div class="hero-mark__aura" id="heroMarkAura" aria-hidden="true"></div>
+    <div class="hero-mark__particles" id="heroMarkParticles" aria-hidden="true"></div>
 
-    <div class="hero-story__photo-wrap" id="heroPhotoWrap" aria-hidden="true">
-      <img src="images/hero-image.jpeg" alt="" class="hero-story__photo" id="heroPhoto">
-      <div class="hero-story__photo-vignette"></div>
-      <div class="hero-story__photo-sweep" id="heroSweep"></div>
+    <div class="hero-mark__stack" id="heroMarkStack">
+      <img src="images/logo-mark.png" alt="Anahad by Shrey" class="hero-mark__logo" id="heroMarkLogo"
+           width="750" height="747" fetchpriority="high">
+      <p class="hero-mark__eyebrow" id="heroMarkEyebrow">✦ Sacred Devotional Music ✦</p>
+      <p class="hero-mark__line" id="heroMarkLine">Every Voice<br>Finds Its <em>Anahad</em></p>
     </div>
 
-    <div class="mic-focus" id="micFocus" aria-hidden="true">
-      <img src="images/hero-image.jpeg" alt="" class="mic-focus__img" id="micFocusImg">
-      <span class="mic-focus__ring"></span>
-    </div>
-
-    <div class="hero-story__opening" id="heroOpening" aria-hidden="true">
-      <p class="hero-story__eyebrow">✦ Sacred Devotional Music ✦</p>
-      <p class="hero-story__opening-title" id="heroOpeningTitle">Every Voice<br>Finds Its <em>Anahad</em></p>
-    </div>
-
-    <div class="hero-story__content" id="heroContent">
-      <p class="hero-story__pretitle" id="heroPretitle">✦ Sacred Devotional Music ✦</p>
-      <h1 class="hero-story__title" id="heroTitle">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
-      <p class="hero-story__tagline" id="heroTagline">
-        Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
-      </p>
-      <div class="hero-story__buttons" id="heroButtons">
-        <a href="services.html" class="btn btn--primary btn--glass">🙏 Book a Puja</a>
-        <a href="about.html" class="btn btn--outline btn--glass">Discover More</a>
-      </div>
-      <div class="hero-story__social-proof" id="heroSocialProof">
-        <span>16 Years of Devotion</span><span class="hero-story__dot">✦</span><span>500+ Sacred Ceremonies</span>
-      </div>
-    </div>
-
-    <div class="hero-story__scroll-cue" id="heroScrollCue" aria-hidden="true">
+    <div class="hero-mark__cue" id="heroMarkCue" aria-hidden="true">
       <span>Scroll</span>
-      <div class="hero-story__scroll-line"></div>
+      <div class="hero-mark__cue-line"></div>
     </div>
   </section>
 
-  <!-- Scene 4: the mic detaches from the settled hero and travels down to
+  <!-- The travelling mic. position:fixed so it can leave Scene 1's logo,
+       cross the section boundary and land on Shrey's raised hand in Scene 2. -->
+  <div class="hero-mic" id="heroMic" aria-hidden="true">
+    <span class="hero-mic__glow" id="heroMicGlow"></span>
+    <svg class="hero-mic__art" viewBox="0 0 62 200" xmlns="http://www.w3.org/2000/svg" focusable="false">
+      <defs>
+        <linearGradient id="micBody" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#16161a"/>
+          <stop offset=".32" stop-color="#4c4c57"/>
+          <stop offset=".55" stop-color="#26262d"/>
+          <stop offset="1" stop-color="#0c0c10"/>
+        </linearGradient>
+        <linearGradient id="micHead" x1=".1" y1="0" x2=".9" y2="1">
+          <stop offset="0" stop-color="#fdf9ef"/>
+          <stop offset=".42" stop-color="#d2c9b3"/>
+          <stop offset="1" stop-color="#736b5c"/>
+        </linearGradient>
+        <linearGradient id="micRing" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#7d6428"/>
+          <stop offset=".42" stop-color="#E8D5A3"/>
+          <stop offset="1" stop-color="#7d6428"/>
+        </linearGradient>
+      </defs>
+      <rect x="19" y="38" width="24" height="154" rx="12" fill="url(#micBody)"/>
+      <rect x="19.6" y="38.6" width="22.8" height="152.8" rx="11.4" fill="none"
+            stroke="url(#micRing)" stroke-width="1.2" opacity=".65"/>
+      <rect x="21" y="174" width="20" height="6" rx="3" fill="url(#micRing)" opacity=".9"/>
+      <circle cx="31" cy="24" r="22" fill="url(#micHead)"/>
+      <g opacity=".3" stroke="#5a5245" stroke-width="1.1" fill="none">
+        <path d="M11 18h40M12 25h38M15 32h32M19 38h24M19 11h24"/>
+      </g>
+      <circle cx="31" cy="24" r="22" fill="none" stroke="#6c6454" stroke-width="1" opacity=".5"/>
+      <rect x="23" y="40" width="16" height="8" rx="3" fill="url(#micRing)" opacity=".85"/>
+    </svg>
+  </div>
+
+  <!-- The catch: a gold bloom at his hand, positioned each tick by
+       js/hero-story.js, big enough to cover the drawn mic being exchanged
+       for the photographed one. -->
+  <div class="hero-flash" id="heroFlash" aria-hidden="true"></div>
+
+  <!-- HERO SCENE 2 — the canvas sequence. Decorative layers are aria-hidden;
+       the real content (h1, tagline, CTAs) is always in the DOM so screen
+       readers and no-motion users get it directly. -->
+  <section class="hero-stage" id="heroStage" aria-label="Anahad by Shrey — performance">
+    <div class="hero-stage__backdrop" aria-hidden="true"></div>
+
+    <div class="hero-stage__frame" id="heroCanvasWrap" aria-hidden="true">
+      <img src="assets/images/hero-seq-poster.jpg" alt="" class="hero-stage__poster">
+      <canvas class="hero-stage__canvas" id="heroCanvas"></canvas>
+      <div class="hero-stage__vignette"></div>
+      <div class="hero-stage__scrim" id="heroScrim"></div>
+    </div>
+
+    <div class="hero-stage__copy" id="heroCopy">
+      <p class="hero-stage__pretitle" id="heroPretitle">✦ Sacred Devotional Music ✦</p>
+      <h1 class="hero-stage__title" id="heroTitle">Bringing <em>Devotion</em> to Every Sacred Moment.</h1>
+      <p class="hero-stage__tagline" id="heroTagline">
+        Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
+      </p>
+      <div class="hero-stage__buttons" id="heroButtons">
+        <a href="services.html" class="btn btn--primary btn--glass">🙏 Book a Puja</a>
+        <a href="about.html" class="btn btn--outline btn--glass">Discover More</a>
+      </div>
+      <div class="hero-stage__proof" id="heroSocialProof">
+        <span>16 Years of Devotion</span><span class="hero-stage__dot">✦</span><span>500+ Sacred Ceremonies</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scene 3: the mic detaches from the settled hero and travels down to
        land on the mic in the #intro photo — position:fixed so it can
        cross the section boundary. -->
   <div class="mic-echo" id="micEcho" aria-hidden="true">
-    <img src="images/hero-image.jpeg" alt="" class="mic-echo__img mic-echo__img--from" id="micEchoFrom">
+    <img src="assets/images/hero-seq-last.jpg" alt="" class="mic-echo__img mic-echo__img--from" id="micEchoFrom">
     <img src="assets/images/shrey_pic_1.jpeg" alt="" class="mic-echo__img mic-echo__img--to" id="micEchoTo">
   </div>
 
@@ -358,6 +405,7 @@
   <script src="js/smooth-scroll.js"></script>
   <script src="js/motion/reveal-utils.js"></script>
   <script src="js/motion/particles.js"></script>
+  <script src="js/motion/frame-sequence.js"></script>
   <script src="js/main.js"></script>
   <script src="js/hero-story.js"></script>
   <script src="js/section-motion.js"></script>

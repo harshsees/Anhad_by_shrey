@@ -29,16 +29,21 @@
   // Matches the .hero-mic box in CSS; everything else is expressed as a scale
   // of it so the mic can be sized against the rendered photo at any viewport.
   const MIC_BASE_H = 200;
-  // Fraction of the stage timeline spent on the final approach before the mic
-  // touches down. Short on purpose — the photo is hidden until the catch, so
+  // Fraction of the stage timeline before the mic touches down. Scene 1 now
+  // flies it all the way onto his hand, so this is only the slack that lets
+  // mobile — where the stage is not pinned and is therefore still sliding up —
+  // settle onto the live landing point. The photo is hidden until the catch, so
   // every unit here is scrolling spent on an empty backdrop.
-  const DROP = 0.25;
+  const DROP = 0.08;
+  // Progress through the mark scene at which the impact bloom starts rising.
+  // Set so it covers the stretch after the mark has cleared the screen.
+  const FLASH_IN = 0.8;
   // Fraction of the mark scene spent drawing the mic out from behind the mark
   // before the travel proper starts.
   const EMERGE = 0.26;
   // Depth of the mic's S-swing, as a fraction of the straight-line distance to
   // the seam. Enough to read as storytelling, not so much that it looks tossed.
-  const WAVE = 0.1;
+  const WAVE = 0.13;
 
   const A = Motion.micAnchors.heroSeq;
   const clamp01 = Motion.clamp01;
@@ -174,21 +179,39 @@
      Geometry — every pose the mic passes through
      ══════════════════════════════════════════ */
 
-  /** Where the mic sits at the seam between the two scenes: high and right,
-   *  on its way into his raised hand — deliberately still on screen, so the
-   *  hand-over never shows an empty frame. Both scenes read this, so neither
-   *  can drift from it. */
-  function seamPose() {
+  /** The rect the canvas paints the frame into, in wrap-local px. Same maths
+   *  frame-sequence.js uses, recomputed here so the poses below are available
+   *  before the sequence has ever measured itself. */
+  function frameRect(wrap) {
+    return Motion.coverRect(wrap.width, wrap.height, A.naturalW, A.naturalH, A.focal.x, A.focal.y);
+  }
+
+  /** The mic Shrey is catching in frame 001, in viewport px.
+   *
+   *  With `projected`, the wrap's offset is taken relative to #heroStage
+   *  instead of the viewport — i.e. where the hand *will* be once the stage
+   *  reaches the top of the viewport. That is exactly the moment scene 2 takes
+   *  over, so scene 1 can fly the mic all the way onto his hand while the
+   *  stage is still below the fold. */
+  function landPose(projected) {
+    const wrap = els.canvasWrap.getBoundingClientRect();
+    const origin = projected ? els.stage.getBoundingClientRect() : { left: 0, top: 0 };
+    const r = frameRect(wrap);
     return {
-      x: window.innerWidth * 0.72,
-      // Kept below the navbar so the hand-over pose is never half-hidden
-      // behind it, and above the landing point so scene 2 reads as a descent.
-      y: window.innerHeight * 0.15,
-      // Sized off the same anchor the landing pose uses, so the final
-      // approach is a modest push-in at every viewport rather than a jump.
-      scale: ((A.land.length * window.innerHeight) / MIC_BASE_H) * 0.66,
-      rot: -18,
+      x: wrap.left - origin.left + r.x + A.land.cx * r.w,
+      y: wrap.top - origin.top + r.y + A.land.cy * r.h,
+      scale: (A.land.length * r.h) / MIC_BASE_H,
+      rot: A.land.rotation,
     };
+  }
+
+  /** The pose the two scenes hand the mic over in. It is the landing pose
+   *  itself: scene 1 now completes the whole journey, so the mic is already on
+   *  his hand — inside the impact bloom — when the photo takes the screen.
+   *  Nothing is left over for scene 2 to cross, which is what used to leave a
+   *  blank panel between the mark and the photo. */
+  function seamPose() {
+    return landPose(true);
   }
 
   /** The logo mark's medallion — the point the mic is drawn out from — plus
@@ -201,34 +224,30 @@
       cx,
       cy,
       // Down and to the left of the emblem: swinging out low gives the wavy
-      // climb to the seam something to climb from.
+      // climb to his raised hand something to climb from.
       outX: cx - r.height * 0.3,
       outY: cy + r.height * 0.52,
-    };
-  }
-
-  /** The mic Shrey is holding up in frame 001, in viewport px. */
-  function landPose() {
-    const r = seq.getRect();
-    if (!r) return seamPose();
-    const wrap = els.canvasWrap.getBoundingClientRect();
-    return {
-      x: wrap.left + r.x + A.land.cx * r.w,
-      y: wrap.top + r.y + A.land.cy * r.h,
-      scale: (A.land.length * r.h) / MIC_BASE_H,
-      rot: A.land.rotation,
     };
   }
 
   /** Same point as landPose, as percentages of the canvas wrap — the origin
    *  the photo irises open from, so the reveal blooms out of his hand. */
   function irisPct() {
-    const r = seq.getRect();
-    if (!r) return { x: 50, y: 32 };
+    const wrap = els.canvasWrap.getBoundingClientRect();
+    const r = frameRect(wrap);
     return {
-      x: ((r.x + A.land.cx * r.w) / els.canvasWrap.clientWidth) * 100,
-      y: ((r.y + A.land.cy * r.h) / els.canvasWrap.clientHeight) * 100,
+      x: ((r.x + A.land.cx * r.w) / wrap.width) * 100,
+      y: ((r.y + A.land.cy * r.h) / wrap.height) * 100,
     };
+  }
+
+  /** Parks the impact bloom on his hand. Driven from progress in both scenes
+   *  rather than tweened, because it has to start in scene 1 and finish in
+   *  scene 2 without the two timelines fighting over the same element. */
+  function placeFlash(pose, opacity, scale) {
+    els.flash.style.left = pose.x + 'px';
+    els.flash.style.top = pose.y + 'px';
+    gsap.set(els.flash, { opacity: clamp01(opacity), scale });
   }
 
   /* ══════════════════════════════════════════
@@ -248,13 +267,19 @@
       .to(els.markCue, { opacity: 1, duration: 0.6 }, 0.9);
   }
 
-  /* The mic's scene-1 pose. Two beats in one function so the two are always
-     continuous: it is drawn out from behind the mark (growing out of a blur at
-     the medallion), then sweeps to the seam along a single S-curve — the
-     straight line to the seam plus one sine swing along its normal, damped so
-     the pose at p = 1 is exactly seamPose(). The start point is re-read from
-     the live logo rect every tick, so the mic stays attached to the mark while
-     the mark scrolls away and only detaches as the travel takes over. */
+  /* The mic's scene-1 pose — now the entire journey, medallion to hand. Two
+     beats in one function so they are always continuous: it is drawn out from
+     behind the mark (growing out of a blur at the medallion), then sweeps onto
+     his hand along a single S-curve — the straight line to the seam plus one
+     sine swing along its normal, damped so the pose at p = 1 is exactly
+     seamPose(). The start point is re-read from the live logo rect every tick,
+     so the mic stays attached to the mark while the mark scrolls away and only
+     detaches as the travel takes over.
+
+     The impact bloom is ramped up over the last stretch too. That stretch is
+     the scroll where the mark has cleared the top of the screen and its
+     backdrop is all that is left — filling it with the bloom is what joins the
+     mark straight onto the photo with nothing blank in between. */
   function placeMicForMark(p) {
     const m = markPose();
     const seam = seamPose();
@@ -282,6 +307,12 @@
       opacity: clamp01(p / (EMERGE * 0.5)),
       filter: 'blur(' + ((1 - out) * 12).toFixed(2) + 'px)',
     });
+
+    // The mic charges up over the second half of the travel.
+    gsap.set(els.micGlow, { opacity: ease.inQuad(clamp01((travel - 0.45) / 0.55)) });
+
+    const impact = clamp01((p - FLASH_IN) / (1 - FLASH_IN));
+    placeFlash(seam, impact, lerp(0.35, 1, impact));
   }
 
   function buildMarkScene(options) {
@@ -312,7 +343,9 @@
       .to(els.markAura, { opacity: 0.1, scale: 0.72, duration: 0.87, ease: 'power2.in' }, 0.38)
       .to(
         els.markStack,
-        { yPercent: -8, scale: 1.05, opacity: 0, filter: 'blur(10px)', duration: 0.62, ease: 'power2.in' },
+        // Finishes at p ≈ 0.92, a shade before the section edge would have cut
+        // it off anyway, so the mark dissolves rather than sliding out.
+        { yPercent: -8, scale: 1.05, opacity: 0, filter: 'blur(10px)', duration: 0.52, ease: 'power2.in' },
         0.63
       );
 
@@ -342,11 +375,11 @@
   function placeMicForStage(p) {
     const total = stageDuration();
     const seam = seamPose();
-    const land = landPose();
+    const land = landPose(false);
     const t = ease.inOutCubic(clamp01(p / (DROP / total)));
 
     // Opacity is derived from progress rather than tweened, so a reload part
-    // way into the stage still shows the mic falling instead of inheriting
+    // way into the stage still shows the mic in flight instead of inheriting
     // whatever value the scene-1 timeline last wrote.
     const fadeFrom = (DROP + 0.03) / total;
     const fadeTo = (DROP + 0.24) / total;
@@ -360,10 +393,12 @@
       filter: 'blur(0px)',
     });
 
-    // The bloom is anchored to the hand, not the falling mic, so it stays put
-    // while the timeline scales and fades it.
-    els.flash.style.left = land.x + 'px';
-    els.flash.style.top = land.y + 'px';
+    // Scene 1 handed the bloom over at full strength; carry it out from there.
+    // Anchored to the hand, not the mic, so it stays put as it expands.
+    const outFrom = (DROP + 0.02) / total;
+    const outTo = (DROP + 0.62) / total;
+    const bloom = clamp01((p - outFrom) / (outTo - outFrom));
+    placeFlash(land, 1 - bloom, lerp(1, 2.2, bloom));
   }
 
   // Total length of the stage timeline in its own units; kept in one place so
@@ -403,24 +438,23 @@
     });
 
     tl
-      // Final approach: the mic charges up as it swoops in.
-      .to(els.micGlow, { opacity: 1, duration: DROP * 0.85, ease: 'power2.in' }, 0)
-      // Impact: a gold bloom at his hand, big enough to cover the moment the
-      // drawn mic is exchanged for the photographed one.
-      // Fully up by the moment of contact, so the iris never opens on a frame
-      // showing both the drawn mic and the photographed one.
-      .to(els.flash, { opacity: 1, scale: 1, duration: 0.14, ease: 'power2.out' }, DROP - 0.14)
-      .to(els.flash, { opacity: 0, scale: 2.2, duration: 0.7, ease: 'power2.in' }, DROP + 0.08)
+      // The glow and the impact bloom are both driven from progress instead
+      // (see placeMicForMark / placeMicForStage) — they start in scene 1, and
+      // tweening them here as well would have the two timelines fight for them.
+      //
+      // The photo irises open out of his hand from the very first pixel of
+      // scroll in this scene, inside the bloom scene 1 already lit. Quick on
+      // purpose: while the circle is small the screen is mostly backdrop.
       .fromTo(
         els.canvasWrap,
         { autoAlpha: 0, clipPath: () => `circle(0% at ${irisPct().x}% ${irisPct().y}%)` },
         {
           autoAlpha: 1,
           clipPath: () => `circle(165% at ${irisPct().x}% ${irisPct().y}%)`,
-          duration: 0.7,
+          duration: 0.2,
           ease: 'power2.out',
         },
-        DROP - 0.03
+        0
       )
       // (the mic's own fade is driven from progress in placeMicForStage)
       // Hand-off complete — scrub the sequence: he closes his hand around the

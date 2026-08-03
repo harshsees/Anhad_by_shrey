@@ -7,13 +7,14 @@
                         leaves the section's own height to scroll past after
                         its timeline has finished, which read as a blank
                         panel between the mark and the photo.
-   Scene 2 (#heroStage) the mic completes its arc and lands on the mic Shrey
-                        is catching in his raised right hand in frame 001 of
-                        the canvas sequence. A gold impact bloom covers the
-                        swap, then the sequence scrubs — his arm brings the
-                        mic down to his mouth — while the copy resolves in the
-                        right-hand column, clear of the subject.
-   Scene 3              the mic detaches again and travels into #intro.
+   Scene 2 (#heroStage) the mic completes its arc directly onto the mic in
+                        frame 001 of the canvas sequence — no flash, the drawn
+                        mic simply becomes the photographed one, which is on
+                        screen from the first pixel. The sequence scrubs — his
+                        arm brings the mic down to his mouth — while the copy
+                        resolves in the right-hand column, clear of the subject.
+                        #intro is pulled up under the stage's exit so the hero
+                        hands straight over instead of scrolling past twice.
 
    Built on GSAP + ScrollTrigger, wired to the existing Lenis instance
    (js/smooth-scroll.js). The mic path is driven from timeline onUpdate rather
@@ -21,7 +22,7 @@
    ============================================= */
 
 (function () {
-  const FRAME_COUNT = 100;
+  const FRAME_COUNT = 87;
   const SEQ_TIERS = [
     { name: 'w640', maxCssWidth: 700 },
     { name: 'w1280', maxCssWidth: Infinity },
@@ -32,12 +33,8 @@
   // Fraction of the stage timeline before the mic touches down. Scene 1 now
   // flies it all the way onto his hand, so this is only the slack that lets
   // mobile — where the stage is not pinned and is therefore still sliding up —
-  // settle onto the live landing point. The photo is hidden until the catch, so
-  // every unit here is scrolling spent on an empty backdrop.
+  // settle onto the live landing point.
   const DROP = 0.08;
-  // Progress through the mark scene at which the impact bloom starts rising.
-  // Set so it covers the stretch after the mark has cleared the screen.
-  const FLASH_IN = 0.8;
   // Fraction of the mark scene spent drawing the mic out from behind the mark
   // before the travel proper starts.
   const EMERGE = 0.26;
@@ -99,8 +96,6 @@
     gsap.set(els.mic, { xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' });
 
     playMarkIntro();
-    fitEchoCrops();
-    window.addEventListener('resize', Motion.debounce(fitEchoCrops, 200));
 
     // The mark scene is never pinned, at either width: `bottom top` makes its
     // timeline finish at the exact scroll position where #heroStage reaches
@@ -124,8 +119,6 @@
         };
       },
     });
-
-    buildHandoff();
   }
 
   function collectEls() {
@@ -145,19 +138,12 @@
       canvas: id('heroCanvas'),
       canvasWrap: id('heroCanvasWrap'),
       scrim: id('heroScrim'),
-      flash: id('heroFlash'),
       copy: id('heroCopy'),
       pretitle: id('heroPretitle'),
       title: id('heroTitle'),
       tagline: id('heroTagline'),
       buttons: id('heroButtons'),
       socialProof: id('heroSocialProof'),
-
-      micEcho: id('micEcho'),
-      micEchoFrom: id('micEchoFrom'),
-      micEchoTo: id('micEchoTo'),
-      introSection: id('intro'),
-      introImageFrame: id('introImageFrame'),
     };
   }
 
@@ -230,26 +216,6 @@
     };
   }
 
-  /** Same point as landPose, as percentages of the canvas wrap — the origin
-   *  the photo irises open from, so the reveal blooms out of his hand. */
-  function irisPct() {
-    const wrap = els.canvasWrap.getBoundingClientRect();
-    const r = frameRect(wrap);
-    return {
-      x: ((r.x + A.land.cx * r.w) / wrap.width) * 100,
-      y: ((r.y + A.land.cy * r.h) / wrap.height) * 100,
-    };
-  }
-
-  /** Parks the impact bloom on his hand. Driven from progress in both scenes
-   *  rather than tweened, because it has to start in scene 1 and finish in
-   *  scene 2 without the two timelines fighting over the same element. */
-  function placeFlash(pose, opacity, scale) {
-    els.flash.style.left = pose.x + 'px';
-    els.flash.style.top = pose.y + 'px';
-    gsap.set(els.flash, { opacity: clamp01(opacity), scale });
-  }
-
   /* ══════════════════════════════════════════
      Scene 1 — the mark, and the mic it releases
      ══════════════════════════════════════════ */
@@ -274,12 +240,7 @@
      sine swing along its normal, damped so the pose at p = 1 is exactly
      seamPose(). The start point is re-read from the live logo rect every tick,
      so the mic stays attached to the mark while the mark scrolls away and only
-     detaches as the travel takes over.
-
-     The impact bloom is ramped up over the last stretch too. That stretch is
-     the scroll where the mark has cleared the top of the screen and its
-     backdrop is all that is left — filling it with the bloom is what joins the
-     mark straight onto the photo with nothing blank in between. */
+     detaches as the travel takes over. */
   function placeMicForMark(p) {
     const m = markPose();
     const seam = seamPose();
@@ -309,10 +270,7 @@
     });
 
     // The mic charges up over the second half of the travel.
-    gsap.set(els.micGlow, { opacity: ease.inQuad(clamp01((travel - 0.45) / 0.55)) });
-
-    const impact = clamp01((p - FLASH_IN) / (1 - FLASH_IN));
-    placeFlash(seam, impact, lerp(0.35, 1, impact));
+    gsap.set(els.micGlow, { opacity: ease.inQuad(clamp01((travel - 0.5) / 0.5)) * 0.5 });
   }
 
   function buildMarkScene(options) {
@@ -341,12 +299,14 @@
     tl.to(els.markCue, { opacity: 0, duration: 0.25 }, 0)
       .to(els.markAura, { opacity: 1, scale: 1.08, duration: 0.32, ease: 'power2.out' }, 0.06)
       .to(els.markAura, { opacity: 0.1, scale: 0.72, duration: 0.87, ease: 'power2.in' }, 0.38)
+      .to(els.markStack, { scale: 1.04, duration: 1.25, ease: 'none' }, 0)
+      // Only the last sliver dissolves. Fading the mark out any earlier leaves
+      // the rest of the scene as bare backdrop — which is exactly the empty
+      // stretch the impact bloom used to paper over, and the bloom is gone now.
       .to(
         els.markStack,
-        // Finishes at p ≈ 0.92, a shade before the section edge would have cut
-        // it off anyway, so the mark dissolves rather than sliding out.
-        { yPercent: -8, scale: 1.05, opacity: 0, filter: 'blur(10px)', duration: 0.52, ease: 'power2.in' },
-        0.63
+        { opacity: 0, filter: 'blur(8px)', duration: 0.15, ease: 'power2.in' },
+        1.1
       );
 
     if (particles) {
@@ -380,9 +340,11 @@
 
     // Opacity is derived from progress rather than tweened, so a reload part
     // way into the stage still shows the mic in flight instead of inheriting
-    // whatever value the scene-1 timeline last wrote.
-    const fadeFrom = (DROP + 0.03) / total;
-    const fadeTo = (DROP + 0.24) / total;
+    // whatever value the scene-1 timeline last wrote. The photo is already on
+    // screen and its mic is under this one, so the drawn mic just has to get
+    // out of the way — quickly, and with no flash to hide behind.
+    const fadeFrom = (DROP - 0.04) / total;
+    const fadeTo = (DROP + 0.02) / total;
 
     gsap.set(els.mic, {
       x: lerp(seam.x, land.x, t),
@@ -392,13 +354,6 @@
       opacity: 1 - clamp01((p - fadeFrom) / (fadeTo - fadeFrom)),
       filter: 'blur(0px)',
     });
-
-    // Scene 1 handed the bloom over at full strength; carry it out from there.
-    // Anchored to the hand, not the mic, so it stays put as it expands.
-    const outFrom = (DROP + 0.02) / total;
-    const outTo = (DROP + 0.62) / total;
-    const bloom = clamp01((p - outFrom) / (outTo - outFrom));
-    placeFlash(land, 1 - bloom, lerp(1, 2.2, bloom));
   }
 
   // Total length of the stage timeline in its own units; kept in one place so
@@ -412,9 +367,12 @@
   function buildStageScene(options) {
     const copyKids = [els.pretitle, els.title, els.tagline, els.buttons, els.socialProof];
 
-    gsap.set(els.canvasWrap, { autoAlpha: 0 });
+    // The photo is up from the first pixel of this scene — no iris, no flash.
+    // Frame 001 has the mic in exactly the pose scene 1 delivers the drawn one
+    // to, so the two are the same object and the hand-over is just the drawn
+    // one fading off the top of it.
+    gsap.set(els.canvasWrap, { autoAlpha: 1, clipPath: 'none' });
     gsap.set(els.scrim, { opacity: 0 });
-    gsap.set(els.flash, { opacity: 0, scale: 0.35 });
     gsap.set(els.copy, { autoAlpha: 0 });
     gsap.set(copyKids, { opacity: 0, y: 26, filter: 'blur(9px)' });
     gsap.set(els.micGlow, { opacity: 0 });
@@ -432,41 +390,29 @@
         invalidateOnRefresh: true,
       },
       onUpdate: () => {
-        stageOwnsMic = tl.progress() > 0.0005;
-        placeMicForStage(tl.progress());
+        const p = tl.progress();
+        stageOwnsMic = p > 0.0005;
+        placeMicForStage(p);
+        // Once the timeline is spent the stage drops behind #intro, which CSS
+        // has pulled up underneath it — so the settled hero hands straight over
+        // instead of scrolling past a second time. See .hero-stage.is-released.
+        els.stage.classList.toggle('is-released', p > 0.999);
       },
     });
 
     tl
-      // The glow and the impact bloom are both driven from progress instead
-      // (see placeMicForMark / placeMicForStage) — they start in scene 1, and
-      // tweening them here as well would have the two timelines fight for them.
-      //
-      // The photo irises open out of his hand from the very first pixel of
-      // scroll in this scene, inside the bloom scene 1 already lit. Quick on
-      // purpose: while the circle is small the screen is mostly backdrop.
-      .fromTo(
-        els.canvasWrap,
-        { autoAlpha: 0, clipPath: () => `circle(0% at ${irisPct().x}% ${irisPct().y}%)` },
-        {
-          autoAlpha: 1,
-          clipPath: () => `circle(165% at ${irisPct().x}% ${irisPct().y}%)`,
-          duration: 0.2,
-          ease: 'power2.out',
-        },
-        0
-      )
-      // (the mic's own fade is driven from progress in placeMicForStage)
-      // Hand-off complete — scrub the sequence: he closes his hand around the
-      // mic and brings it down to his mouth.
+      // The mic's glow is driven from progress instead (see placeMicForMark) —
+      // it starts in scene 1, and tweening it here as well would have the two
+      // timelines fight over it. The sequence picks up almost immediately: he
+      // closes his hand around the mic and brings it down to his mouth.
       .to(
         seqState,
         { p: 1, duration: 1.55, ease: 'none', onUpdate: () => seq.setProgress(seqState.p) },
-        DROP + 0.2
+        DROP + 0.03
       )
-      .to(els.scrim, { opacity: 1, duration: 0.7 }, DROP + 0.45)
-      .to(els.copy, { autoAlpha: 1, duration: 0.25 }, DROP + 0.95)
-      .to(copyKids, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, stagger: 0.11 }, DROP + 1.0);
+      .to(els.scrim, { opacity: 1, duration: 0.7 }, DROP + 0.42)
+      .to(els.copy, { autoAlpha: 1, duration: 0.25 }, DROP + 0.87)
+      .to(copyKids, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, stagger: 0.11 }, DROP + 0.92);
 
     stageTotal = tl.duration();
 
@@ -476,101 +422,4 @@
     };
   }
 
-  /* ══════════════════════════════════════════
-     Scene 3 — mic hand-off from the hero to #intro
-     ══════════════════════════════════════════ */
-
-  // Anchor for the settled mic in the sequence's final frame, in the shape
-  // fitCropImage expects.
-  const restAnchor = {
-    naturalW: A.naturalW,
-    naturalH: A.naturalH,
-    cx: A.rest.cx,
-    cy: A.rest.cy,
-    boxW: A.rest.boxW,
-    boxH: A.rest.boxH,
-  };
-
-  /* Sizes/positions the mic crop <img>s so they show exactly the mic region
-     of their source photo, scaled to fill their (fixed-size) box. Only re-run
-     on init/resize — the travel itself only touches `transform` on the parent
-     box, so the crop stays framed correctly throughout at zero extra cost. */
-  function fitCropImage(imgEl, boxW, boxH, anchor) {
-    const scale = Math.max(
-      boxW / (anchor.boxW * anchor.naturalW),
-      boxH / (anchor.boxH * anchor.naturalH)
-    );
-    const w = anchor.naturalW * scale;
-    const h = anchor.naturalH * scale;
-    imgEl.style.width = w + 'px';
-    imgEl.style.height = h + 'px';
-    imgEl.style.left = boxW / 2 - anchor.cx * w + 'px';
-    imgEl.style.top = boxH / 2 - anchor.cy * h + 'px';
-  }
-
-  function fitEchoCrops() {
-    if (!els.micEcho) return;
-    const w = els.micEcho.offsetWidth;
-    const h = els.micEcho.offsetHeight;
-    fitCropImage(els.micEchoFrom, w, h, restAnchor);
-    fitCropImage(els.micEchoTo, w, h, Motion.micAnchors.intro);
-  }
-
-  function settledMicPoint() {
-    const r = seq.getRect();
-    const wrap = els.canvasWrap.getBoundingClientRect();
-    if (!r) return { x: wrap.left + wrap.width * 0.33, y: wrap.top + wrap.height * 0.4 };
-    return {
-      x: wrap.left + r.x + A.rest.cx * r.w,
-      y: wrap.top + r.y + A.rest.cy * r.h,
-    };
-  }
-
-  function buildHandoff() {
-    if (!els.introSection || !els.introImageFrame || !els.micEcho) return;
-    const anchor = Motion.micAnchors.intro;
-    const easeFn = gsap.parseEase('power1.inOut');
-
-    gsap.set(els.micEcho, { opacity: 0 });
-    gsap.set(els.micEchoFrom, { opacity: 1 });
-    gsap.set(els.micEchoTo, { opacity: 0 });
-
-    ScrollTrigger.create({
-      trigger: els.stage,
-      start: 'bottom bottom',
-      endTrigger: els.introSection,
-      end: 'center center',
-      scrub: true,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const p = self.progress;
-        const eased = easeFn(p);
-
-        const start = settledMicPoint();
-        const localEnd = Motion.getCoverPoint(
-          els.introImageFrame,
-          anchor.naturalW,
-          anchor.naturalH,
-          anchor.cx,
-          anchor.cy
-        );
-        const introRect = els.introImageFrame.getBoundingClientRect();
-
-        let opacity = 1;
-        if (p < 0.12) opacity = p / 0.12;
-        else if (p > 0.85) opacity = (1 - p) / 0.15;
-
-        gsap.set(els.micEcho, {
-          left: lerp(start.x, introRect.left + localEnd.x, eased),
-          top: lerp(start.y, introRect.top + localEnd.y, eased),
-          xPercent: -50,
-          yPercent: -50,
-          opacity: clamp01(opacity),
-          scale: lerp(0.7, 1, eased),
-        });
-        gsap.set(els.micEchoFrom, { opacity: 1 - eased });
-        gsap.set(els.micEchoTo, { opacity: eased });
-      },
-    });
-  }
 })();

@@ -4303,24 +4303,12 @@ table {
   pointer-events: none;
 }
 
-/* The catch. Positioned on his hand by JS each tick. */
-.hero-flash {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 46vmin;
-  height: 46vmin;
-  margin: -23vmin 0 0 -23vmin;
-  border-radius: 50%;
-  z-index: 29;
-  opacity: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  background: radial-gradient(circle,
-    rgba(255, 248, 232, 0.95) 0%,
-    rgba(232, 213, 163, 0.58) 26%,
-    rgba(201, 168, 76, 0.18) 48%,
-    rgba(201, 168, 76, 0) 70%);
+/* ScrollTrigger's pin spacer is bare page background. If a pin ever fails to
+   apply — a refresh mid-pin, a killed matchMedia branch — that bare cream is
+   what shows, which reads as a blank screen dropped into the hero. Painting it
+   the hero's own colour makes that failure invisible instead of alarming. */
+.pin-spacer {
+  background: var(--maroon-dark);
 }
 
 /* ── Scene 2: the canvas sequence stage ── */
@@ -4331,6 +4319,16 @@ table {
   overflow: hidden;
   background: var(--maroon-dark);
   isolation: isolate;
+  /* Above #intro, which is pulled up underneath the stage's exit (see #intro
+     below) so it is already in place when the pin lets go. */
+  z-index: 2;
+}
+
+/* The moment the stage's timeline is spent, js/hero-story.js drops it behind
+   #intro — so instead of a second full screen of settled hero scrolling past,
+   #intro is right there. */
+.hero-stage.is-released {
+  z-index: 0;
 }
 
 .hero-stage__backdrop {
@@ -4492,33 +4490,23 @@ table {
   will-change: transform, opacity;
 }
 
-/* ── Scene 3: mic echo (fixed, travels into #intro) ── */
-.mic-echo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 46px;
-  height: 70px;
-  border-radius: 999px;
-  overflow: hidden;
-  z-index: var(--z-sticky);
-  pointer-events: none;
-  opacity: 0;
-  box-shadow: 0 0 0 1px rgba(232, 213, 163, 0.4), 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 24px rgba(201, 168, 76, 0.4);
-}
+/* ── #intro: pulled up under the hero's exit ──
+   A pinned section always has its own height left to scroll once the pin lets
+   go, so the settled hero used to travel a second full screen before #intro
+   arrived. Pulling #intro up by most of that distance means it is already at
+   the top of the viewport when .hero-stage.is-released drops the stage behind
+   it. The remainder is a short slide, not a repeat. The value tracks
+   .hero-stage's own `height: 100vh; min-height: 600px`.
 
-.mic-echo__img {
-  position: absolute;
-  max-width: none;
-  max-height: none;
-}
-
-.mic-echo__img--from {
-  opacity: 1;
-}
-
-.mic-echo__img--to {
-  opacity: 0;
+   Only above 900px, because that is the exact breakpoint at which
+   js/hero-story.js pins the stage — below it the stage scrolls away normally
+   and there is no trailing screen to swallow. */
+@media (min-width: 900px) {
+  #intro {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * max(82vh, 492px));
+  }
 }
 
 /* ── #intro: photo wipe + staggered services ── */
@@ -4658,9 +4646,7 @@ table {
 @media (prefers-reduced-motion: reduce) {
   .hero-mark__particles,
   .hero-mark__cue,
-  .hero-mic,
-  .hero-flash,
-  .mic-echo {
+  .hero-mic {
     display: none;
   }
 
@@ -4688,9 +4674,7 @@ table {
    js/hero-story.js, which can't rely on the media query alone. */
 .hero-no-motion .hero-mark__particles,
 .hero-no-motion .hero-mark__cue,
-.hero-no-motion .hero-mic,
-.hero-no-motion .hero-flash,
-.hero-no-motion .mic-echo {
+.hero-no-motion .hero-mic {
   display: none;
 }
 

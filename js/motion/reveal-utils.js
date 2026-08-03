@@ -146,22 +146,12 @@
       // How the sequence is cropped when the stage is wider/taller than 16:9.
       // Biased up and slightly left so he stays clear of the copy column.
       focal: { x: 0.42, y: 0.34 },
-      // Frame 001 — the mic arriving into his raised right hand (viewer's
-      // right). This is where the mic travelling out of the logo scene has to
-      // land, so the overlay and the photographed mic are the same object at
-      // the moment of the cut. Measured on assets/hero-seq/w1280/frame-001.jpg.
-      land: { cx: 0.569, cy: 0.242, length: 0.160, rotation: -37.4 },
-      // Frame 100 — the mic settled at his mouth. Start of the #intro hand-off.
-      rest: { cx: 0.322, cy: 0.402, boxW: 0.09, boxH: 0.155 },
-    },
-    intro: {
-      src: 'assets/images/shrey_pic_1.jpeg',
-      naturalW: 1600,
-      naturalH: 1066,
-      cx: 0.45,
-      cy: 0.427,
-      boxW: 0.095,
-      boxH: 0.26,
+      // Frame 001 — the mic in flight, just short of his raised right hand
+      // (viewer's right). This is where the mic travelling out of the logo
+      // scene has to land, so the drawn overlay and the photographed mic are
+      // the same object at the moment of the cut. Measured on
+      // assets/hero-seq/w1280/frame-001.jpg.
+      land: { cx: 0.489, cy: 0.340, length: 0.167, rotation: -58.2 },
     },
   };
 })();

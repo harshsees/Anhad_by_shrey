@@ -27,7 +27,9 @@
 
   <!-- NAVIGATION -->
   <div class="nav-overlay" id="navOverlay"></div>
-  <nav class="navbar navbar--light" id="navbar">
+  <!-- No .navbar--light here: the homepage opens on the dark mark scene, so the
+       bar stays transparent until main.js adds .scrolled past the hero. -->
+  <nav class="navbar" id="navbar">
     <div class="container navbar__inner">
       <a href="index.html" class="navbar__logo">
         Anahad <span>by Shrey</span>
@@ -58,8 +60,6 @@
     <div class="hero-mark__stack" id="heroMarkStack">
       <img src="images/logo-mark.png" alt="Anahad by Shrey" class="hero-mark__logo" id="heroMarkLogo"
            width="750" height="747" fetchpriority="high">
-      <p class="hero-mark__eyebrow" id="heroMarkEyebrow">✦ Sacred Devotional Music ✦</p>
-      <p class="hero-mark__line" id="heroMarkLine">Every Voice<br>Finds Its <em>Anahad</em></p>
     </div>
 
     <div class="hero-mark__cue" id="heroMarkCue" aria-hidden="true">

@@ -4188,7 +4188,7 @@ table {
   position: absolute;
   left: 50%;
   top: 46%;
-  width: min(74vmin, 780px);
+  width: min(98vmin, 960px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(232, 213, 163, 0.28), rgba(201, 168, 76, 0.07) 52%, transparent 70%);
@@ -4210,45 +4210,26 @@ table {
   display: block;
 }
 
+/* The mark is the only thing in scene 1 now — no eyebrow, no tagline — so the
+   stack is a single centred cell and the logo is free to take the frame. */
 .hero-mark__stack {
   position: relative;
   z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  display: grid;
+  place-items: center;
+  width: 100%;
   padding: 0 var(--space-xl);
   will-change: transform, opacity;
 }
 
 .hero-mark__logo {
-  width: min(38vmin, 320px);
+  width: min(82vmin, 760px);
+  max-width: 100%;
+  max-height: 78vh;
   height: auto;
   display: block;
-  filter: drop-shadow(0 0 44px rgba(201, 168, 76, 0.38));
-}
-
-.hero-mark__eyebrow {
-  font-family: var(--font-body);
-  color: var(--gold-light);
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  margin-top: var(--space-xl);
-}
-
-.hero-mark__line {
-  font-family: var(--font-heading);
-  color: var(--cream);
-  font-size: clamp(1.9rem, 5vw, 3.4rem);
-  line-height: 1.15;
-  font-weight: 500;
-  margin-top: var(--space-md);
-}
-
-.hero-mark__line em {
-  color: var(--gold-light);
-  font-style: italic;
+  object-fit: contain;
+  filter: drop-shadow(0 0 70px rgba(201, 168, 76, 0.42));
 }
 
 .hero-mark__cue {
@@ -4612,7 +4593,8 @@ table {
   }
 
   .hero-mark__logo {
-    width: min(58vmin, 260px);
+    width: min(88vmin, 460px);
+    max-height: 66vh;
   }
 
   .hero-stage {
@@ -4663,7 +4645,7 @@ table {
 
 @media (max-width: 560px) {
   .hero-mark__aura {
-    width: 86vmin;
+    width: 116vmin;
   }
 
   .hero-stage__tagline {

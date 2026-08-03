@@ -1,10 +1,14 @@
 /* =============================================
    ANAHAD BY SHREY — Hero Story
 
-   Scene 1 (#heroMark)  the logo mark holds centre stage and a mic is drawn
-                        out from behind it, then lifts away with the mark.
-   Scene 2 (#heroStage) the mic falls in from the top of the frame and lands
-                        on the mic Shrey is already holding up in frame 001 of
+   Scene 1 (#heroMark)  the logo mark holds centre stage; a mic is drawn out
+                        from behind it and sweeps away on a wavy path while
+                        the mark scrolls off. Deliberately NOT pinned: a pin
+                        leaves the section's own height to scroll past after
+                        its timeline has finished, which read as a blank
+                        panel between the mark and the photo.
+   Scene 2 (#heroStage) the mic completes its arc and lands on the mic Shrey
+                        is catching in his raised right hand in frame 001 of
                         the canvas sequence. A gold impact bloom covers the
                         swap, then the sequence scrubs — his arm brings the
                         mic down to his mouth — while the copy resolves in the
@@ -17,7 +21,7 @@
    ============================================= */
 
 (function () {
-  const FRAME_COUNT = 75;
+  const FRAME_COUNT = 100;
   const SEQ_TIERS = [
     { name: 'w640', maxCssWidth: 700 },
     { name: 'w1280', maxCssWidth: Infinity },
@@ -25,8 +29,16 @@
   // Matches the .hero-mic box in CSS; everything else is expressed as a scale
   // of it so the mic can be sized against the rendered photo at any viewport.
   const MIC_BASE_H = 200;
-  // Fraction of the stage timeline spent falling before the mic touches down.
-  const DROP = 1.2;
+  // Fraction of the stage timeline spent on the final approach before the mic
+  // touches down. Short on purpose — the photo is hidden until the catch, so
+  // every unit here is scrolling spent on an empty backdrop.
+  const DROP = 0.25;
+  // Fraction of the mark scene spent drawing the mic out from behind the mark
+  // before the travel proper starts.
+  const EMERGE = 0.26;
+  // Depth of the mic's S-swing, as a fraction of the straight-line distance to
+  // the seam. Enough to read as storytelling, not so much that it looks tossed.
+  const WAVE = 0.1;
 
   const A = Motion.micAnchors.heroSeq;
   const clamp01 = Motion.clamp01;
@@ -85,10 +97,14 @@
     fitEchoCrops();
     window.addEventListener('resize', Motion.debounce(fitEchoCrops, 200));
 
+    // The mark scene is never pinned, at either width: `bottom top` makes its
+    // timeline finish at the exact scroll position where #heroStage reaches
+    // the top of the viewport and takes over, so there is no dead scroll —
+    // and no blank panel — between the two.
     ScrollTrigger.matchMedia({
       '(min-width: 900px)': () => {
-        const a = buildMarkScene({ pin: true, end: '+=110%' });
-        const b = buildStageScene({ pin: true, end: '+=340%' });
+        const a = buildMarkScene({ pin: false, end: 'bottom top' });
+        const b = buildStageScene({ pin: true, end: '+=300%' });
         return () => {
           a();
           b();
@@ -113,8 +129,6 @@
       mark: id('heroMark'),
       markStack: id('heroMarkStack'),
       markLogo: id('heroMarkLogo'),
-      markEyebrow: id('heroMarkEyebrow'),
-      markLine: id('heroMarkLine'),
       markAura: id('heroMarkAura'),
       markParticles: id('heroMarkParticles'),
       markCue: id('heroMarkCue'),
@@ -160,16 +174,37 @@
      Geometry — every pose the mic passes through
      ══════════════════════════════════════════ */
 
-  /** Where the mic sits at the seam between the two scenes: just off the top
-   *  edge, centred. Both scenes read this, so neither can drift from it. */
+  /** Where the mic sits at the seam between the two scenes: high and right,
+   *  on its way into his raised hand — deliberately still on screen, so the
+   *  hand-over never shows an empty frame. Both scenes read this, so neither
+   *  can drift from it. */
   function seamPose() {
-    return { x: window.innerWidth * 0.5, y: window.innerHeight * -0.08, scale: 0.62, rot: -16 };
+    return {
+      x: window.innerWidth * 0.72,
+      // Kept below the navbar so the hand-over pose is never half-hidden
+      // behind it, and above the landing point so scene 2 reads as a descent.
+      y: window.innerHeight * 0.15,
+      // Sized off the same anchor the landing pose uses, so the final
+      // approach is a modest push-in at every viewport rather than a jump.
+      scale: ((A.land.length * window.innerHeight) / MIC_BASE_H) * 0.66,
+      rot: -18,
+    };
   }
 
-  /** The logo mark's medallion — the point the mic is drawn out from. */
+  /** The logo mark's medallion — the point the mic is drawn out from — plus
+   *  the point just clear of the mark where the travel proper begins. */
   function markPose() {
     const r = els.markLogo.getBoundingClientRect();
-    return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.19, h: r.height };
+    const cx = r.left + r.width * 0.5;
+    const cy = r.top + r.height * 0.22;
+    return {
+      cx,
+      cy,
+      // Down and to the left of the emblem: swinging out low gives the wavy
+      // climb to the seam something to climb from.
+      outX: cx - r.height * 0.3,
+      outY: cy + r.height * 0.52,
+    };
   }
 
   /** The mic Shrey is holding up in frame 001, in viewport px. */
@@ -205,31 +240,47 @@
     // scroll timeline animates their container, so the two never contend for
     // the same properties on the same element.
     gsap.set(els.markLogo, { opacity: 0, scale: 0.94, filter: 'blur(14px)' });
-    gsap.set([els.markEyebrow, els.markLine], { opacity: 0, y: 16 });
     gsap.set(els.markCue, { opacity: 0 });
 
     gsap
       .timeline({ delay: 0.15 })
       .to(els.markLogo, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'power3.out' })
-      .to(els.markEyebrow, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.5)
-      .to(els.markLine, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, 0.7)
-      .to(els.markCue, { opacity: 1, duration: 0.6 }, 1.1);
+      .to(els.markCue, { opacity: 1, duration: 0.6 }, 0.9);
   }
 
+  /* The mic's scene-1 pose. Two beats in one function so the two are always
+     continuous: it is drawn out from behind the mark (growing out of a blur at
+     the medallion), then sweeps to the seam along a single S-curve — the
+     straight line to the seam plus one sine swing along its normal, damped so
+     the pose at p = 1 is exactly seamPose(). The start point is re-read from
+     the live logo rect every tick, so the mic stays attached to the mark while
+     the mark scrolls away and only detaches as the travel takes over. */
   function placeMicForMark(p) {
     const m = markPose();
     const seam = seamPose();
-    // Drawn out from behind the medallion first, then lifted away with the mark.
-    const emerge = ease.outCubic(clamp01(p / 0.45));
-    const leave = ease.inOutCubic(clamp01((p - 0.4) / 0.6));
+
+    const out = ease.outCubic(clamp01(p / EMERGE));
+    const travel = clamp01((p - EMERGE) / (1 - EMERGE));
+    const t = ease.inOutCubic(travel);
+
+    // End of the emerge — the pose the travel starts from.
+    const ox = lerp(m.cx, m.outX, out);
+    const oy = lerp(m.cy, m.outY, out);
+
+    const dx = seam.x - ox;
+    const dy = seam.y - oy;
+    const len = Math.hypot(dx, dy) || 1;
+    const swing = Math.sin(travel * Math.PI * 2) * WAVE * len * (1 - travel * 0.35);
 
     gsap.set(els.mic, {
-      x: lerp(m.x, seam.x, leave),
-      y: lerp(m.y + m.h * 0.46 * emerge, seam.y, leave),
-      scale: lerp(lerp(0.14, 0.58, emerge), seam.scale, leave),
-      rotation: lerp(lerp(4, -7, emerge), seam.rot, leave),
-      opacity: clamp01(p / 0.14),
-      filter: 'blur(' + ((1 - emerge) * 10).toFixed(2) + 'px)',
+      x: lerp(ox, seam.x, t) + (-dy / len) * swing,
+      y: lerp(oy, seam.y, t) + (dx / len) * swing,
+      scale: lerp(lerp(0.1, seam.scale * 0.74, out), seam.scale, t),
+      rotation:
+        lerp(lerp(16, -2, out), seam.rot, t) +
+        Math.sin(travel * Math.PI * 2) * 9 * (1 - travel),
+      opacity: clamp01(p / (EMERGE * 0.5)),
+      filter: 'blur(' + ((1 - out) * 12).toFixed(2) + 'px)',
     });
   }
 
@@ -254,12 +305,15 @@
       },
     });
 
+    // The mark holds the frame for most of the scene and only dissolves on the
+    // way out — the aura blooms once as the mic clears it, then falls away.
     tl.to(els.markCue, { opacity: 0, duration: 0.25 }, 0)
-      .to(els.markAura, { opacity: 0.12, scale: 0.7, duration: 1.1, ease: 'power2.in' }, 0.1)
+      .to(els.markAura, { opacity: 1, scale: 1.08, duration: 0.32, ease: 'power2.out' }, 0.06)
+      .to(els.markAura, { opacity: 0.1, scale: 0.72, duration: 0.87, ease: 'power2.in' }, 0.38)
       .to(
         els.markStack,
-        { yPercent: -14, scale: 1.04, opacity: 0, filter: 'blur(9px)', duration: 0.9, ease: 'power2.in' },
-        0.35
+        { yPercent: -8, scale: 1.05, opacity: 0, filter: 'blur(10px)', duration: 0.62, ease: 'power2.in' },
+        0.63
       );
 
     if (particles) {
@@ -294,8 +348,8 @@
     // Opacity is derived from progress rather than tweened, so a reload part
     // way into the stage still shows the mic falling instead of inheriting
     // whatever value the scene-1 timeline last wrote.
-    const fadeFrom = (DROP + 0.04) / total;
-    const fadeTo = (DROP + 0.32) / total;
+    const fadeFrom = (DROP + 0.03) / total;
+    const fadeTo = (DROP + 0.24) / total;
 
     gsap.set(els.mic, {
       x: lerp(seam.x, land.x, t),
@@ -315,6 +369,7 @@
   // Total length of the stage timeline in its own units; kept in one place so
   // the mic's drop can be expressed as a fraction of overall progress.
   let stageTotal = DROP + 2.35;
+  // (overwritten with tl.duration() once buildStageScene has run)
   function stageDuration() {
     return stageTotal;
   }
@@ -348,29 +403,32 @@
     });
 
     tl
-      // Falling: the mic charges up on the way down.
+      // Final approach: the mic charges up as it swoops in.
       .to(els.micGlow, { opacity: 1, duration: DROP * 0.85, ease: 'power2.in' }, 0)
       // Impact: a gold bloom at his hand, big enough to cover the moment the
       // drawn mic is exchanged for the photographed one.
-      .to(els.flash, { opacity: 1, scale: 1, duration: 0.2, ease: 'power2.out' }, DROP - 0.12)
-      .to(els.flash, { opacity: 0, scale: 2.2, duration: 0.75, ease: 'power2.in' }, DROP + 0.1)
+      // Fully up by the moment of contact, so the iris never opens on a frame
+      // showing both the drawn mic and the photographed one.
+      .to(els.flash, { opacity: 1, scale: 1, duration: 0.14, ease: 'power2.out' }, DROP - 0.14)
+      .to(els.flash, { opacity: 0, scale: 2.2, duration: 0.7, ease: 'power2.in' }, DROP + 0.08)
       .fromTo(
         els.canvasWrap,
         { autoAlpha: 0, clipPath: () => `circle(0% at ${irisPct().x}% ${irisPct().y}%)` },
         {
           autoAlpha: 1,
           clipPath: () => `circle(165% at ${irisPct().x}% ${irisPct().y}%)`,
-          duration: 0.8,
+          duration: 0.7,
           ease: 'power2.out',
         },
-        DROP - 0.1
+        DROP - 0.03
       )
       // (the mic's own fade is driven from progress in placeMicForStage)
-      // Hand-off complete — scrub the sequence: his arm brings the mic down.
+      // Hand-off complete — scrub the sequence: he closes his hand around the
+      // mic and brings it down to his mouth.
       .to(
         seqState,
         { p: 1, duration: 1.55, ease: 'none', onUpdate: () => seq.setProgress(seqState.p) },
-        DROP + 0.24
+        DROP + 0.2
       )
       .to(els.scrim, { opacity: 1, duration: 0.7 }, DROP + 0.45)
       .to(els.copy, { autoAlpha: 1, duration: 0.25 }, DROP + 0.95)

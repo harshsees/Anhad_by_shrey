@@ -4232,6 +4232,19 @@ table {
   filter: drop-shadow(0 0 70px rgba(201, 168, 76, 0.42));
 }
 
+/* The seam-killer. Everything the mark paints — backdrop, aura, particles —
+   has to arrive at #120406 by its bottom edge, because that is the colour
+   .hero-stage__backdrop starts on. Above the aura (z 1) and the stack (z 3) so
+   the logo dissolves into it on the way out; below the cue (z 4). */
+.hero-mark__foot {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 44%;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(18, 4, 6, 0) 0%, rgba(18, 4, 6, 0.72) 58%, #120406 92%);
+}
+
 .hero-mark__cue {
   position: absolute;
   bottom: 28px;
@@ -4274,8 +4287,10 @@ table {
   position: fixed;
   left: 0;
   top: 0;
-  width: 62px;
-  height: 200px;
+  /* Exactly images/mic-real.png's intrinsic size — js/hero-story.js derives the
+     landing scale from it, so this box must not be restyled per breakpoint. */
+  width: 35px;
+  height: 247px;
   z-index: 30;
   opacity: 0;
   pointer-events: none;
@@ -4331,13 +4346,16 @@ table {
   z-index: 0;
 }
 
+/* Starts on exactly the colour .hero-mark__backdrop ends on (#180509) and keeps
+   the gold glow well clear of the top edge — otherwise the boundary between the
+   two sections reads as a hard horizontal line as the stage scrolls up. */
 .hero-stage__backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(120% 90% at 50% 8%, rgba(201, 168, 76, 0.16), transparent 62%),
-    linear-gradient(160deg, #2a0a10 0%, #1d0709 58%, #120406 100%);
+    radial-gradient(120% 80% at 50% 62%, rgba(201, 168, 76, 0.13), transparent 64%),
+    linear-gradient(180deg, #120406 0%, #180608 26%, #150507 62%, #100305 100%);
 }
 
 .hero-stage__frame {
@@ -4505,7 +4523,11 @@ table {
   #intro {
     position: relative;
     z-index: 1;
-    margin-top: calc(-1 * max(82vh, 492px));
+    /* Exactly .hero-stage's own height (+2px so rounding can't leave a sliver),
+       so #intro's top edge lands on the viewport top at the same instant the
+       pin releases. Any less and its edge cuts across the hero's copy on the
+       way up; any more and it starts eating the hero before the pin is done. */
+    margin-top: calc(-2px - max(100vh, 600px));
   }
 }
 
@@ -4625,10 +4647,6 @@ table {
     justify-content: center;
   }
 
-  .hero-mic {
-    width: 46px;
-    height: 148px;
-  }
 }
 
 @media (max-width: 560px) {

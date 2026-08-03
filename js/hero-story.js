@@ -7,12 +7,15 @@
                         leaves the section's own height to scroll past after
                         its timeline has finished, which read as a blank
                         panel between the mark and the photo.
-   Scene 2 (#heroStage) the mic completes its arc directly onto the mic in
-                        frame 001 of the canvas sequence — no flash, the drawn
-                        mic simply becomes the photographed one, which is on
-                        screen from the first pixel. The sequence scrubs — his
-                        arm brings the mic down to his mouth — while the copy
-                        resolves in the right-hand column, clear of the subject.
+   Scene 2 (#heroStage) the mic completes its arc onto the mic in frame 001 of
+                        the canvas sequence. The travelling mic is cut from this
+                        very footage, so the two are the same object: the photo
+                        comes up underneath it at the moment it arrives, the
+                        copy resolves with it, and the sequence carries the mic
+                        down into his hand and to his mouth. No flash over the
+                        join. Until then the stage shows only its backdrop,
+                        which starts on the colour the mark's ends on so the
+                        boundary between the two is invisible.
                         #intro is pulled up under the stage's exit so the hero
                         hands straight over instead of scrolling past twice.
 
@@ -27,9 +30,12 @@
     { name: 'w640', maxCssWidth: 700 },
     { name: 'w1280', maxCssWidth: Infinity },
   ];
-  // Matches the .hero-mic box in CSS; everything else is expressed as a scale
-  // of it so the mic can be sized against the rendered photo at any viewport.
-  const MIC_BASE_H = 200;
+  // Distance in images/mic-real.png pixels between the mic's head centre and
+  // its base centre — the PNG is built so that span is 70% of its height, and
+  // micAnchors.heroSeq.land.length measures the same span in the photo. Scale
+  // is just the ratio of the two, so the travelling mic matches the
+  // photographed one at any viewport.
+  const MIC_BASE_H = 173;
   // Fraction of the stage timeline before the mic touches down. Scene 1 now
   // flies it all the way onto his hand, so this is only the slack that lets
   // mobile — where the stage is not pinned and is therefore still sliding up —
@@ -340,11 +346,11 @@
 
     // Opacity is derived from progress rather than tweened, so a reload part
     // way into the stage still shows the mic in flight instead of inheriting
-    // whatever value the scene-1 timeline last wrote. The photo is already on
-    // screen and its mic is under this one, so the drawn mic just has to get
-    // out of the way — quickly, and with no flash to hide behind.
-    const fadeFrom = (DROP - 0.04) / total;
-    const fadeTo = (DROP + 0.02) / total;
+    // whatever value the scene-1 timeline last wrote. It holds until the photo
+    // underneath is fully up, then goes — the photographed mic is in the same
+    // pose, so what is left behind is the same mic.
+    const fadeFrom = 0.06 / total;
+    const fadeTo = 0.13 / total;
 
     gsap.set(els.mic, {
       x: lerp(seam.x, land.x, t),
@@ -364,14 +370,27 @@
     return stageTotal;
   }
 
+  /* Hands the screen from the stage to #intro. ScrollTrigger copies the
+     pinned element's z-index onto the pin-spacer it wraps it in, so the spacer
+     — not .hero-stage — is what actually competes with #intro, and restyling
+     the stage alone does nothing. Write the spacer's z-index directly; the
+     class is kept for the unpinned case and for anything that wants to hook it. */
+  function setReleased(on) {
+    els.stage.classList.toggle('is-released', on);
+    const spacer = els.stage.parentElement;
+    if (spacer && spacer.classList.contains('pin-spacer')) {
+      spacer.style.zIndex = on ? '0' : '2';
+    }
+  }
+
   function buildStageScene(options) {
     const copyKids = [els.pretitle, els.title, els.tagline, els.buttons, els.socialProof];
 
-    // The photo is up from the first pixel of this scene — no iris, no flash.
-    // Frame 001 has the mic in exactly the pose scene 1 delivers the drawn one
-    // to, so the two are the same object and the hand-over is just the drawn
-    // one fading off the top of it.
-    gsap.set(els.canvasWrap, { autoAlpha: 1, clipPath: 'none' });
+    // The photo stays down until the mic actually gets here. Showing it during
+    // the slide-in put a lit photograph directly against the mark's dark
+    // backdrop — that hard horizontal line is the partition — and left the
+    // mic that is already in the shot sitting there while ours flew in.
+    gsap.set(els.canvasWrap, { autoAlpha: 0, clipPath: 'none' });
     gsap.set(els.scrim, { opacity: 0 });
     gsap.set(els.copy, { autoAlpha: 0 });
     gsap.set(copyKids, { opacity: 0, y: 26, filter: 'blur(9px)' });
@@ -388,31 +407,40 @@
         pin: options.pin,
         anticipatePin: options.pin ? 1 : 0,
         invalidateOnRefresh: true,
+        // The hand-over to #intro rides the *scroll*, not the timeline: with
+        // scrub the timeline trails by up to a second, which is long enough to
+        // watch the hero start scrolling away before #intro covers it. These
+        // three fire on the scroll position itself, so the swap is exact.
+        onLeave: () => setReleased(true),
+        onEnterBack: () => setReleased(false),
+        onRefresh: (self) => setReleased(self.progress >= 1),
       },
       onUpdate: () => {
         const p = tl.progress();
         stageOwnsMic = p > 0.0005;
         placeMicForStage(p);
-        // Once the timeline is spent the stage drops behind #intro, which CSS
-        // has pulled up underneath it — so the settled hero hands straight over
-        // instead of scrolling past a second time. See .hero-stage.is-released.
-        els.stage.classList.toggle('is-released', p > 0.999);
       },
     });
 
     tl
+      // The photo comes up under the mic the moment the mic gets here. Both are
+      // showing the same object in the same pose, so this reads as the mic
+      // arriving in shot rather than as a cross-fade.
+      .to(els.canvasWrap, { autoAlpha: 1, duration: 0.06, ease: 'power1.out' }, 0)
       // The mic's glow is driven from progress instead (see placeMicForMark) —
       // it starts in scene 1, and tweening it here as well would have the two
-      // timelines fight over it. The sequence picks up almost immediately: he
-      // closes his hand around the mic and brings it down to his mouth.
+      // timelines fight over it. The sequence picks up straight away: the mic
+      // drops into his hand and he brings it to his mouth.
       .to(
         seqState,
         { p: 1, duration: 1.55, ease: 'none', onUpdate: () => seq.setProgress(seqState.p) },
-        DROP + 0.03
+        0.14
       )
-      .to(els.scrim, { opacity: 1, duration: 0.7 }, DROP + 0.42)
-      .to(els.copy, { autoAlpha: 1, duration: 0.25 }, DROP + 0.87)
-      .to(copyKids, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.55, stagger: 0.11 }, DROP + 0.92);
+      // Copy arrives with the mic, not a screen and a half later — and lands
+      // quickly, because under scrub every timeline unit is scroll distance.
+      .to(els.scrim, { opacity: 1, duration: 0.4 }, 0.05)
+      .to(els.copy, { autoAlpha: 1, duration: 0.12 }, 0.08)
+      .to(copyKids, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.18, stagger: 0.035 }, 0.12);
 
     stageTotal = tl.duration();
 

@@ -19,9 +19,9 @@
   <link rel="canonical" href="https://www.anahadbyshrey.com/">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23470E17'/><path d='M50 16 58 42 84 50 58 58 50 84 42 58 16 50 42 42Z' fill='%23E8D5A3'/></svg>">
-  <!-- Hero scene 1 art and the sequence's first frame are above the fold. -->
+  <!-- Both hero beats are above the fold. -->
   <link rel="preload" as="image" href="images/logo-mark.png">
-  <link rel="preload" as="image" href="assets/images/hero-seq-poster.jpg">
+  <link rel="preload" as="image" href="images/hero-image.jpeg">
 </head>
 <body>
 
@@ -74,15 +74,15 @@
     <div class="hero-mark__foot" aria-hidden="true"></div>
   </section>
 
-  <!-- HERO SCENE 2 — the canvas sequence. Decorative layers are aria-hidden;
-       the real content (h1, tagline, CTAs) is always in the DOM so screen
-       readers and no-motion users get it directly. -->
+  <!-- HERO BEAT 2 — the photograph. Decorative layers are aria-hidden; the
+       real content (h1, tagline, CTAs) is always in the DOM so screen readers
+       and no-motion users get it directly. -->
   <section class="hero-stage" id="heroStage" aria-label="Anahad by Shrey — performance">
     <div class="hero-stage__backdrop" aria-hidden="true"></div>
 
-    <div class="hero-stage__frame" id="heroCanvasWrap" aria-hidden="true">
-      <img src="assets/images/hero-seq-poster.jpg" alt="" class="hero-stage__poster">
-      <canvas class="hero-stage__canvas" id="heroCanvas"></canvas>
+    <div class="hero-stage__frame" id="heroFrame" aria-hidden="true">
+      <img src="images/hero-image.jpeg" alt="" class="hero-stage__photo" id="heroPhoto"
+           width="4160" height="2773" fetchpriority="high">
       <div class="hero-stage__vignette"></div>
       <div class="hero-stage__scrim" id="heroScrim"></div>
     </div>
@@ -359,7 +359,6 @@
   <script src="js/smooth-scroll.js"></script>
   <script src="js/motion/reveal-utils.js"></script>
   <script src="js/motion/particles.js"></script>
-  <script src="js/motion/frame-sequence.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/main.js"></script>
   <script src="js/hero-story.js"></script>

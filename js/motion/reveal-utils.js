@@ -1,8 +1,7 @@
 /* =============================================
    ANAHAD BY SHREY — Motion System: Shared Utilities
-   Reduced-motion/mobile flags, object-fit:cover point
-   mapping (used to land the traveling mic exactly on
-   its real pixels), and an accessible word-split helper.
+   Reduced-motion/mobile flags, small math helpers, and
+   an accessible word-split helper.
    ============================================= */
 
 (function () {
@@ -17,43 +16,6 @@
   // ScrollTrigger pin distances unreliable below this width).
   Motion.isCompact = function () {
     return window.innerWidth < 900;
-  };
-
-  /**
-   * Given a container element rendering an image at CSS `object-fit: cover`
-   * (object-position: center), returns the on-screen point (relative to the
-   * container's top-left, in px) that a fractional point (px, py in 0..1)
-   * of the *source* image currently maps to. This is what lets the
-   * standalone mic crop line up with the real mic pixels inside the full
-   * photo at any viewport size.
-   */
-  Motion.getCoverPoint = function (container, naturalW, naturalH, px, py) {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    const imageAspect = naturalW / naturalH;
-    const containerAspect = w / h;
-
-    let renderedW, renderedH, offsetX, offsetY;
-    if (imageAspect > containerAspect) {
-      renderedH = h;
-      renderedW = h * imageAspect;
-      offsetX = (w - renderedW) / 2;
-      offsetY = 0;
-    } else {
-      renderedW = w;
-      renderedH = w / imageAspect;
-      offsetX = 0;
-      offsetY = (h - renderedH) / 2;
-    }
-
-    return {
-      x: offsetX + px * renderedW,
-      y: offsetY + py * renderedH,
-      // px-per-source-fraction scale, useful for sizing a crop box to stay
-      // proportional to the rendered image (e.g. mic focus box width).
-      scaleW: renderedW,
-      scaleH: renderedH,
-    };
   };
 
   /**
@@ -97,26 +59,6 @@
     };
   };
 
-  /**
-   * The rectangle an `object-fit: cover` image occupies inside a box, with a
-   * configurable focal point (fx/fy in 0..1 decide how the overflow is split
-   * between the two sides — 0.5/0.5 is plain `object-position: center`).
-   * Returned in box-local px. The hero canvas draws with exactly this rect,
-   * so mapping a source-image fraction onto the screen is the same math in
-   * both places.
-   */
-  Motion.coverRect = function (boxW, boxH, srcW, srcH, fx, fy) {
-    const scale = Math.max(boxW / srcW, boxH / srcH);
-    const w = srcW * scale;
-    const h = srcH * scale;
-    return {
-      x: (boxW - w) * fx,
-      y: (boxH - h) * fy,
-      w,
-      h,
-    };
-  };
-
   Motion.clamp01 = function (v) {
     return v < 0 ? 0 : v > 1 ? 1 : v;
   };
@@ -133,17 +75,4 @@
     inOutCubic: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
   };
 
-  // Geometry of the scroll-driven frame sequences, kept in one place so
-  // re-tuning a crop doesn't require touching the animation logic itself.
-  Motion.seqAnchors = {
-    // The homepage hero canvas sequence (assets/hero-seq/**). Source frames
-    // are 1920x1080 stills of Shrey performing.
-    heroSeq: {
-      naturalW: 1920,
-      naturalH: 1080,
-      // How the sequence is cropped when the stage is wider/taller than 16:9.
-      // Biased up and slightly left so he stays clear of the copy column.
-      focal: { x: 0.42, y: 0.34 },
-    },
-  };
 })();

@@ -197,6 +197,10 @@ html.lenis body {
   --z-effect-overlay: 80;
   --z-header: 999;
   --z-header-active: 1000;
+
+  /* Height of the fixed title bar. Anything that must not sit underneath it
+     (the hero copy, the ring's safe area) measures from this. */
+  --nav-h: 86px;
   --z-nav-overlay: 1001;
   --z-modal-backdrop: 2000;
   --z-modal: 3000;
@@ -232,10 +236,18 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* The page surface, painted once. Every light section is transparent and sits
+   on this, so there are no section-to-section colour steps anywhere. The wash
+   is fixed to the viewport rather than the document, which keeps it from
+   banding on long pages. */
 body {
   font-family: var(--font-body);
   color: var(--text-body);
   background-color: var(--ivory);
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, rgba(245, 235, 217, 0.75), transparent 60%),
+    radial-gradient(100% 60% at 100% 100%, rgba(232, 213, 163, 0.18), transparent 65%);
+  background-attachment: fixed;
   line-height: 1.7;
   overflow-x: hidden;
 }
@@ -319,8 +331,13 @@ p {
   position: relative;
 }
 
+/* Transparent on purpose. This used to paint itself cream against an ivory
+   page, and the two-tone step was the hard horizontal line visible between
+   every pair of sections. The page surface is now painted once, on <body>,
+   and every light section simply sits on it. The class is kept because the
+   markup and the section rhythm still use it. */
 .section--cream {
-  background-color: var(--cream);
+  background-color: transparent;
   padding-bottom: 24px;
 }
 
@@ -382,10 +399,11 @@ p {
    NAVIGATION
    ══════════════════════════════════════════ */
 
-/* The bar is static and never carries a background: it does not hide on scroll
-   down, does not reappear on scroll up, and does not grow a panel behind
-   itself. `.scrolled` survives as a colour-only modifier — it says "the content
-   behind me is light now", nothing more. */
+/* The bar is static: it does not hide on scroll down and does not reappear on
+   scroll up. It carries no solid panel either — just a faint frosted wash, so
+   type passing underneath is legible without the bar reading as a separate
+   block sitting on top of the page. `.scrolled` is a colour-only modifier: it
+   says "the content behind me is light now", nothing more. */
 .navbar {
   position: fixed;
   top: 0;
@@ -393,7 +411,14 @@ p {
   width: 100%;
   z-index: var(--z-header-active);
   padding: var(--space-md) 0;
-  background: transparent;
+  background: rgba(24, 5, 9, 0.18);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  transition: background var(--transition-normal);
+}
+
+.navbar.scrolled {
+  background: rgba(250, 246, 240, 0.4);
 }
 
 .navbar__inner {
@@ -3766,7 +3791,10 @@ table {
 
 .ceremony-explorer {
   padding: 96px 0 var(--space-4xl) 0;
-  background: linear-gradient(180deg, var(--ivory) 0%, rgba(245, 235, 217, 0.5) 100%);
+  /* Transparent: see .section--cream. Its old ivory-to-cream gradient ended on
+     a different tone than the section below it began on, which is the seam in
+     the "Choose Your Journey" screenshot. */
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -4337,30 +4365,18 @@ table {
   z-index: 1;
 }
 
-.hero-stage__poster,
-.hero-stage__canvas {
+/* One photograph, cropped to the stage. Slightly over-tall so the drift in
+   js/hero-story.js never exposes an edge. object-position keeps Shrey clear
+   of the copy column on wide screens. */
+.hero-stage__photo {
   position: absolute;
-  inset: 0;
+  inset: -6% 0;
   width: 100%;
-  height: 100%;
+  height: 112%;
   display: block;
-}
-
-/* Fallback still, in case the sequence never loads (it sits under the
-   canvas, which is opaque and only fades in once frame 001 has painted).
-   object-position mirrors Motion.seqAnchors.heroSeq.focal. */
-.hero-stage__poster {
   object-fit: cover;
-  object-position: 42% 34%;
-}
-
-.hero-stage__canvas {
-  opacity: 0;
-  transition: opacity 0.45s ease;
-}
-
-.hero-stage.is-painted .hero-stage__canvas {
-  opacity: 1;
+  object-position: 38% 32%;
+  will-change: transform;
 }
 
 .hero-stage__vignette {
@@ -4385,13 +4401,19 @@ table {
 }
 
 /* ── Scene 2: hero copy, right column, clear of the subject ── */
+/* Centred on the space *below* the title bar, not on the viewport. Centring on
+   the viewport put the pretitle directly under the bar, where the nav links
+   sat on top of it. Shifting the centre down by half the bar's height gives
+   the block the same clearance top and bottom. */
 .hero-stage__copy {
   position: absolute;
   z-index: 4;
-  top: 50%;
+  top: calc(50% + var(--nav-h) / 2);
   transform: translateY(-50%);
   right: max(var(--space-2xl), calc((100% - 1280px) / 2 + var(--space-xl)));
-  width: min(46ch, 40%);
+  /* 46ch left the two CTAs a couple of pixels short of fitting on one line, so
+     they wrapped onto two. */
+  width: min(52ch, 42%);
   text-align: left;
   opacity: 0;
 }
@@ -5112,4 +5134,78 @@ table {
   .reel__item {
     width: clamp(200px, 62vw, 280px);
   }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONTINUOUS FLOW — soft edges on the dark blocks
+
+   Every light section is transparent over the single <body> surface, so the
+   only hard lines left were where a maroon block met it. Each of those now
+   dissolves into the page colour over ~110px instead of stopping dead on a
+   pixel row.
+
+   Which pseudo-element each block uses is dictated by what it already has:
+   .cta-banner::before and .reel::before are both taken by existing artwork,
+   so neither is reused here — the banner folds its top fade into its own
+   background stack instead, and the reel only ever needs a bottom one.
+   ══════════════════════════════════════════════════════════ */
+
+.page-header::after,
+.hero-stage::after,
+.reel::after,
+.footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: clamp(70px, 9vh, 130px);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Bottom edges — dark dissolving down into the page. */
+.page-header::after,
+.hero-stage::after,
+.reel::after {
+  bottom: -1px;
+  background: linear-gradient(180deg, rgba(250, 246, 240, 0) 0%, var(--ivory) 96%);
+}
+
+/* Top edge — the page dissolving down into the footer. */
+.footer::before {
+  top: -1px;
+  background: linear-gradient(180deg, var(--ivory) 0%, rgba(250, 246, 240, 0) 96%);
+}
+
+/* …except where the footer follows the CTA banner, which is already maroon.
+   Fading to ivory between two dark blocks would reintroduce exactly the band
+   this is meant to remove. */
+.cta-banner + .footer::before {
+  display: none;
+}
+
+/* The banner's top edge. Layered onto its own background rather than a
+   pseudo-element, because .cta-banner::before already carries its gold bloom. */
+.cta-banner {
+  background:
+    linear-gradient(180deg, var(--ivory) 0%, rgba(250, 246, 240, 0) 120px),
+    linear-gradient(135deg, var(--maroon-dark), var(--maroon), var(--maroon-light));
+}
+
+/* The reel's own gradient lives in ::before at z-index 0; the fade has to sit
+   above it and below the content. */
+.reel::after {
+  z-index: 2;
+}
+
+/* Shorter on the hero: the copy column reaches close to the bottom of the
+   section, and a full-height fade washed over the second button. */
+.hero-stage::after {
+  height: clamp(48px, 6vh, 88px);
+}
+
+/* #intro opens the light run on the homepage directly under the hero's fade,
+   so it must not add padding that reads as a gap in the middle of it. */
+#intro {
+  padding-top: var(--space-2xl);
 }

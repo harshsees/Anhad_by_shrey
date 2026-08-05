@@ -179,34 +179,53 @@
      The ring
      ══════════════════════════════════════════ */
 
-  /** Places the five frames on a circle. `p` is scroll progress: the ring
-   *  starts wide and slightly turned, then draws in and rotates as it goes,
-   *  which is what makes it read as an orbit rather than a static wheel. */
+  /* Where the five frames sit, as a fraction of the safe area's half-width and
+     half-height from its centre. Hand-placed rather than swept round an
+     ellipse: the copy in the middle is tall and narrow, so a strict ellipse
+     either put frames through the headline or had to shrink until the ring
+     stopped reading as one. Every anchor keeps |x| >= 0.62, which is well
+     outside the copy at any viewport, so clearance is structural rather than
+     something that has to be re-tuned per breakpoint. */
+  const RING_ANCHORS = [
+    { x: -0.74, y: -0.60, tilt: -5 },
+    { x: 0.72, y: -0.64, tilt: 4 },
+    { x: 0.88, y: 0.16, tilt: -3 },
+    { x: 0.64, y: 0.74, tilt: 5 },
+    { x: -0.80, y: 0.52, tilt: -4 },
+  ];
+
+  /** Places the five frames around the copy. `p` is scroll progress: they drift
+   *  on their own slow cycles and draw very slightly inward, which reads as an
+   *  orbit without any of them ever crossing the middle. */
   function layoutRing(ring, p, instant) {
     const frames = ring.querySelectorAll('.ring__frame');
     if (!frames.length) return;
 
-    const box = ring.getBoundingClientRect();
-    const w = box.width;
-    const h = box.height || window.innerHeight;
-    // An ellipse, not a circle: the two radii are taken from the viewport's own
-    // width and height, which is what keeps the frames hugging the edges and
-    // the middle clear for the copy. A single radius put them straight through
-    // the headline on any wide screen.
-    const rx = w * (0.37 - 0.03 * p);
-    const ry = h * (0.42 - 0.04 * p);
-    const spin = p * 38; // degrees the whole ring turns through
+    // Measured on .ring__orbit rather than the section: the orbit is inset from
+    // the top by the title bar's height, so the safe area is already baked into
+    // its box and a frame at the top cannot end up under the bar.
+    const orbit = ring.querySelector('.ring__orbit') || ring;
+    const box = orbit.getBoundingClientRect();
+    const halfW = (box.width || window.innerWidth) / 2;
+    const halfH = (box.height || window.innerHeight) / 2;
+
+    // Drawn in a little as the section goes dark, so the group tightens.
+    const draw = 1 - 0.06 * p;
 
     frames.forEach((frame, i) => {
-      const angle = ((-90 + (360 / RING_COUNT) * i + spin) * Math.PI) / 180;
-      const x = Math.cos(angle) * rx;
-      const y = Math.sin(angle) * ry;
-      const tilt = Math.sin(angle) * 6;
+      const a = RING_ANCHORS[i % RING_ANCHORS.length];
+      // Each frame rides its own slow cycle, offset by index, so they never
+      // move as a block.
+      const phase = p * Math.PI * 2 + i * 1.25;
+      const x = a.x * halfW * draw + Math.cos(phase) * 12;
+      const y = a.y * halfH * draw + Math.sin(phase) * 16;
+      const rotation = a.tilt + Math.sin(phase) * 1.5;
+      const scale = 0.9 + 0.1 * p;
       const pose = {
         x,
         y,
-        rotation: tilt,
-        scale: 0.9 + 0.12 * p,
+        rotation,
+        scale,
         // Staggered fade-in so they arrive one after another, not as a block.
         autoAlpha: Motion.clamp01((p - i * 0.06) / 0.22),
         xPercent: -50,
@@ -214,7 +233,7 @@
       };
       if (instant || typeof gsap === 'undefined') {
         frame.style.transform =
-          `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${tilt}deg) scale(${pose.scale})`;
+          `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotation}deg) scale(${scale})`;
         frame.style.opacity = instant ? 1 : pose.autoAlpha;
         return;
       }

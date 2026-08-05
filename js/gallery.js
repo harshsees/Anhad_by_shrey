@@ -23,16 +23,25 @@ function initLightbox() {
   // Attach click handlers to gallery items with actual images
   function bindGalleryItems() {
     const galleryItems = document.querySelectorAll('.gallery-item');
-    
-    galleryItems.forEach((item, index) => {
+
+    galleryItems.forEach((item) => {
       const img = item.querySelector('img');
       if (img) {
+        if (item.dataset.lightboxBound) return;
+        item.dataset.lightboxBound = '1';
         item.addEventListener('click', () => {
-          // Collect all sibling images in the same gallery
-          const gallery = item.closest('.gallery-grid, .modal__gallery');
+          // `.gallery-grid--large` is a standalone class, not a modifier on
+          // `.gallery-grid`, so matching only the latter found no container and
+          // every click opened a lone image reading "1 / 1".
+          const gallery = item.closest('.gallery-grid, .gallery-grid--large, .modal__gallery');
           if (gallery) {
-            currentImages = Array.from(gallery.querySelectorAll('img')).map(i => i.src);
-            currentIndex = Array.from(gallery.querySelectorAll('.gallery-item, .modal__gallery-item')).indexOf(item);
+            // Only what the category filter is currently showing — paging into
+            // a hidden tile from a filtered view is disorienting.
+            const siblings = Array.from(
+              gallery.querySelectorAll('.gallery-item, .modal__gallery-item')
+            ).filter((el) => el.offsetParent !== null && el.querySelector('img'));
+            currentImages = siblings.map((el) => el.querySelector('img').src);
+            currentIndex = Math.max(0, siblings.indexOf(item));
           } else {
             currentImages = [img.src];
             currentIndex = 0;

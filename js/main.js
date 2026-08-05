@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialCarousel();
   initSmoothScroll();
   initFaqAccordion();
-  initGalleryFilters();
   initFooterYear();
   initContactForm();
   initStatCounters();
@@ -601,30 +600,11 @@ function initFaqAccordion() {
 }
 
 
-/* ── Gallery Category Filters ── */
-function initGalleryFilters() {
-  const buttons = document.querySelectorAll('.gallery-cat-btn');
-  const items = document.querySelectorAll('.gallery-grid--large .gallery-item');
-
-  if (!buttons.length || !items.length) return;
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Update active btn
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const cat = btn.dataset.category;
-      items.forEach(item => {
-        if (cat === 'all' || item.dataset.category === cat) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    });
-  });
-}
+/* The gallery's category filter now lives in js/gallery-motion.js, which
+   reflows the surviving tiles instead of snapping them. It was removed from
+   here rather than left in place: both bound the same buttons, and this one
+   set an inline `display`, which would have overridden the class the new
+   one toggles. */
 
 
 /* Hero parallax is now handled inside initScrollEffects() above, driven

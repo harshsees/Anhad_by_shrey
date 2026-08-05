@@ -131,7 +131,9 @@
     <button class="lightbox__close" id="lightboxClose" aria-label="Close lightbox">✕</button>
     <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Previous image">‹</button>
     <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Next image">›</button>
-    <img class="lightbox__image" id="lightboxImage" src="" alt="Gallery image">
+    <!-- No src until the lightbox opens: src="" makes the browser re-request
+         the page itself as if it were an image. -->
+    <img class="lightbox__image" id="lightboxImage" alt="Gallery image">
     <div class="lightbox__counter" id="lightboxCounter">1 / 6</div>
   </div>
 

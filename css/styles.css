@@ -4984,3 +4984,132 @@ table {
     transition: none;
   }
 }
+
+/* ══════════════════════════════════════════════════════════
+   GALLERY — THE REEL
+   A strip of stills that travels sideways while the page scrolls
+   down. js/gallery-motion.js pins the section and drives the
+   track; everything here is the static pose, so with JS off the
+   strip is simply a horizontally scrollable row.
+   ══════════════════════════════════════════════════════════ */
+
+.reel {
+  position: relative;
+  background: var(--maroon-dark);
+  color: var(--cream);
+  padding: var(--space-3xl) 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.reel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(90% 60% at 20% 0%, rgba(201, 168, 76, 0.14), transparent 60%),
+    linear-gradient(180deg, #2f0c13 0%, var(--maroon-dark) 55%, #180509 100%);
+}
+
+.reel__head,
+.reel__hint {
+  position: relative;
+  z-index: 1;
+  width: min(1280px, 100% - 2 * var(--space-xl));
+  margin: 0 auto;
+}
+
+.reel__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: var(--space-md);
+}
+
+.reel__title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.4vw, 3.6rem);
+  line-height: 1.12;
+  color: var(--white);
+  margin-bottom: var(--space-2xl);
+}
+
+/* The viewport is full-bleed so the strip runs off both edges — a strip that
+   stops short of the edge reads as a carousel, not as a reel. */
+.reel__viewport {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding-left: max(var(--space-xl), calc((100% - 1280px) / 2));
+}
+
+.reel__track {
+  display: flex;
+  gap: var(--space-xl);
+  width: max-content;
+  will-change: transform;
+}
+
+.reel__item {
+  margin: 0;
+  width: clamp(230px, 26vw, 380px);
+  flex: 0 0 auto;
+}
+
+.reel__item img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  display: block;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+}
+
+.reel__item figcaption {
+  margin-top: var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.reel__hint {
+  margin-top: var(--space-2xl);
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: rgba(232, 213, 163, 0.55);
+}
+
+/* No JS: the strip stays usable by scrolling it directly. */
+.no-reel-motion .reel__viewport {
+  overflow-x: auto;
+  padding-right: var(--space-xl);
+}
+
+/* ── The filterable grid ── */
+.gallery-item {
+  cursor: zoom-in;
+}
+
+/* Items hidden by the category filter. Kept out of the layout entirely so the
+   grid closes up rather than leaving holes. */
+.gallery-item.is-filtered-out {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .reel {
+    padding: var(--space-2xl) 0;
+  }
+
+  .reel__item {
+    width: clamp(200px, 62vw, 280px);
+  }
+}

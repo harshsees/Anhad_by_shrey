@@ -51,6 +51,58 @@
   </header>
 
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       THE REEL — a strip of stills that travels sideways as the page
+       scrolls down, the "in action" idiom from the Team USA reference.
+       Pinned and scrubbed in js/gallery-motion.js.
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="reel" id="reel" aria-label="Performances in motion">
+    <div class="reel__head">
+      <p class="reel__eyebrow">✦ In Motion ✦</p>
+      <h2 class="reel__title">Sixteen years,<br>frame by frame</h2>
+    </div>
+
+    <div class="reel__viewport">
+      <div class="reel__track" id="reelTrack">
+        <figure class="reel__item">
+          <img src="assets/images/siddh_chakra_1.jpeg" alt="Siddha Chakra Puja" loading="lazy">
+          <figcaption>Siddha Chakra Puja</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="images/pictures/IMG-20260731-WA0018.jpg" alt="Singing at a derasar" loading="lazy">
+          <figcaption>Derasar, Ahmedabad</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="assets/images/108_parshwanath_1.jpeg" alt="108 Parshwanath ceremony" loading="lazy">
+          <figcaption>108 Parshwanath</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="images/picture_3.jpeg" alt="Puja ceremony in progress" loading="lazy">
+          <figcaption>Puja Vidhi</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="assets/images/sakrastav_1.jpeg" alt="Sakrastav recital" loading="lazy">
+          <figcaption>Sakrastav</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="images/pictures/IMG-20260731-WA0020.jpg" alt="Shrey performing" loading="lazy">
+          <figcaption>Paryushan Parva</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="images/picture_7.jpeg" alt="Community celebration" loading="lazy">
+          <figcaption>Sangha Celebration</figcaption>
+        </figure>
+        <figure class="reel__item">
+          <img src="assets/images/shrey_pic_1.jpeg" alt="Shrey singing a stuti" loading="lazy">
+          <figcaption>Stutis &amp; Stavans</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <p class="reel__hint" aria-hidden="true">Keep scrolling</p>
+  </section>
+
+
   <!-- PHOTO GALLERY -->
   <section class="section section--cream">
     <div class="container">
@@ -71,76 +123,52 @@
 
       <div class="gallery-grid--large stagger-children" id="photoGallery">
         <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 0">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Snatra Puja</span>
-          </div>
+          <img src="assets/images/siddh_chakra_1.jpeg" alt="Siddha Chakra Puja" loading="lazy">
+          <div class="gallery-item__overlay"><span>Siddha Chakra Puja</span></div>
         </div>
         <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 1">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Temple Ceremony</span>
-          </div>
+          <img src="images/pictures/IMG-20260731-WA0018.jpg" alt="Derasar Ceremony" loading="lazy">
+          <div class="gallery-item__overlay"><span>Derasar Ceremony</span></div>
         </div>
         <div class="gallery-item reveal" data-category="paryushan" style="--stagger-index: 2">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Paryushan Event</span>
-          </div>
+          <img src="images/pictures/IMG-20260731-WA0014.jpg" alt="Paryushan Felicitation" loading="lazy">
+          <div class="gallery-item__overlay"><span>Paryushan Felicitation</span></div>
         </div>
         <div class="gallery-item reveal" data-category="portrait" style="--stagger-index: 3">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Artist Portrait</span>
-          </div>
+          <img src="images/potrait_1.jpeg" alt="Artist Portrait" loading="lazy">
+          <div class="gallery-item__overlay"><span>Artist Portrait</span></div>
         </div>
         <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 4">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Panch Kalyanak</span>
-          </div>
+          <img src="assets/images/sakrastav_1.jpeg" alt="Sakrastav Recital" loading="lazy">
+          <div class="gallery-item__overlay"><span>Sakrastav Recital</span></div>
         </div>
         <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 5">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Mangal Divo</span>
-          </div>
+          <img src="assets/images/108_parshwanath_1.jpeg" alt="108 Parshwanath" loading="lazy">
+          <div class="gallery-item__overlay"><span>108 Parshwanath</span></div>
         </div>
         <div class="gallery-item reveal" data-category="paryushan" style="--stagger-index: 6">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Samvatsari</span>
-          </div>
+          <img src="images/pictures/IMG-20260731-WA0015.jpg" alt="Samvatsari Sabha" loading="lazy">
+          <div class="gallery-item__overlay"><span>Samvatsari Sabha</span></div>
         </div>
         <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 7">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Navpad Oli</span>
-          </div>
+          <img src="assets/images/siddh_chakra_2.jpeg" alt="Navpad Oli" loading="lazy">
+          <div class="gallery-item__overlay"><span>Navpad Oli</span></div>
         </div>
         <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 8">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Pratishtha Event</span>
-          </div>
+          <img src="assets/images/108_parshwanath_2.jpeg" alt="Temple Inauguration" loading="lazy">
+          <div class="gallery-item__overlay"><span>Temple Inauguration</span></div>
         </div>
         <div class="gallery-item reveal" data-category="portrait" style="--stagger-index: 9">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">With Sangha</span>
-          </div>
+          <img src="images/pictures/1.jpeg" alt="With the Sangha" loading="lazy">
+          <div class="gallery-item__overlay"><span>With the Sangha</span></div>
         </div>
         <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 10">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Siddha Chakra Puja</span>
-          </div>
+          <img src="assets/images/sakrastav_2.jpeg" alt="Snatra Puja" loading="lazy">
+          <div class="gallery-item__overlay"><span>Snatra Puja</span></div>
         </div>
         <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 11">
-          <div class="gallery-placeholder">
-            <span class="gallery-placeholder__icon icon-glyph" data-icon="image"></span>
-            <span class="gallery-placeholder__text">Temple Inauguration</span>
-          </div>
+          <img src="assets/images/siddh_chakra_3.jpeg" alt="Mangal Divo" loading="lazy">
+          <div class="gallery-item__overlay"><span>Mangal Divo</span></div>
         </div>
       </div>
     </div>
@@ -192,7 +220,9 @@
     <button class="lightbox__close" id="lightboxClose" aria-label="Close lightbox">✕</button>
     <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Previous image">‹</button>
     <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Next image">›</button>
-    <img class="lightbox__image" id="lightboxImage" src="" alt="Gallery image">
+    <!-- No src until the lightbox opens: src="" makes the browser re-request
+         the page itself as if it were an image. -->
+    <img class="lightbox__image" id="lightboxImage" alt="Gallery image">
     <div class="lightbox__counter" id="lightboxCounter">1 / 6</div>
   </div>
 
@@ -257,10 +287,14 @@
   </footer>
 
   <script src="js/vendor/lenis.min.js"></script>
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/scrolltrigger.min.js"></script>
   <script src="js/smooth-scroll.js"></script>
+  <script src="js/motion/reveal-utils.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/main.js"></script>
   <script src="js/gallery.js"></script>
+  <script src="js/gallery-motion.js"></script>
   <!-- Floating Action Buttons -->
   <a href="https://wa.me/919409429354?text=Namaste%20Shrey%2C%20I%20would%20like%20to%20inquire%20about%20booking%20your%20devotional%20singing%20services%20for%20a%20puja%2Fevent.%20Could%20you%20please%20provide%20more%20details%3F%20Thank%20you%21" target="_blank" class="float-whatsapp" aria-label="Chat with Shrey on WhatsApp">
     <svg viewBox="0 0 448 512">

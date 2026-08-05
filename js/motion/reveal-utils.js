@@ -125,19 +125,17 @@
     return a + (b - a) * t;
   };
 
-  // Local easing helpers so the mic path can be driven from an onUpdate
-  // callback (it needs live geometry every tick) instead of a tween.
+  // Local easing helpers for motion driven from an onUpdate callback (live
+  // geometry every tick) rather than from a tween.
   Motion.ease = {
     inQuad: (t) => t * t,
     outCubic: (t) => 1 - Math.pow(1 - t, 3),
     inOutCubic: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
   };
 
-  // Known mic anchor points (fraction of source-image dimensions) used by
-  // hero-story.js and section-motion.js. Measured against the real frames;
-  // kept in one place so re-tuning doesn't require touching the animation
-  // logic itself.
-  Motion.micAnchors = {
+  // Geometry of the scroll-driven frame sequences, kept in one place so
+  // re-tuning a crop doesn't require touching the animation logic itself.
+  Motion.seqAnchors = {
     // The homepage hero canvas sequence (assets/hero-seq/**). Source frames
     // are 1920x1080 stills of Shrey performing.
     heroSeq: {
@@ -146,12 +144,6 @@
       // How the sequence is cropped when the stage is wider/taller than 16:9.
       // Biased up and slightly left so he stays clear of the copy column.
       focal: { x: 0.42, y: 0.34 },
-      // Frame 001 — the mic in flight, just short of his raised right hand
-      // (viewer's right). This is where the mic travelling out of the logo
-      // scene has to land, so the drawn overlay and the photographed mic are
-      // the same object at the moment of the cut. Measured on
-      // assets/hero-seq/w1280/frame-001.jpg.
-      land: { cx: 0.489, cy: 0.340, length: 0.167, rotation: -58.2 },
     },
   };
 })();

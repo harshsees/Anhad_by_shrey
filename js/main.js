@@ -60,20 +60,82 @@ function initStatCounters() {
   stats.forEach(el => observer.observe(el));
 }
 
-/* ── Contact Form (guards against the Formspree ID not being set yet) ── */
+/* ── Contact Form ──
+   Posts to Formspree over fetch so the visitor never leaves the page, and
+   reports back in place. Until the real form ID is pasted into contact.html
+   the submit is blocked and the visitor is pointed at WhatsApp, so no inquiry
+   can silently disappear into an unconfigured endpoint. */
 function initContactForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
   const status = document.getElementById('contactFormStatus');
+  const button = form.querySelector('button[type="submit"]');
+  const buttonLabel = button ? button.innerHTML : '';
 
-  form.addEventListener('submit', (e) => {
+  const say = (message, kind) => {
+    if (!status) return;
+    status.textContent = message;
+    status.className = 'contact-form__status visible contact-form__status--' + kind;
+  };
+
+  const setBusy = (busy) => {
+    if (!button) return;
+    button.disabled = busy;
+    button.innerHTML = busy ? 'Sending…' : buttonLabel;
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
     if (form.action.includes('YOUR_FORMSPREE_ID')) {
-      e.preventDefault();
-      if (status) {
-        status.textContent = 'Online booking isn\'t connected yet — please reach out on WhatsApp or call +91 94094 29354 and we\'ll respond right away.';
-        status.classList.add('visible');
+      say(
+        'Online booking isn\'t connected yet — please reach out on WhatsApp or call +91 94094 29354 and we\'ll respond right away.',
+        'error'
+      );
+      return;
+    }
+
+    // A bot that fills every field it finds trips this; a person never sees it.
+    if (form.elements._gotcha && form.elements._gotcha.value) return;
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      say('Please fill in your name and phone number so Shrey can reach you.', 'error');
+      return;
+    }
+
+    setBusy(true);
+    say('Sending your inquiry…', 'pending');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        form.reset();
+        say(
+          'Thank you — your inquiry has reached Shrey. You will hear back shortly, usually within a day.',
+          'success'
+        );
+      } else {
+        // Formspree reports validation and quota problems in the body.
+        const data = await response.json().catch(() => null);
+        const detail = data && data.errors && data.errors.length
+          ? data.errors.map((x) => x.message).join(' ')
+          : 'Something went wrong at our end.';
+        say(detail + ' Please try again, or reach us on WhatsApp at +91 94094 29354.', 'error');
       }
+    } catch (err) {
+      say(
+        'Your inquiry could not be sent — please check your connection, or reach us on WhatsApp at +91 94094 29354.',
+        'error'
+      );
+    } finally {
+      setBusy(false);
     }
   });
 }
@@ -126,11 +188,18 @@ function initNavbar() {
 }
 
 
-/* ── Scroll Effects ── consolidated navbar show/hide + scrolled state,
+/* ── Scroll Effects ── consolidated navbar colour state,
    hero parallax, and scroll-to-top button visibility onto a single
    scroll-update path: Lenis's 'scroll' event when smooth scroll is
    active, or a single rAF-throttled native listener otherwise (never
    both, to avoid double/racing updates). */
+/* Sections painted in maroon/dark art. The bar carries no background of its
+   own any more, so its ink has to follow whatever happens to be behind it:
+   over one of these it stays ivory, everywhere else it goes dark (.scrolled).
+   Anything new that is dark-on-top just needs to match this list. */
+const NAV_DARK_ZONES =
+  '.hero-mark, .hero-stage, .page-header, .cta-banner, .footer, .section--dark, .hero';
+
 function initScrollEffects() {
   const navbar = document.getElementById('navbar');
   const scrollTopBtn = document.getElementById('scrollTopBtn');
@@ -139,25 +208,24 @@ function initScrollEffects() {
   const hero = document.getElementById('heroMark') || document.querySelector('.hero');
   const heroBg = hero ? hero.querySelector('.hero__bg') : null;
   const heroContent = hero ? hero.querySelector('.hero__content') : null;
+  const darkZones = Array.from(document.querySelectorAll(NAV_DARK_ZONES));
 
-  let lastScrollPosition = 0;
+  // Probe a little below the bar's own midline — deep enough to be inside the
+  // section behind it, shallow enough not to read the one after.
+  const inkUpdate = () => {
+    if (!navbar) return;
+    const probe = navbar.offsetHeight * 0.55;
+    const overDark = darkZones.some((zone) => {
+      const r = zone.getBoundingClientRect();
+      return r.top <= probe && r.bottom > probe;
+    });
+    navbar.classList.toggle('scrolled', !overDark);
+  };
 
   const update = (scrollY) => {
-    // Navbar show/hide + scrolled background — homepage only (inner
-    // pages carry .scrolled in HTML from the start, see initNavbar).
-    if (hero && navbar) {
-      if (scrollY > lastScrollPosition && scrollY > 100) {
-        navbar.classList.add('navbar-hidden');
-      } else {
-        navbar.classList.remove('navbar-hidden');
-      }
-      if (scrollY > 80) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-      lastScrollPosition = scrollY;
-    }
+    // The bar is static: it never hides on scroll down, never slides back in
+    // on scroll up, and never grows a background. Only its ink changes.
+    inkUpdate();
 
     // Scroll-to-top button visibility
     if (scrollTopBtn) {
@@ -195,6 +263,14 @@ function initScrollEffects() {
         ticking = false;
       });
     }, { passive: true });
+  }
+
+  // Set the opening ink before a single scroll event has fired, and re-read it
+  // when a pin or a resize moves the zones under the bar.
+  update(window.pageYOffset);
+  window.addEventListener('resize', inkUpdate, { passive: true });
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.addEventListener('refresh', inkUpdate);
   }
 }
 

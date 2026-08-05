@@ -41,7 +41,7 @@ function renderPujaCards(pujas) {
     } else if (puja.image) {
       imageContent = `<div class="puja-card__slider-track"><div class="puja-card__slide"><img src="${puja.image}" alt="${puja.name}" loading="lazy"></div></div>`;
     } else {
-      imageContent = `<div class="puja-card__placeholder"><span class="puja-card__placeholder-icon">🙏</span><span class="puja-card__placeholder-text">Add Image</span></div>`;
+      imageContent = `<div class="puja-card__placeholder"><span class="puja-card__placeholder-icon icon-glyph" data-icon="lotus"></span><span class="puja-card__placeholder-text">Add Image</span></div>`;
     }
 
     return `
@@ -60,6 +60,9 @@ function renderPujaCards(pujas) {
     `;
   }).join('');
 
+  // Cards are built after DOMContentLoaded, so icons.js's own pass has already
+  // run — fill the placeholders it never saw.
+  if (window.Icons) Icons.hydrate(grid);
 
   // Re-observe for scroll animations
   const observer = new IntersectionObserver((entries) => {
@@ -90,7 +93,7 @@ function renderFallbackCards() {
     <div class="puja-card">
       <div class="puja-card__image-wrapper">
         <div class="puja-card__placeholder">
-          <span class="puja-card__placeholder-icon">🙏</span>
+          <span class="puja-card__placeholder-icon icon-glyph" data-icon="lotus"></span>
           <span class="puja-card__placeholder-text">Add Image</span>
         </div>
       </div>
@@ -102,6 +105,8 @@ function renderFallbackCards() {
       </div>
     </div>
   `).join('');
+
+  if (window.Icons) Icons.hydrate(grid);
 }
 
 /* ── Modal System ── */
@@ -160,18 +165,20 @@ function initModal(pujas) {
         <img src="${puja.image}" alt="${puja.name}" class="modal__hero-image"
           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="modal__hero-placeholder" style="display:none;">
-          <span class="modal__hero-placeholder-icon">🙏</span>
+          <span class="modal__hero-placeholder-icon icon-glyph" data-icon="lotus"></span>
           <span class="modal__hero-placeholder-text">${puja.name} Image</span>
         </div>
       `;
     } else {
       heroContainer.innerHTML = `
         <div class="modal__hero-placeholder">
-          <span class="modal__hero-placeholder-icon">🙏</span>
+          <span class="modal__hero-placeholder-icon icon-glyph" data-icon="lotus"></span>
           <span class="modal__hero-placeholder-text">${puja.name} Image</span>
         </div>
       `;
     }
+
+    if (window.Icons) Icons.hydrate(heroContainer);
 
     // What's included
     const includesList = document.getElementById('modalIncludes');

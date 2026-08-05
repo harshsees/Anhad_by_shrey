@@ -382,6 +382,10 @@ p {
    NAVIGATION
    ══════════════════════════════════════════ */
 
+/* The bar is static and never carries a background: it does not hide on scroll
+   down, does not reappear on scroll up, and does not grow a panel behind
+   itself. `.scrolled` survives as a colour-only modifier — it says "the content
+   behind me is light now", nothing more. */
 .navbar {
   position: fixed;
   top: 0;
@@ -389,20 +393,7 @@ p {
   width: 100%;
   z-index: var(--z-header-active);
   padding: var(--space-md) 0;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform: translateY(0);
-}
-
-.navbar.scrolled {
-  background: rgba(250, 246, 240, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-sm) 0;
-}
-
-.navbar.navbar-hidden {
-  transform: translateY(-100%);
+  background: transparent;
 }
 
 .navbar__inner {
@@ -412,26 +403,25 @@ p {
 }
 
 .navbar__logo {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 0.5px;
-  transition: color var(--transition-normal);
+  display: block;
+  line-height: 0;
 }
 
-.navbar.scrolled .navbar__logo {
-  color: var(--maroon);
+/* The mark is flat ivory artwork on transparency, so it reads on the dark hero
+   as drawn. Over the cream sections it would all but disappear, hence the
+   light-state filter below — brightness alone keeps the star's facet lines,
+   which an alpha mask would have flattened into a solid blob. */
+.navbar__logo-mark {
+  display: block;
+  height: 54px;
+  width: auto;
+  transition: filter var(--transition-normal);
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45));
 }
 
-.navbar__logo span {
-  color: var(--gold-light);
-  font-weight: 400;
-  font-style: italic;
-}
-
-.navbar.scrolled .navbar__logo span {
-  color: var(--saffron);
+.navbar.scrolled .navbar__logo-mark,
+.navbar--light .navbar__logo-mark {
+  filter: brightness(0.34) contrast(1.35) saturate(2.1);
 }
 
 .navbar__links {
@@ -450,10 +440,15 @@ p {
   position: relative;
   padding: var(--space-xs) 0;
   transition: color var(--transition-normal);
+  /* No panel behind the bar any more, so the links carry their own legibility
+     over whatever photography happens to be under them. */
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
-.navbar.scrolled .navbar__links a {
+.navbar.scrolled .navbar__links a,
+.navbar--light .navbar__links a {
   color: var(--text-dark);
+  text-shadow: 0 1px 10px rgba(250, 246, 240, 0.9);
 }
 
 .navbar__links a::after {
@@ -480,27 +475,7 @@ p {
   color: var(--saffron);
 }
 
-/* Navbar on light photo hero — dark text from start */
-.navbar--light {
-  background: rgba(250, 246, 240, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-sm) 0;
-}
-
-.navbar--light .navbar__logo {
-  color: var(--maroon);
-}
-
-.navbar--light .navbar__logo span {
-  color: var(--saffron);
-}
-
-.navbar--light .navbar__links a {
-  color: var(--text-dark);
-}
-
+/* Navbar over light content — dark text from the start, still no background. */
 .navbar--light .navbar__links a:hover {
   color: var(--saffron);
 }
@@ -2141,6 +2116,32 @@ p {
   gap: var(--space-lg);
 }
 
+/* ══════════════════════════════════════════
+   ICONS (js/icons.js)
+   Stroke icons on currentColor, replacing the colour emoji the pages used to
+   carry. They size off the inherited font-size, so every existing rule that
+   sized an emoji (.why-card__icon, .booking-step__icon, …) keeps working.
+   ══════════════════════════════════════════ */
+
+.icon-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  vertical-align: -0.14em;
+}
+
+.icon-svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+/* The contact list sizes its icons by its own 50px medallion, not by type. */
+.contact__item-icon {
+  font-size: 1.5rem;
+}
+
 .contact-form__status {
   display: none;
   margin-bottom: var(--space-lg);
@@ -2160,6 +2161,26 @@ p {
   display: block;
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Outcome states. The saffron default above stays as the "in flight" look. */
+.contact-form__status--success {
+  background: rgba(46, 125, 74, 0.1);
+  border-color: #2E7D4A;
+  color: #1C5231;
+}
+
+.contact-form__status--error {
+  background: rgba(150, 34, 42, 0.08);
+  border-color: var(--maroon);
+  color: var(--maroon-dark);
+}
+
+.form-optional {
+  font-weight: 400;
+  opacity: 0.6;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ══════════════════════════════════════════
@@ -4280,44 +4301,6 @@ table {
   animation: scrollLine 2s ease-in-out infinite;
 }
 
-/* ── The travelling mic (fixed: crosses the section boundary) ──
-   Sized once here; js/hero-story.js only ever scales/rotates/moves it, so
-   the drop stays on the compositor. */
-.hero-mic {
-  position: fixed;
-  left: 0;
-  top: 0;
-  /* Exactly images/mic-real.png's intrinsic size — js/hero-story.js derives the
-     landing scale from it, so this box must not be restyled per breakpoint. */
-  width: 35px;
-  height: 247px;
-  z-index: 30;
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-.hero-mic__art {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.55));
-}
-
-.hero-mic__glow {
-  position: absolute;
-  left: 50%;
-  top: 12%;
-  width: 280%;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 213, 163, 0.5), rgba(201, 168, 76, 0.1) 46%, transparent 68%);
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* ScrollTrigger's pin spacer is bare page background. If a pin ever fails to
    apply — a refresh mid-pin, a killed matchMedia branch — that bare cream is
    what shows, which reads as a blank screen dropped into the hero. Painting it
@@ -4334,16 +4317,6 @@ table {
   overflow: hidden;
   background: var(--maroon-dark);
   isolation: isolate;
-  /* Above #intro, which is pulled up underneath the stage's exit (see #intro
-     below) so it is already in place when the pin lets go. */
-  z-index: 2;
-}
-
-/* The moment the stage's timeline is spent, js/hero-story.js drops it behind
-   #intro — so instead of a second full screen of settled hero scrolling past,
-   #intro is right there. */
-.hero-stage.is-released {
-  z-index: 0;
 }
 
 /* Starts on exactly the colour .hero-mark__backdrop ends on (#180509) and keeps
@@ -4375,7 +4348,7 @@ table {
 
 /* Fallback still, in case the sequence never loads (it sits under the
    canvas, which is opaque and only fades in once frame 001 has painted).
-   object-position mirrors Motion.micAnchors.heroSeq.focal. */
+   object-position mirrors Motion.seqAnchors.heroSeq.focal. */
 .hero-stage__poster {
   object-fit: cover;
   object-position: 42% 34%;
@@ -4481,22 +4454,6 @@ table {
   background: rgba(245, 235, 217, 0.08);
 }
 
-.hero-stage__proof {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  color: var(--gold-light);
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-}
-
-.hero-stage__dot {
-  opacity: 0.6;
-}
-
 .split-word {
   display: inline-block;
   overflow: hidden;
@@ -4508,30 +4465,10 @@ table {
   will-change: transform, opacity;
 }
 
-/* ── #intro: pulled up under the hero's exit ──
-   A pinned section always has its own height left to scroll once the pin lets
-   go, so the settled hero used to travel a second full screen before #intro
-   arrived. Pulling #intro up by most of that distance means it is already at
-   the top of the viewport when .hero-stage.is-released drops the stage behind
-   it. The remainder is a short slide, not a repeat. The value tracks
-   .hero-stage's own `height: 100vh; min-height: 600px`.
-
-   Only above 900px, because that is the exact breakpoint at which
-   js/hero-story.js pins the stage — below it the stage scrolls away normally
-   and there is no trailing screen to swallow. */
-@media (min-width: 900px) {
-  #intro {
-    position: relative;
-    z-index: 1;
-    /* Exactly .hero-stage's own height (+2px so rounding can't leave a sliver),
-       so #intro's top edge lands on the viewport top at the same instant the
-       pin releases. Any less and its edge cuts across the hero's copy on the
-       way up; any more and it starts eating the hero before the pin is done. */
-    margin-top: calc(-2px - max(100vh, 600px));
-  }
-}
-
-/* ── #intro: photo wipe + staggered services ── */
+/* ── #intro: photo wipe + staggered services ──
+   The stage's pin now ends the moment its sequence is spent, so #intro simply
+   follows the hero up the screen. No negative-margin overlap and no z-index
+   swap: the old pair of those produced a hard cut mid-scroll. */
 .about__image-wrapper {
   clip-path: inset(0 100% 0 0);
 }
@@ -4642,8 +4579,7 @@ table {
     margin-right: auto;
   }
 
-  .hero-stage__buttons,
-  .hero-stage__proof {
+  .hero-stage__buttons {
     justify-content: center;
   }
 
@@ -4663,8 +4599,7 @@ table {
    parked on the final frame by js/hero-story.js. ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-mark__particles,
-  .hero-mark__cue,
-  .hero-mic {
+  .hero-mark__cue {
     display: none;
   }
 
@@ -4691,12 +4626,354 @@ table {
 /* Same settled state when the motion libraries are unavailable — set by
    js/hero-story.js, which can't rely on the media query alone. */
 .hero-no-motion .hero-mark__particles,
-.hero-no-motion .hero-mark__cue,
-.hero-no-motion .hero-mic {
+.hero-no-motion .hero-mark__cue {
   display: none;
 }
 
 .hero-no-motion .hero-stage__scrim,
 .hero-no-motion .hero-stage__copy {
   opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ABOUT — MEET THE CEREMONIES (deck) + THE RING
+   Both are pinned, scroll-driven sections; js/about-motion.js
+   owns their motion. Everything here is the settled/static
+   pose, so the sections still read with JS off.
+   ══════════════════════════════════════════════════════════ */
+
+/* ── The deck ── */
+.ceremony-deck {
+  position: relative;
+  min-height: 100vh;
+  padding: var(--space-3xl) 0;
+  background: var(--ivory);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+/* The oversized title the cards ride over, exactly as the reference does it. */
+.ceremony-deck__backdrop-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(3.4rem, 12vw, 11rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--text-dark);
+  opacity: 0.14;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ceremony-deck__inner {
+  position: relative;
+  z-index: 1;
+  width: min(1280px, 100% - 2 * var(--space-xl));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+/* Left column — the roll of names */
+.ceremony-deck__names {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ceremony-deck__name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--text-dark);
+  opacity: 0.28;
+  transition: opacity 0.5s ease;
+}
+
+.ceremony-deck__name.is-active {
+  opacity: 1;
+}
+
+.ceremony-deck__name-label {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.ceremony-deck__name.is-active .ceremony-deck__name-label {
+  color: var(--maroon);
+}
+
+/* Only the live entry shows its detail lines. The rows keep their height at
+   all times and only fade — collapsing them re-flowed the column on every
+   step, which had the names sliding over each other mid-transition. */
+.ceremony-deck__name-meta,
+.ceremony-deck__name-credit {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  color: var(--text-dark);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ceremony-deck__name.is-active .ceremony-deck__name-meta,
+.ceremony-deck__name.is-active .ceremony-deck__name-credit {
+  opacity: 0.75;
+}
+
+/* Centre column — the card deck */
+.ceremony-deck__stage {
+  position: relative;
+  width: clamp(240px, 26vw, 380px);
+  aspect-ratio: 3 / 4;
+  perspective: 1200px;
+}
+
+.ceremony-deck__card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  background: var(--maroon-dark);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.ceremony-deck__media,
+.ceremony-deck__media img,
+.ceremony-deck__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ceremony-deck__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(201, 168, 76, 0.22), transparent 62%),
+    linear-gradient(168deg, #2f0c13 0%, var(--maroon-dark) 60%, #180509 100%);
+  color: var(--gold-light);
+  font-size: 3rem;
+}
+
+.ceremony-deck__placeholder-text {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.ceremony-deck__watch {
+  position: absolute;
+  left: var(--space-md);
+  bottom: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--ivory);
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), background var(--transition-normal);
+}
+
+.ceremony-deck__watch:hover {
+  transform: translateY(-2px);
+  background: var(--white);
+}
+
+.ceremony-deck__watch-tri {
+  width: 0;
+  height: 0;
+  border-left: 8px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+/* Right column — still + line */
+.ceremony-deck__aside {
+  position: relative;
+  justify-self: end;
+  width: min(300px, 100%);
+  min-height: 260px;
+}
+
+.ceremony-deck__aside-item {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.ceremony-deck__aside-item.is-active {
+  opacity: 1;
+}
+
+.ceremony-deck__aside-item img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  display: block;
+  box-shadow: var(--shadow-lg);
+}
+
+.ceremony-deck__aside-item figcaption {
+  margin-top: var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+/* ── The ring ── */
+.ring {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  /* js/about-motion.js drives this from cream to maroon on scroll; the
+     variable keeps the start state honest with JS off. */
+  background: var(--ring-bg, var(--ivory));
+}
+
+.ring__orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ring__frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  width: clamp(120px, 15vw, 230px);
+  will-change: transform, opacity;
+}
+
+.ring__frame img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  display: block;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.35);
+}
+
+.ring__core {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 42ch;
+  padding: 0 var(--space-xl);
+  color: var(--ring-ink, var(--text-dark));
+}
+
+.ring__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: var(--space-md);
+}
+
+.ring__title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.1;
+  margin-bottom: var(--space-lg);
+  color: inherit;
+}
+
+.ring__lede {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  margin-bottom: var(--space-xl);
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* ── Responsive: both sections stack and stop pinning below 900px
+   (js/about-motion.js skips the pin at the same breakpoint). ── */
+@media (max-width: 899px) {
+  .ceremony-deck {
+    min-height: auto;
+    padding: var(--space-2xl) 0;
+  }
+
+  .ceremony-deck__inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: var(--space-xl);
+  }
+
+  .ceremony-deck__backdrop-title {
+    font-size: clamp(2.6rem, 15vw, 5rem);
+    opacity: 0.1;
+  }
+
+  .ceremony-deck__stage {
+    width: min(320px, 78vw);
+  }
+
+  .ceremony-deck__aside {
+    justify-self: center;
+    width: min(360px, 84vw);
+  }
+
+  .ring {
+    min-height: auto;
+    padding: var(--space-3xl) 0;
+  }
+
+  .ring__frame {
+    width: clamp(96px, 26vw, 150px);
+  }
+}
+
+/* Settled state when motion is off: the deck shows its first card, the ring
+   simply sits still with its frames evenly spread (JS still lays them out;
+   this only guards the states JS would otherwise have animated). */
+@media (prefers-reduced-motion: reduce) {
+  .ceremony-deck__card {
+    transition: none;
+  }
 }

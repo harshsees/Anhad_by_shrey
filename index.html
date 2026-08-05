@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.anahadbyshrey.com/assets/images/shrey_bg.jpeg">
   <link rel="canonical" href="https://www.anahadbyshrey.com/">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🙏</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23470E17'/><path d='M50 16 58 42 84 50 58 58 50 84 42 58 16 50 42 42Z' fill='%23E8D5A3'/></svg>">
   <!-- Hero scene 1 art and the sequence's first frame are above the fold. -->
   <link rel="preload" as="image" href="images/logo-mark.png">
   <link rel="preload" as="image" href="assets/images/hero-seq-poster.jpg">
@@ -27,12 +27,12 @@
 
   <!-- NAVIGATION -->
   <div class="nav-overlay" id="navOverlay"></div>
-  <!-- No .navbar--light here: the homepage opens on the dark mark scene, so the
-       bar stays transparent until main.js adds .scrolled past the hero. -->
+  <!-- The bar is transparent everywhere and static. main.js decides its ink
+       from whatever section is behind it (see NAV_DARK_ZONES). -->
   <nav class="navbar" id="navbar">
     <div class="container navbar__inner">
-      <a href="index.html" class="navbar__logo">
-        Anahad <span>by Shrey</span>
+      <a href="index.html" class="navbar__logo" aria-label="Anahad by Shrey — home">
+        <img src="images/logo-mark.png" alt="Anahad by Shrey" class="navbar__logo-mark" width="750" height="747">
       </a>
       <div class="navbar__links" id="navLinks">
         <a href="index.html" class="active">Home</a>
@@ -50,8 +50,8 @@
   </nav>
 
 
-  <!-- HERO SCENE 1 — the mark holds the frame and releases the mic.
-       Pinned via ScrollTrigger in js/hero-story.js. -->
+  <!-- HERO BEAT 1 — the mark holds the frame, blooms once, and dissolves on
+       the way out. Never pinned; see js/hero-story.js. -->
   <section class="hero-mark" id="heroMark" aria-label="Anahad by Shrey">
     <div class="hero-mark__backdrop" aria-hidden="true"></div>
     <div class="hero-mark__aura" id="heroMarkAura" aria-hidden="true"></div>
@@ -74,18 +74,6 @@
     <div class="hero-mark__foot" aria-hidden="true"></div>
   </section>
 
-  <!-- The travelling mic. Cut from the performance footage itself
-       (images/mic-real.png) so that when it reaches Shrey's hand it is
-       literally the same object the photo shows. position:fixed so it can
-       leave Scene 1's mark and cross into Scene 2.
-       The PNG is normalised: mic head centre at 15% of its height, base
-       centre at 85%, so its midpoint is the box centre that JS rotates and
-       positions, and MIC_BASE_H in js/hero-story.js is that 70% span. -->
-  <div class="hero-mic" id="heroMic" aria-hidden="true">
-    <span class="hero-mic__glow" id="heroMicGlow"></span>
-    <img src="images/mic-real.png" alt="" class="hero-mic__art" width="35" height="247">
-  </div>
-
   <!-- HERO SCENE 2 — the canvas sequence. Decorative layers are aria-hidden;
        the real content (h1, tagline, CTAs) is always in the DOM so screen
        readers and no-motion users get it directly. -->
@@ -106,11 +94,8 @@
         Anahad by Shrey connects you with 16 years of Jain devotional singing excellence — stutis, bhajans, stavans, and complete puja ceremonies performed with heartfelt devotion.
       </p>
       <div class="hero-stage__buttons" id="heroButtons">
-        <a href="services.html" class="btn btn--primary btn--glass">🙏 Book a Puja</a>
-        <a href="about.html" class="btn btn--outline btn--glass">Discover More</a>
-      </div>
-      <div class="hero-stage__proof" id="heroSocialProof">
-        <span>16 Years of Devotion</span><span class="hero-stage__dot">✦</span><span>500+ Sacred Ceremonies</span>
+        <a href="services.html" class="btn btn--primary">Book a Puja</a>
+        <a href="about.html" class="btn btn--outline">Discover More</a>
       </div>
     </div>
   </section>
@@ -351,7 +336,7 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <p>© <span class="footer__year">2024</span> Anahad by Shrey | Designed with devotion 🙏</p>
+        <p>© <span class="footer__year">2024</span> Anahad by Shrey | Designed with devotion ✦</p>
         <div class="footer__bottom-links">
           <a href="privacy.html">Privacy Policy</a>
           <a href="terms.html">Terms of Service</a>
@@ -375,6 +360,7 @@
   <script src="js/motion/reveal-utils.js"></script>
   <script src="js/motion/particles.js"></script>
   <script src="js/motion/frame-sequence.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/main.js"></script>
   <script src="js/hero-story.js"></script>
   <script src="js/section-motion.js"></script>
@@ -401,7 +387,7 @@
           } else if (puja.image) {
             imageContent = `<div class="puja-card__slider-track"><div class="puja-card__slide"><img src="${puja.image}" alt="${puja.name}" loading="lazy"></div></div>`;
           } else {
-            imageContent = `<div class="puja-card__placeholder"><span class="puja-card__placeholder-icon">🙏</span><span class="puja-card__placeholder-text">Add Image</span></div>`;
+            imageContent = `<div class="puja-card__placeholder"><span class="puja-card__placeholder-icon icon-glyph" data-icon="lotus"></span><span class="puja-card__placeholder-text">Add Image</span></div>`;
           }
 
           return `
@@ -417,6 +403,8 @@
           </a>
           `;
         }).join('');
+        // Cards land after icons.js's own pass, so fill their placeholders.
+        if (window.Icons) Icons.hydrate(grid);
         // Re-observe reveals
         grid.querySelectorAll('.reveal').forEach(el => {
           const obs = new IntersectionObserver((entries) => {

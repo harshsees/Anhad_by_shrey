@@ -3,3 +3,7 @@
 # from and are far too large to keep in history.
 images/*.zip
 images/*.mp4
+
+# Screen captures used while checking motion in the browser. Same reasoning as
+# the raw hero inputs above: working material, not something history needs.
+screenshots_screenrecording/

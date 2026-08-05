@@ -998,12 +998,26 @@ p {
    ABOUT SECTION
    ══════════════════════════════════════════ */
 
+/* The portrait column is deliberately the narrower of the two. At 1fr 1fr the
+   portrait grew to ~980px tall while the bio beside it ran out at ~450px,
+   which is the large empty block that used to sit under the stat cards. */
 .about__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(280px, 0.8fr) 1.2fr;
   gap: var(--space-3xl);
-  align-items: flex-start;
-  margin-bottom: var(--space-4xl);
+  align-items: center;
+  margin-bottom: var(--space-3xl);
+}
+
+/* Capped so the portrait can never drive the row height on a wide screen. */
+.about__portrait {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 560px;
+  object-fit: cover;
+  object-position: center 22%;
+  border-radius: inherit;
+  display: block;
 }
 
 .about__image-wrapper {
@@ -4487,11 +4501,12 @@ table {
   will-change: transform, opacity;
 }
 
-/* ── #intro: photo wipe + staggered services ──
-   The stage's pin now ends the moment its sequence is spent, so #intro simply
-   follows the hero up the screen. No negative-margin overlap and no z-index
-   swap: the old pair of those produced a hard cut mid-scroll. */
-.about__image-wrapper {
+/* ── #intro: photo wipe ──
+   Scoped to the homepage's own wrapper by id. As a bare .about__image-wrapper
+   rule this also clipped the About page's portrait — and nothing there ever
+   opened it, because section-motion.js only animates #introImageWrapper, so
+   that portrait was invisible and its column sat empty. */
+#introImageWrapper {
   clip-path: inset(0 100% 0 0);
 }
 
@@ -5208,4 +5223,119 @@ table {
    so it must not add padding that reads as a gap in the middle of it. */
 #intro {
   padding-top: var(--space-2xl);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PUJA MODAL — sticky booking bar
+
+   The old .modal__cta sat at the very bottom of a scrolling panel, so the
+   only way to book was to read to the end first. This bar is sticky to the
+   foot of the modal instead: it is on screen from the moment the modal
+   opens, whatever the visitor has scrolled to. WhatsApp is the primary
+   action and is styled as such — the alternatives are quiet text links
+   underneath it, not competing buttons.
+   ══════════════════════════════════════════════════════════ */
+
+.modal__actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  padding: var(--space-lg) var(--space-2xl) var(--space-lg);
+  background: linear-gradient(180deg, rgba(250, 246, 240, 0) 0%, var(--ivory) 22%, var(--ivory) 100%);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  margin-top: var(--space-lg);
+}
+
+.modal__book {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: 0.95rem var(--space-lg);
+  /* Rounded rectangle, not a pill: at full width a pill reads as a stretched
+     ellipse rather than a button. */
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #25D366, #1EA952);
+  color: var(--white);
+  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.32);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.modal__book:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(37, 211, 102, 0.42);
+  color: var(--white);
+}
+
+.modal__book-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.modal__book-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.modal__book-text strong {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.6px;
+}
+
+.modal__book-text small {
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
+.modal__actions-alt {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-md);
+}
+
+.modal__alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--maroon);
+  opacity: 0.85;
+  transition: opacity var(--transition-normal);
+}
+
+.modal__alt:hover {
+  opacity: 1;
+  color: var(--saffron);
+}
+
+.modal__alt .icon-glyph {
+  font-size: 1rem;
+}
+
+/* The panel's own padding is on .modal__body, so the sticky bar can span the
+   full width and sit flush with the rounded corners. */
+.modal__body {
+  padding-bottom: 0;
+}
+
+@media (max-width: 560px) {
+  .modal__actions {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  .modal__actions-alt {
+    gap: var(--space-lg);
+  }
+
+  .modal__book-text small {
+    display: none;
+  }
 }

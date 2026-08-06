@@ -404,6 +404,13 @@ p {
    type passing underneath is legible without the bar reading as a separate
    block sitting on top of the page. `.scrolled` is a colour-only modifier: it
    says "the content behind me is light now", nothing more. */
+/* ── The bar ──
+   Modelled on sports.withgoogle.com/teamusa: the bar itself paints nothing,
+   and everything visible is the pill floating in the middle of it. The bar
+   also hides on the way down and slides back on the way up, so it is out of
+   the way while reading and one flick away when wanted. The easing is the
+   reference's own — a long, late-braking curve that makes the return read as
+   the bar catching up rather than snapping in. */
 .navbar {
   position: fixed;
   top: 0;
@@ -411,20 +418,24 @@ p {
   width: 100%;
   z-index: var(--z-header-active);
   padding: var(--space-md) 0;
-  background: rgba(24, 5, 9, 0.18);
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  transition: background var(--transition-normal);
+  background: transparent;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 0.31, 0, 1),
+    visibility 0.4s cubic-bezier(0.22, 0.31, 0, 1);
 }
 
-.navbar.scrolled {
-  background: rgba(250, 246, 240, 0.4);
+.navbar--hidden {
+  transform: translateY(calc(-100% - 8px));
+  visibility: hidden;
 }
 
+/* The pill is centred in the bar rather than laid out in the flow, so its
+   position does not shift when the logo's width changes between pages. */
 .navbar__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .navbar__logo {
@@ -449,60 +460,123 @@ p {
   filter: brightness(0.34) contrast(1.35) saturate(2.1);
 }
 
+/* ── The pill ──
+   Centred on the bar and independent of the flow, so the logo on the left and
+   the hamburger on the right cannot push it off-centre. */
 .navbar__links {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
-  gap: var(--space-xl);
+  gap: 0;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(28, 8, 12, 0.55);
+  border: 1px solid rgba(232, 213, 163, 0.14);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition:
+    background-color 0.6s ease,
+    border-color 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+/* Over the light run of the page the pill inverts to an ivory capsule. */
+.navbar.scrolled .navbar__links {
+  background: rgba(255, 253, 250, 0.82);
+  border-color: rgba(74, 16, 24, 0.10);
+  box-shadow:
+    0 10px 34px rgba(74, 16, 24, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* The follower — one pill that slides and resizes to sit behind whichever
+   item is active or hovered, instead of every item painting its own
+   background. Because a single element moves, the highlight travels between
+   items rather than blinking out of one and into the next. Injected by
+   js/main.js; it is decoration, so it does not belong in the markup. */
+.navbar__follower {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  height: calc(100% - 12px);
+  width: 0;
+  border-radius: 999px;
+  background: rgba(232, 213, 163, 0.14);
+  border: 1px solid rgba(232, 213, 163, 0.22);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    transform 0.6s cubic-bezier(0.22, 0.31, 0, 1),
+    width 0.6s cubic-bezier(0.22, 0.31, 0, 1),
+    opacity 0.35s ease,
+    background-color 0.6s ease,
+    border-color 0.6s ease;
+}
+
+.navbar__follower.is-ready {
+  opacity: 1;
+}
+
+.navbar.scrolled .navbar__follower {
+  background: rgba(74, 16, 24, 0.07);
+  border-color: rgba(74, 16, 24, 0.12);
 }
 
 .navbar__links a {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
   position: relative;
-  padding: var(--space-xs) 0;
-  transition: color var(--transition-normal);
-  /* No panel behind the bar any more, so the links carry their own legibility
-     over whatever photography happens to be under them. */
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  white-space: nowrap;
+  padding: 0 var(--space-lg);
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  transition: color 0.45s ease;
 }
 
-.navbar.scrolled .navbar__links a,
-.navbar--light .navbar__links a {
-  color: var(--text-dark);
-  text-shadow: 0 1px 10px rgba(250, 246, 240, 0.9);
-}
-
-.navbar__links a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gold);
-  transition: width var(--transition-normal);
-}
-
-.navbar__links a:hover::after,
-.navbar__links a.active::after {
-  width: 100%;
-}
-
+.navbar__links a.active,
 .navbar__links a:hover {
   color: var(--gold-light);
 }
 
-.navbar.scrolled .navbar__links a:hover {
-  color: var(--saffron);
+.navbar.scrolled .navbar__links a,
+.navbar--light .navbar__links a {
+  color: rgba(60, 32, 24, 0.72);
 }
 
-/* Navbar over light content — dark text from the start, still no background. */
+.navbar.scrolled .navbar__links a.active,
+.navbar.scrolled .navbar__links a:hover,
 .navbar--light .navbar__links a:hover {
-  color: var(--saffron);
+  color: var(--maroon);
+}
+
+/* The one item that is not navigation. It keeps its own solid fill in both
+   themes, so the follower never sits behind it. */
+.navbar__cta {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--gold) 100%);
+  color: var(--maroon-dark) !important;
+  font-weight: 700;
+  margin-left: var(--space-xs);
+  box-shadow: 0 4px 14px rgba(212, 136, 31, 0.32);
+  transition: transform 0.45s cubic-bezier(0.22, 0.31, 0, 1), box-shadow 0.45s ease;
+}
+
+.navbar__cta:hover {
+  color: var(--maroon-dark) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 20px rgba(212, 136, 31, 0.45);
 }
 
 .navbar--light .navbar__hamburger span {
@@ -549,19 +623,34 @@ p {
     display: flex;
   }
 
+  /* The pill is a desktop idiom — there is no room to float a capsule of six
+     items on a phone, so below this width it reverts to the drawer. Every
+     property the pill set has to be unwound explicitly, including the centring
+     transform, or the drawer inherits them and sits half off-screen. */
   .navbar__links {
     position: fixed;
     top: 0;
+    left: auto;
     right: -100%;
+    transform: none;
     width: 75%;
     max-width: 320px;
     height: 100vh;
     background: var(--maroon-dark);
+    border: 0;
+    border-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     flex-direction: column;
     justify-content: center;
-    gap: var(--space-2xl);
+    gap: var(--space-lg);
     padding: var(--space-3xl);
     transition: right var(--transition-normal);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .navbar.scrolled .navbar__links {
+    background: var(--maroon-dark);
     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
   }
 
@@ -572,10 +661,26 @@ p {
   .navbar__links a {
     color: var(--cream) !important;
     font-size: 1.1rem;
+    height: auto;
+    padding: var(--space-sm) var(--space-md);
   }
 
-  .navbar__links a:hover {
+  .navbar__links a:hover,
+  .navbar__links a.active {
     color: var(--gold-light) !important;
+  }
+
+  .navbar__cta {
+    color: var(--maroon-dark) !important;
+    margin-left: 0;
+    margin-top: var(--space-md);
+    justify-content: center;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  /* No follower in the drawer — it is positioned against a horizontal row. */
+  .navbar__follower {
+    display: none;
   }
 }
 
@@ -3451,10 +3556,72 @@ table {
   box-shadow: var(--shadow-gold);
 }
 
+/* An editorial grid rather than a even one, following the landonorris.com
+   reference: the tiles are deliberately not all the same shape and the columns
+   do not start on the same line, so the eye travels down the page instead of
+   scanning a table of thumbnails.
+
+   The offsets are margins, not transforms. The category filter reflows the
+   grid with a FLIP that tweens each surviving tile's transform, so anything
+   positional expressed as a transform here would be overwritten the first time
+   somebody filters. */
 .gallery-grid--large {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-md);
+  gap: var(--space-xl) var(--space-md);
+  align-items: start;
+}
+
+.gallery-grid--large .gallery-item:nth-child(4n + 2) {
+  margin-top: var(--space-3xl);
+}
+
+.gallery-grid--large .gallery-item:nth-child(4n + 4) {
+  margin-top: var(--space-xl);
+}
+
+.gallery-grid--large .gallery-item:nth-child(3n + 1) img {
+  aspect-ratio: 4 / 5;
+}
+
+.gallery-grid--large .gallery-item:nth-child(3n + 3) img {
+  aspect-ratio: 1 / 1;
+}
+
+/* ── The arrival ──
+   Modelled on the reveal the reference uses for its portrait grid: an ellipse
+   whose vertical radius opens from nothing, so the photograph wipes in from
+   the top behind a curved edge rather than a straight one, while the image
+   inside settles back from a slight over-scale. The two together read as the
+   picture arriving into its frame instead of a box fading up.
+
+   The horizontal radius is over 100% so the ellipse's sides clear the corners
+   of the tile — at exactly 100% the curve cuts the top corners off and the
+   photograph appears to arrive through a porthole. */
+.js-portrait-reveal .gallery-item {
+  clip-path: ellipse(140% 0% at 50% 0%);
+  will-change: clip-path;
+}
+
+.js-portrait-reveal .gallery-item img {
+  transform: scale(1.14);
+}
+
+/* The tiles carry .reveal for the no-JS and reduced-motion path. When the
+   arrival is running it owns the entrance instead, so the opacity/translate
+   the shared reveal system would apply is switched off here — two entrances on
+   one element fight each other and the tile lands twice. */
+.js-portrait-reveal .gallery-item.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* Restated at the same specificity as the rule above, which would otherwise
+   win over .gallery-item:hover and kill the lift. */
+.js-portrait-reveal .gallery-item.reveal:hover {
+  transform: scale(1.03);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 /* ══════════════════════════════════════════
@@ -3631,11 +3798,15 @@ table {
 }
 
 /* ── Puja Card Hover Slider ── */
+/* No CSS transition on the transform: js/main.js tweens it with GSAP, and a
+   transition here would have the browser easing toward each value GSAP set
+   every frame — two easings stacked on one property, which is what made the
+   slide feel like it was dragging. */
 .puja-card__slider-track {
   display: flex;
   height: 100%;
   width: 100%;
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
 }
 
 .puja-card__slide {
@@ -4238,13 +4409,37 @@ table {
   justify-content: center;
 }
 
+/* The dot field is the top layer: a 1px gold dot on a 22px grid, at an alpha
+   low enough that it reads as texture in the fabric of the backdrop rather
+   than as a pattern laid over it. It is masked to the middle of the section so
+   it never reaches either edge — a regular grid that stops on a straight line
+   is instantly legible as a rectangle, which is the one thing it must not be.
+
+   The lower third of the gradient is a warm wine now instead of the old
+   near-black #180509, so the mark sits in colour all the way down rather than
+   dissolving into a black floor. .hero-mark__foot and .hero-stage__backdrop
+   below both land on the same #24070D, so the handover between the two hero
+   beats stays invisible. */
 .hero-mark__backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
     radial-gradient(110% 85% at 50% 40%, rgba(201, 168, 76, 0.20), transparent 62%),
-    linear-gradient(168deg, #2f0c13 0%, var(--maroon-dark) 42%, #180509 100%);
+    linear-gradient(168deg, #3a1019 0%, var(--maroon-dark) 40%, #24070d 100%);
+}
+
+/* The dots carry a mask of their own, so they get their own layer rather than
+   riding in the backdrop's background stack — a mask there would have taken
+   the gradient down with them. */
+.hero-mark__backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(rgba(232, 213, 163, 0.16) 1px, transparent 1.6px) 0 0 / 22px 22px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 45%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(70% 60% at 50% 45%, #000 30%, transparent 78%);
+  pointer-events: none;
 }
 
 .hero-mark__aura {
@@ -4305,7 +4500,7 @@ table {
   height: 44%;
   z-index: 3;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(18, 4, 6, 0) 0%, rgba(18, 4, 6, 0.72) 58%, #120406 92%);
+  background: linear-gradient(180deg, rgba(36, 7, 13, 0) 0%, rgba(36, 7, 13, 0.72) 58%, #24070d 92%);
 }
 
 .hero-mark__cue {
@@ -4361,7 +4556,7 @@ table {
   isolation: isolate;
 }
 
-/* Starts on exactly the colour .hero-mark__backdrop ends on (#180509) and keeps
+/* Starts on exactly the colour .hero-mark__foot ends on (#24070D) and keeps
    the gold glow well clear of the top edge — otherwise the boundary between the
    two sections reads as a hard horizontal line as the stage scrolls up. */
 .hero-stage__backdrop {
@@ -4370,7 +4565,7 @@ table {
   z-index: 0;
   background:
     radial-gradient(120% 80% at 50% 62%, rgba(201, 168, 76, 0.13), transparent 64%),
-    linear-gradient(180deg, #120406 0%, #180608 26%, #150507 62%, #100305 100%);
+    linear-gradient(180deg, #24070d 0%, #2a0810 26%, #200609 62%, #1a0507 100%);
 }
 
 .hero-stage__frame {
@@ -4536,12 +4731,20 @@ table {
   overflow: hidden;
 }
 
+/* The glow is clipped by the section box, and its radial had not fallen off to
+   nothing by the time it reached that edge — so it stopped dead on the section
+   boundary and left the page a few points warmer above the line than below it.
+   Small, but it is exactly the kind of edge that reads as a partition. The
+   mask makes the glow responsible for its own falloff, so wherever the section
+   happens to end, the glow has already gone. */
 .testimonial-stage-glow {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(45% 60% at var(--stage-x, 50%) 40%, rgba(201, 168, 76, 0.16), transparent 70%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 74%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 74%, transparent 100%);
 }
 
 #testimonials .container {
@@ -4902,9 +5105,29 @@ table {
   place-items: center;
   overflow: hidden;
   isolation: isolate;
-  /* js/about-motion.js drives this from cream to maroon on scroll; the
-     variable keeps the start state honest with JS off. */
+  /* The colour js/about-motion.js drives from cream to maroon now paints on
+     ::before rather than here, so it can be masked at the bottom edge without
+     taking the ring's own content with it. By the time the section ends the
+     variable has reached full maroon, and without the fade it stopped on a
+     hard line against the page — the same partition the rest of the page no
+     longer has. */
+  background: transparent;
+}
+
+.ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
   background: var(--ring-bg, var(--ivory));
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+}
+
+.ring > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* The orbit's own box is the safe area the ring is laid out inside — inset at
@@ -5030,11 +5253,21 @@ table {
    strip is simply a horizontally scrollable row.
    ══════════════════════════════════════════════════════════ */
 
+/* The reel is pinned, so whatever it is tall it is what the visitor sees — it
+   cannot be scrolled to reveal the rest. It used to lay out at its natural
+   content height, which overran the viewport and cut the bottom off every
+   photograph and every caption with it. Now it is exactly one screen tall and
+   distributes that screen between the heading, the strip and the hint, so the
+   full figure is always inside the frame. */
 .reel {
   position: relative;
-  background: var(--maroon-dark);
+  background: transparent;
   color: var(--cream);
-  padding: var(--space-3xl) 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-2xl) 0;
   overflow: hidden;
   isolation: isolate;
 }
@@ -5069,10 +5302,10 @@ table {
 .reel__title {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(2rem, 4.4vw, 3.6rem);
+  font-size: clamp(1.8rem, 3.6vw, 3rem);
   line-height: 1.12;
   color: var(--white);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
 }
 
 /* The viewport is full-bleed so the strip runs off both edges — a strip that
@@ -5091,9 +5324,13 @@ table {
   will-change: transform;
 }
 
+/* Sized off the viewport *height*, not its width. The frames are 4:5, so the
+   height a frame costs is 1.25× its width — measuring the width in vw meant a
+   wide, short window produced frames taller than the screen. In vh the frame
+   can never outgrow the space the pinned section has. */
 .reel__item {
   margin: 0;
-  width: clamp(230px, 26vw, 380px);
+  width: clamp(190px, 33vh, 340px);
   flex: 0 0 auto;
 }
 
@@ -5116,7 +5353,7 @@ table {
 }
 
 .reel__hint {
-  margin-top: var(--space-2xl);
+  margin-top: var(--space-lg);
   font-family: var(--font-body);
   font-size: 0.74rem;
   letter-spacing: 2.4px;
@@ -5165,58 +5402,176 @@ table {
    background stack instead, and the reel only ever needs a bottom one.
    ══════════════════════════════════════════════════════════ */
 
-.page-header::after,
-.hero-stage::after,
-.reel::after,
+/* The ramp itself. A straight ivory→transparent fade over a maroon block is
+   what produced the grey partition: half ivory plus half maroon is a
+   desaturated putty, so the midpoint of the blend fell out of the palette
+   entirely and read as a dirty band pasted across the page.
+
+   These two ramps stay inside the maroon family the whole way down. Each stop
+   carries a warm rose colour *and* an alpha, so the blend never passes through
+   grey — at 50% it is a dusty rose over maroon, which is simply a lighter
+   maroon. The stops are also spaced on an ease rather than linearly: a linear
+   ramp has a constant first derivative, and the eye finds the two ends of it
+   (where the rate of change starts and stops) as Mach bands. */
+:root {
+  /* Tall enough that the ramp is gentle. The old 70–130px had to cover the
+     full ivory-to-maroon contrast in a tenth of the screen, which is what made
+     it read as a band pasted on rather than as one surface changing colour. */
+  --flow-height: clamp(240px, 30vh, 420px);
+  --reel-flow-height: clamp(80px, 11vh, 140px);
+}
+
+/* Each dark block now dissolves *itself* to transparent at the edge, and the
+   page surface shows through it. Nothing paints ivory over anything.
+
+   The previous version overlaid an ivory-to-transparent fade on top of each
+   dark block, which meant the fade had to end on exactly the colour the page
+   is at that point. It cannot: <body> carries two soft radial tints and paints
+   them `background-attachment: fixed`, so the page surface is a slightly
+   different warm ivory at every height on the *screen*, not at every height in
+   the document. A fade ending on a fixed --ivory therefore mismatched the page
+   by a few points wherever it landed, and that mismatch is the pale line that
+   was still visible along the top of the banner.
+
+   Fading to transparent has no endpoint to get wrong. */
+.flow-edge-bottom {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+}
+
+/* The banner's top edge, folded into its own background rather than overlaid:
+   the first stop is fully transparent, so whatever the page happens to be
+   there is exactly what shows.
+
+   The body gradient is vertical, not the 135deg it used to be — a diagonal
+   gradient is a different colour at the left edge than at the right, so a fade
+   above it could only ever match on one side and the seam re-appeared as a
+   soft wedge across the other. The gold bloom in ::before supplies the depth
+   the diagonal was there for. */
+.cta-banner {
+  background: linear-gradient(
+    180deg,
+    rgba(226, 191, 182, 0) 0,
+    rgba(214, 168, 162, 0.22) calc(var(--flow-height) * 0.20),
+    rgba(190, 134, 130, 0.46) calc(var(--flow-height) * 0.40),
+    rgba(158, 94, 96, 0.68) calc(var(--flow-height) * 0.58),
+    rgba(120, 56, 64, 0.86) calc(var(--flow-height) * 0.74),
+    rgba(88, 30, 38, 0.96) calc(var(--flow-height) * 0.88),
+    var(--maroon-dark) var(--flow-height),
+    var(--maroon) calc(var(--flow-height) + 200px),
+    var(--maroon-dark) 100%
+  );
+}
+
+/* The reel and the page header both hold their artwork in ::before at inset 0,
+   so the mask goes there — masking the section itself would take the headline
+   and the photographs down with it. */
+.reel {
+  background: transparent;
+}
+
+/* A shorter fade than the rest of the page uses. The reel is exactly one
+   screen tall and its caption row and hint sit near the bottom of it, so a
+   full-length ramp would start lightening the ground under them and leave both
+   sitting on a wash. This keeps the fade under the last line of text. */
+.reel::before {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--reel-flow-height)), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--reel-flow-height)), transparent 100%);
+}
+
+/* ScrollTrigger copies the pinned section's background onto the spacer it
+   wraps around it. The reel's old maroon therefore survived on the spacer
+   after the section itself went transparent — and the spacer is not the thing
+   carrying the mask, so the fade ended on a hard maroon edge regardless. */
+.pin-spacer {
+  background: transparent !important;
+}
+
+.page-header {
+  background: transparent;
+}
+
+/* ::before takes over the base gradient the section used to paint, so that one
+   masked layer carries everything and the header has nothing left of its own
+   to show below the fade. */
+.page-header::before {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, #5A1A25 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
+}
+
+/* On the gallery the header is followed by the reel, which is dark too. Fading
+   the header out there would show a stripe of ivory page between two dark
+   blocks — the partition again, just in the other direction. Instead the
+   header keeps its ink all the way down and hands over on a shared colour:
+   its gradient is re-run vertically so its bottom edge is one flat tone, and
+   that tone is the one .reel::before opens on. */
+/* `+ .pin-spacer` as well as `+ .reel`: once ScrollTrigger pins the reel it
+   wraps it in a spacer, and the header's next sibling becomes that spacer
+   instead of the section itself. */
+.page-header:has(+ .reel)::before,
+.page-header:has(+ .pin-spacer)::before {
+  -webkit-mask-image: none;
+  mask-image: none;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, var(--maroon-dark) 0%, var(--maroon) 45%, #2f0c13 100%);
+}
+
+/* The hero stage is a photograph, not flat artwork, so both the backdrop and
+   the photo frame fade — the copy on top is deliberately left alone. */
+.hero-stage {
+  background: transparent;
+}
+
+.hero-stage__backdrop,
+.hero-stage__frame {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--hero-flow-height)), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - var(--hero-flow-height)), transparent 100%);
+}
+
+/* The footer is the one block the page falls *into* rather than out of, so its
+   fade runs the other way. */
+.footer {
+  background: transparent;
+  position: relative;
+}
+
 .footer::before {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  height: clamp(70px, 9vh, 130px);
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  z-index: 6;
+  background: var(--maroon-dark);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--flow-height));
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--flow-height));
 }
 
-/* Bottom edges — dark dissolving down into the page. */
-.page-header::after,
-.hero-stage::after,
-.reel::after {
-  bottom: -1px;
-  background: linear-gradient(180deg, rgba(250, 246, 240, 0) 0%, var(--ivory) 96%);
-}
-
-/* Top edge — the page dissolving down into the footer. */
-.footer::before {
-  top: -1px;
-  background: linear-gradient(180deg, var(--ivory) 0%, rgba(250, 246, 240, 0) 96%);
+.footer > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* …except where the footer follows the CTA banner, which is already maroon.
-   Fading to ivory between two dark blocks would reintroduce exactly the band
-   this is meant to remove. */
-.cta-banner + .footer::before {
-  display: none;
-}
+   Fading in from transparent between two dark blocks would show the ivory page
+   through the join — exactly the band this is meant to remove.
 
-/* The banner's top edge. Layered onto its own background rather than a
-   pseudo-element, because .cta-banner::before already carries its gold bloom. */
-.cta-banner {
-  background:
-    linear-gradient(180deg, var(--ivory) 0%, rgba(250, 246, 240, 0) 120px),
-    linear-gradient(135deg, var(--maroon-dark), var(--maroon), var(--maroon-light));
-}
-
-/* The reel's own gradient lives in ::before at z-index 0; the fade has to sit
-   above it and below the content. */
-.reel::after {
-  z-index: 2;
+   General sibling rather than adjacent: on the gallery the lightbox's markup
+   sits between the two, so `+` matched on the homepage and quietly missed
+   everywhere else. */
+.cta-banner ~ .footer::before {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 /* Shorter on the hero: the copy column reaches close to the bottom of the
    section, and a full-height fade washed over the second button. */
-.hero-stage::after {
-  height: clamp(48px, 6vh, 88px);
+:root {
+  --hero-flow-height: clamp(120px, 15vh, 200px);
 }
 
 /* #intro opens the light run on the homepage directly under the hero's fade,

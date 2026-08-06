@@ -92,7 +92,16 @@
   function buildMarkScene() {
     let particles = null;
     if (els.markParticles && !Motion.isCompact()) {
-      particles = Motion.createParticleField(els.markParticles, { count: 42 });
+      // Many small dots rather than a few soft ones: at r 1–3 they read as
+      // out-of-focus bokeh, which fought the crisp dot field on the backdrop.
+      // Dropping the radius and roughly doubling the count makes the drifting
+      // layer and the static layer look like the same material.
+      particles = Motion.createParticleField(els.markParticles, {
+        count: 96,
+        minRadius: 0.6,
+        maxRadius: 1.5,
+        speed: 0.14,
+      });
     }
 
     // `bottom top` finishes the mark exactly as #heroStage reaches the top of

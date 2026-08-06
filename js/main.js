@@ -184,6 +184,63 @@ function initNavbar() {
     hamburger.setAttribute('aria-expanded', 'false');
     window.lenis?.start();
   }
+
+  initNavFollower(navLinks);
+}
+
+
+/* ── The pill's sliding highlight ──
+   One element parked behind the links that moves and resizes onto whichever
+   item is active or hovered. Measuring rather than hard-coding widths means
+   the highlight fits each label exactly, and keeps fitting when the labels
+   change or the font loads late and reflows them.
+
+   .navbar__cta is excluded throughout: it carries its own fill, and sliding a
+   translucent capsule under a solid gold button reads as a rendering fault. */
+function initNavFollower(navLinks) {
+  if (!navLinks) return;
+
+  const items = Array.from(navLinks.querySelectorAll('a:not(.navbar__cta)'));
+  if (!items.length) return;
+
+  const follower = document.createElement('span');
+  follower.className = 'navbar__follower';
+  follower.setAttribute('aria-hidden', 'true');
+  navLinks.prepend(follower);
+
+  const home = navLinks.querySelector('a.active:not(.navbar__cta)');
+  let resting = home || null;
+
+  const moveTo = (el) => {
+    if (!el) {
+      follower.classList.remove('is-ready');
+      return;
+    }
+    // offsetLeft is relative to .navbar__links, which is the positioned
+    // ancestor — no getBoundingClientRect arithmetic needed, and no dependence
+    // on where the page happens to be scrolled to.
+    follower.style.width = el.offsetWidth + 'px';
+    follower.style.transform = `translateX(${el.offsetLeft}px)`;
+    follower.classList.add('is-ready');
+  };
+
+  items.forEach((el) => {
+    el.addEventListener('mouseenter', () => moveTo(el));
+    el.addEventListener('focus', () => moveTo(el));
+  });
+
+  navLinks.addEventListener('mouseleave', () => moveTo(resting));
+  navLinks.addEventListener('focusout', (e) => {
+    if (!navLinks.contains(e.relatedTarget)) moveTo(resting);
+  });
+
+  // The pill is laid out in the webfont, so the first measurement is taken
+  // against the fallback and is wrong by a few pixels per label. Re-measure
+  // once the real font is in, and on resize.
+  const settle = () => moveTo(resting);
+  settle();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
+  window.addEventListener('resize', settle);
 }
 
 
@@ -221,10 +278,31 @@ function initScrollEffects() {
     navbar.classList.toggle('scrolled', !overDark);
   };
 
+  // Hide going down, show coming back up — the Team USA behaviour. The
+  // threshold keeps the bar put through the small jitter a trackpad produces
+  // at rest, which would otherwise flap it in and out.
+  let lastY = 0;
+  const HIDE_AFTER = 240;
+  const JITTER = 6;
+
+  const revealUpdate = (scrollY) => {
+    if (!navbar) return;
+    const delta = scrollY - lastY;
+    if (Math.abs(delta) < JITTER) return;
+
+    // Never hide while the mobile drawer is open — the drawer is a child of
+    // the bar, so taking the bar off-screen would take the menu with it.
+    const drawerOpen = document.getElementById('navLinks')?.classList.contains('open');
+    const hide = delta > 0 && scrollY > HIDE_AFTER && !drawerOpen;
+    navbar.classList.toggle('navbar--hidden', hide);
+    lastY = scrollY;
+  };
+
   const update = (scrollY) => {
-    // The bar is static: it never hides on scroll down, never slides back in
-    // on scroll up, and never grows a background. Only its ink changes.
+    // Only the ink changes with what is behind the bar; the bar's own
+    // visibility is a function of scroll direction, handled above.
     inkUpdate();
+    revealUpdate(scrollY);
 
     // Scroll-to-top button visibility
     if (scrollTopBtn) {
@@ -611,66 +689,93 @@ function initFaqAccordion() {
    by Lenis's scroll event when active (or the rAF-throttled native
    fallback), instead of its own unthrottled listener. */
 
-/* ── Hover Slider for Puja Cards ── */
+/* ── Hover Slider for Puja Cards ──
+   Driven by GSAP rather than setInterval plus a CSS transition. Three things
+   made the old one stutter:
+
+   • setInterval fires on the timer thread, not the frame clock, so a tick
+     landing mid-frame started the CSS transition a frame late and the slide
+     arrived with a visible hitch.
+   • The interval (1100ms) and the transition (400ms) were set independently,
+     so the strip snapped to a stop and sat still for 700ms — read as a jerk
+     rather than a pan.
+   • Leaving the card set `transition: none`, jumped the track home, then put
+     the transition back on a 50ms setTimeout. If the pointer returned inside
+     that window the next move had no transition at all and teleported.
+
+   One GSAP tween per move fixes all three: it is on the same rAF clock as
+   Lenis, the hold is expressed as part of the same timeline, and leaving
+   *animates* home with overwrite so a re-entry simply retargets the tween in
+   flight instead of fighting it. */
 const sliderTimers = new Map();
 
-window.startHoverSlider = function(wrapper) {
+window.startHoverSlider = function (wrapper) {
   const track = wrapper.querySelector('.puja-card__slider-track');
-  const dotsContainer = wrapper.querySelector('.puja-card__dots');
-  if (!track) return;
-  
+  if (!track || sliderTimers.has(wrapper)) return;
+
   const slides = track.querySelectorAll('.puja-card__slide');
   if (slides.length <= 1) return;
-  
-  let dots = [];
-  if (dotsContainer) {
-    dots = Array.from(dotsContainer.querySelectorAll('.puja-card__dot'));
-  }
-  
-  let currentIndex = parseInt(track.dataset.currentIndex || '0');
-  
-  const timer = setInterval(() => {
-    currentIndex = (currentIndex + 1) % slides.length;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-    track.dataset.currentIndex = currentIndex;
-    
-    // Update dots
-    if (dots.length > 0) {
-      dots.forEach(d => d.classList.remove('active'));
-      if (dots[currentIndex]) {
-        dots[currentIndex].classList.add('active');
-      }
+
+  const dots = Array.from(wrapper.querySelectorAll('.puja-card__dot'));
+  const setDots = (i) => dots.forEach((d, n) => d.classList.toggle('active', n === i));
+
+  // No GSAP (or the visitor asked for less motion): step without tweening
+  // rather than dropping the feature.
+  const canTween = typeof gsap !== 'undefined' && !(window.Motion && Motion.prefersReducedMotion());
+
+  let index = Number(track.dataset.currentIndex || 0);
+  const state = {};
+
+  const advance = () => {
+    index = (index + 1) % slides.length;
+    track.dataset.currentIndex = index;
+    setDots(index);
+
+    if (canTween) {
+      gsap.to(track, {
+        xPercent: -100 * index,
+        duration: 0.9,
+        ease: 'power3.inOut',
+        overwrite: 'auto',
+      });
+      state.call = gsap.delayedCall(1.5, advance);
+    } else {
+      track.style.transform = `translateX(${-100 * index}%)`;
+      state.call = { kill: () => clearTimeout(state.id) };
+      state.id = setTimeout(advance, 1500);
     }
-  }, 1100); // 1100ms swipe speed
-  
-  sliderTimers.set(wrapper, timer);
+  };
+
+  // A beat before the first move, so brushing across a grid of cards does not
+  // set every one of them going.
+  if (canTween) {
+    state.call = gsap.delayedCall(0.45, advance);
+  } else {
+    state.id = setTimeout(advance, 450);
+    state.call = { kill: () => clearTimeout(state.id) };
+  }
+
+  sliderTimers.set(wrapper, state);
 };
 
-window.stopHoverSlider = function(wrapper) {
-  const timer = sliderTimers.get(wrapper);
-  if (timer) {
-    clearInterval(timer);
+window.stopHoverSlider = function (wrapper) {
+  const state = sliderTimers.get(wrapper);
+  if (state) {
+    state.call?.kill();
     sliderTimers.delete(wrapper);
   }
-  
-  // Instantly snap back to the first image on unhover
+
   const track = wrapper.querySelector('.puja-card__slider-track');
-  if (track) {
-    track.style.transition = 'none'; // remove transition for instant snap
-    track.style.transform = `translateX(0%)`;
-    track.dataset.currentIndex = 0;
-    
-    const dotsContainer = wrapper.querySelector('.puja-card__dots');
-    if (dotsContainer) {
-      const dots = Array.from(dotsContainer.querySelectorAll('.puja-card__dot'));
-      dots.forEach(d => d.classList.remove('active'));
-      if (dots[0]) dots[0].classList.add('active');
-    }
-    
-    // restore transition immediately after layout calculation
-    setTimeout(() => {
-      track.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-    }, 50);
+  if (!track) return;
+
+  track.dataset.currentIndex = 0;
+  const dots = Array.from(wrapper.querySelectorAll('.puja-card__dot'));
+  dots.forEach((d, n) => d.classList.toggle('active', n === 0));
+
+  if (typeof gsap !== 'undefined' && !(window.Motion && Motion.prefersReducedMotion())) {
+    gsap.to(track, { xPercent: 0, duration: 0.7, ease: 'power3.out', overwrite: 'auto' });
+  } else {
+    track.style.transform = 'translateX(0%)';
   }
 };
 

@@ -26,10 +26,78 @@
     } else {
       gsap.registerPlugin(ScrollTrigger);
       initReel();
+      initPortraitArrival();
     }
 
     initFilter(noMotion);
   });
+
+
+  /* ══════════════════════════════════════════
+     The arrival — landonorris.com's portrait reveal
+
+     Each tile is clipped to an ellipse pinned to its top edge with no vertical
+     radius, so nothing of it shows. Opening that radius wipes the photograph
+     in downward behind a curved leading edge, while the image inside settles
+     back from a slight over-scale — the picture arrives into the frame rather
+     than the frame fading up around it.
+
+     The two tweens are deliberately different lengths: the wipe is quick and
+     the settle is slow, so the photograph is fully visible well before it has
+     finished coming to rest. Matching them makes the whole thing stop dead on
+     one frame, which is what reads as cheap.
+     ══════════════════════════════════════════ */
+
+  function initPortraitArrival() {
+    const grid = document.getElementById('photoGallery');
+    if (!grid) return;
+
+    const items = Array.from(grid.querySelectorAll('.gallery-item'));
+    if (!items.length) return;
+
+    // Only claim the entrance once we know we can run it — the class is what
+    // switches the shared .reveal system off, so setting it before this point
+    // would leave the tiles invisible if anything above had bailed out.
+    grid.classList.add('js-portrait-reveal');
+
+    items.forEach((item) => {
+      const img = item.querySelector('img');
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          // Late enough that the tile is properly on screen before it starts,
+          // so the wipe is not already over by the time it is looked at.
+          start: 'top 88%',
+          once: true,
+        },
+      });
+
+      tl.fromTo(
+        item,
+        { clipPath: 'ellipse(140% 0% at 50% 0%)' },
+        { clipPath: 'ellipse(140% 155% at 50% 0%)', duration: 1.05, ease: 'power3.out' },
+        0
+      );
+
+      if (img) {
+        tl.fromTo(
+          img,
+          { scale: 1.14 },
+          {
+            scale: 1,
+            duration: 1.6,
+            ease: 'power3.out',
+            // Hand the image back to CSS afterwards, or the inline transform
+            // GSAP leaves behind outranks .gallery-item:hover img and the
+            // hover zoom silently stops working.
+            onComplete: () => gsap.set(img, { clearProps: 'transform' }),
+          },
+          0
+        );
+      }
+    });
+  }
 
   /* ══════════════════════════════════════════
      The reel

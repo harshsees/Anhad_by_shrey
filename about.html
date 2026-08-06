@@ -112,15 +112,18 @@
        matching card to the front, and the still + quote on the right
        change with it. Driven by js/about-motion.js.
 
-       THE FOUR CENTRE FRAMES ARE VIDEO PLACEHOLDERS. To drop a real clip
-       in, put the file in assets/video/ and set it on the matching card:
-           <video class="ceremony-deck__video" muted loop playsinline
-                  poster="images/pictures/1.jpeg">
-             <source src="assets/video/snatra.mp4" type="video/mp4">
-           </video>
-       replacing that card's <div class="ceremony-deck__placeholder">.
-       js/about-motion.js already plays whichever card is in front and
-       pauses the rest, so no other change is needed.
+       The four centre frames are the real ceremony clips, in videos/. They
+       are 1080x1920 portrait against a 3/4 card, so `object-fit: cover`
+       crops a little off the top and bottom rather than letterboxing.
+
+       `preload="metadata"` is doing real work here: between them the clips
+       are 33MB, and without it every one would download on page load for a
+       card three quarters of the deck never sees. Metadata alone is enough
+       for the browser to paint the first frame, so a card that has not been
+       reached still shows its own still rather than black.
+
+       js/about-motion.js plays whichever card is in front and pauses the
+       rest; the Watch button opens the same clip full size with sound.
        ═══════════════════════════════════════════════════════════════ -->
   <section class="ceremony-deck" id="ceremonyDeck" aria-label="Signature ceremonies">
     <h2 class="ceremony-deck__backdrop-title" aria-hidden="true">Meet the<br>ceremonies</h2>
@@ -150,14 +153,14 @@
         </li>
       </ol>
 
-      <!-- CENTRE: the deck. Each card is a video placeholder for now. -->
+      <!-- CENTRE: the deck. One clip per ceremony. -->
       <div class="ceremony-deck__stage" id="ceremonyDeckStage">
         <article class="ceremony-deck__card" data-index="0">
           <div class="ceremony-deck__media">
-            <div class="ceremony-deck__placeholder">
-              <span class="icon-glyph" data-icon="lotus"></span>
-              <span class="ceremony-deck__placeholder-text">Snatra Puja — video</span>
-            </div>
+            <video class="ceremony-deck__video" muted loop playsinline
+                   preload="metadata" aria-label="Snatra Puja">
+              <source src="videos/1.mp4" type="video/mp4">
+            </video>
           </div>
           <button type="button" class="ceremony-deck__watch">
             <span class="ceremony-deck__watch-tri" aria-hidden="true"></span> Watch
@@ -166,10 +169,10 @@
 
         <article class="ceremony-deck__card" data-index="1">
           <div class="ceremony-deck__media">
-            <div class="ceremony-deck__placeholder">
-              <span class="icon-glyph" data-icon="lotus"></span>
-              <span class="ceremony-deck__placeholder-text">Panch Kalyanak — video</span>
-            </div>
+            <video class="ceremony-deck__video" muted loop playsinline
+                   preload="metadata" aria-label="Panch Kalyanak">
+              <source src="videos/2.mp4" type="video/mp4">
+            </video>
           </div>
           <button type="button" class="ceremony-deck__watch">
             <span class="ceremony-deck__watch-tri" aria-hidden="true"></span> Watch
@@ -178,10 +181,10 @@
 
         <article class="ceremony-deck__card" data-index="2">
           <div class="ceremony-deck__media">
-            <div class="ceremony-deck__placeholder">
-              <span class="icon-glyph" data-icon="lotus"></span>
-              <span class="ceremony-deck__placeholder-text">Paryushan Parva — video</span>
-            </div>
+            <video class="ceremony-deck__video" muted loop playsinline
+                   preload="metadata" aria-label="Paryushan Parva">
+              <source src="videos/3.mp4" type="video/mp4">
+            </video>
           </div>
           <button type="button" class="ceremony-deck__watch">
             <span class="ceremony-deck__watch-tri" aria-hidden="true"></span> Watch
@@ -190,10 +193,10 @@
 
         <article class="ceremony-deck__card" data-index="3">
           <div class="ceremony-deck__media">
-            <div class="ceremony-deck__placeholder">
-              <span class="icon-glyph" data-icon="lotus"></span>
-              <span class="ceremony-deck__placeholder-text">Navpad Oli — video</span>
-            </div>
+            <video class="ceremony-deck__video" muted loop playsinline
+                   preload="metadata" aria-label="Navpad Oli">
+              <source src="videos/4.mp4" type="video/mp4">
+            </video>
           </div>
           <button type="button" class="ceremony-deck__watch">
             <span class="ceremony-deck__watch-tri" aria-hidden="true"></span> Watch

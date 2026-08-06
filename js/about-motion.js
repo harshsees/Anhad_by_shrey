@@ -27,6 +27,8 @@
     const ring = document.getElementById('ring');
     if (!deck && !ring) return;
 
+    if (deck) initWatch(deck);
+
     const noMotion =
       typeof gsap === 'undefined' ||
       typeof ScrollTrigger === 'undefined' ||
@@ -59,6 +61,121 @@
           if (b) b();
         };
       },
+    });
+  }
+
+  /* ══════════════════════════════════════════
+     Watch — the deck's clip, full size and with sound
+
+     The cards themselves are muted, looping and cropped to 3/4, which is all
+     a card should be. This is the way to actually watch one: the same file,
+     uncropped, with the browser's own controls.
+
+     Built without the gallery lightbox on purpose — that one is a paging
+     image viewer and about.html does not load it. This needs one element and
+     no paging.
+     ══════════════════════════════════════════ */
+
+  /** Set while the overlay is up, so the deck does not restart the card
+   *  underneath it as the scroll moves on. Read by setDeckIndex. */
+  let playerOpen = false;
+
+  function initWatch(deck) {
+    const buttons = deck.querySelectorAll('.ceremony-deck__watch');
+    if (!buttons.length) return;
+
+    let player = null;
+    let video = null;
+    let lastFocus = null;
+
+    function build() {
+      player = document.createElement('div');
+      player.className = 'ceremony-player';
+      player.id = 'ceremonyPlayer';
+      player.setAttribute('role', 'dialog');
+      player.setAttribute('aria-modal', 'true');
+      player.setAttribute('aria-label', 'Ceremony clip');
+      // Lenis keeps its wheel listener attached and preventDefaults on it even
+      // while stopped, so any overlay of ours has to opt out by hand or the
+      // page behind it will not scroll again until this closes.
+      player.setAttribute('data-lenis-prevent', '');
+      player.hidden = true;
+
+      video = document.createElement('video');
+      video.className = 'ceremony-player__video';
+      video.setAttribute('controls', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('preload', 'auto');
+
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'ceremony-player__close';
+      close.setAttribute('aria-label', 'Close');
+      close.innerHTML = '&times;';
+
+      player.appendChild(video);
+      player.appendChild(close);
+      document.body.appendChild(player);
+
+      close.addEventListener('click', hide);
+      // Only the backdrop closes it — a click on the video itself is a click
+      // on the controls, or a play/pause, and must not dismiss.
+      player.addEventListener('click', (e) => {
+        if (e.target === player) hide();
+      });
+    }
+
+    function show(card) {
+      const source = card.querySelector('video source');
+      if (!source) return;
+      if (!player) build();
+
+      lastFocus = document.activeElement;
+      video.src = source.getAttribute('src');
+      playerOpen = true;
+      player.hidden = false;
+      // Same lock the puja modal and the lightboxes use — body class plus a
+      // stopped Lenis. Anything else and the page scrolls behind the overlay.
+      document.body.classList.add('modal-open');
+      window.lenis?.stop();
+      // Pause every card, including the one behind this.
+      deck.querySelectorAll('.ceremony-deck__card video').forEach((v) => v.pause());
+
+      const play = video.play();
+      if (play && play.catch) play.catch(() => {});
+      player.querySelector('.ceremony-player__close').focus();
+    }
+
+    function hide() {
+      if (!player || player.hidden) return;
+      video.pause();
+      // Dropping the src stops the download too — closing at two seconds into
+      // a 14MB file should not go on fetching the rest of it.
+      video.removeAttribute('src');
+      video.load();
+      playerOpen = false;
+      player.hidden = true;
+      document.body.classList.remove('modal-open');
+      window.lenis?.start();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+
+      // Hand the front card back to the deck.
+      const front = deck.querySelector('.ceremony-deck__name.is-active');
+      const index = front ? Array.prototype.indexOf.call(front.parentElement.children, front) : 0;
+      const card = deck.querySelector(`.ceremony-deck__card[data-index="${index}"]`);
+      const inline = card && card.querySelector('video');
+      if (inline && !Motion.prefersReducedMotion()) {
+        const play = inline.play();
+        if (play && play.catch) play.catch(() => {});
+      }
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => show(button.closest('.ceremony-deck__card')));
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hide();
     });
   }
 
@@ -113,10 +230,13 @@
     });
 
     // Whichever clip is in front is the only one that should be running.
+    // Nothing plays by itself under reduced motion, and nothing plays while
+    // the Watch overlay has the same clip open at full size with sound —
+    // two copies of one performance running out of step is worse than none.
     cards.forEach((card, i) => {
       const video = card.querySelector('video');
       if (!video) return;
-      if (i === index) {
+      if (i === index && !Motion.prefersReducedMotion() && !playerOpen) {
         const play = video.play();
         if (play && play.catch) play.catch(() => {});
       } else {

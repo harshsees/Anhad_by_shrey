@@ -3063,11 +3063,20 @@ table {
    PAGE HEADER (Inner Pages)
    ══════════════════════════════════════════ */
 
+/* Left-aligned, not centred. Everything below it on these pages — the reel's
+   "Sixteen years, frame by frame", the editorial band's head — sits on the
+   left margin, so a centred header made the first scroll of every page a
+   change of axis. Aligning them is most of what makes this read as designed
+   rather than assembled.
+
+   The gradient is vertical for the usual reason: a 135deg one is a different
+   colour on the left edge than the right, so nothing below it can meet it
+   cleanly. */
 .page-header {
   position: relative;
-  padding: calc(var(--nav-height) + var(--space-4xl)) 0 var(--space-3xl);
-  text-align: center;
-  background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, #5A1A25 100%);
+  padding: calc(var(--nav-height) + var(--space-3xl)) 0 var(--space-3xl);
+  text-align: left;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -3084,11 +3093,11 @@ table {
 }
 
 .page-header__pretitle {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 4px;
-  color: var(--eyebrow-text);
-  margin-bottom: var(--space-md);
+  letter-spacing: 3.5px;
+  color: var(--gold-light);
+  margin-bottom: var(--space-sm);
   opacity: 1;
   animation: fadeInUp 0.6s ease 0.2s both;
 }
@@ -3096,6 +3105,8 @@ table {
 .page-header h1 {
   color: var(--white);
   font-weight: 400;
+  font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+  line-height: 1.04;
   margin-bottom: var(--space-md);
   opacity: 1;
   animation: fadeInUp 0.6s ease 0.4s both;
@@ -3108,16 +3119,18 @@ table {
 
 .page-header__subtitle {
   color: var(--text-on-dark-muted);
-  font-size: 1.05rem;
-  max-width: 550px;
-  margin: 0 auto;
+  font-size: 1rem;
+  max-width: 46ch;
+  margin: 0;
   opacity: 1;
   animation: fadeInUp 0.6s ease 0.6s both;
 }
 
+/* The diamond divider goes. It was doing the work of separating a centred
+   title from a centred subtitle; with both on the left margin the alignment
+   already separates them, and the ornament is just decoration in the gap. */
 .page-header .ornament {
-  opacity: 1;
-  animation: fadeInUp 0.6s ease 0.5s both;
+  display: none;
 }
 
 .page-header .ornament::before,
@@ -3588,40 +3601,167 @@ table {
   aspect-ratio: 1 / 1;
 }
 
-/* ── The arrival ──
-   Modelled on the reveal the reference uses for its portrait grid: an ellipse
-   whose vertical radius opens from nothing, so the photograph wipes in from
-   the top behind a curved edge rather than a straight one, while the image
-   inside settles back from a slight over-scale. The two together read as the
-   picture arriving into its frame instead of a box fading up.
+/* ══════════════════════════════════════════
+   THE EDITORIAL BAND — the photo gallery
 
-   The horizontal radius is over 100% so the ellipse's sides clear the corners
-   of the tile — at exactly 100% the curve cuts the top corners off and the
-   photograph appears to arrive through a porthole. */
-.js-portrait-reveal .gallery-item {
-  clip-path: ellipse(140% 0% at 50% 0%);
-  will-change: clip-path;
+   After landonorris.com's portrait section: not a grid but a scatter of
+   frames at three sizes and three heights, each captioned above, travelling
+   sideways while the section is pinned.
+
+   Deliberately light, where the reel above it is dark. Two pinned dark bands
+   back to back would read as the same idea twice; alternating them gives the
+   page a beat, and it means this band has no edge to hide.
+   ══════════════════════════════════════════ */
+.editorial {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-2xl) 0;
+  overflow: hidden;
 }
 
-.js-portrait-reveal .gallery-item img {
-  transform: scale(1.14);
+.editorial__head {
+  width: min(1280px, 100% - 2 * var(--space-xl));
+  margin: 0 auto var(--space-lg);
 }
 
-/* The tiles carry .reveal for the no-JS and reduced-motion path. When the
-   arrival is running it owns the entrance instead, so the opacity/translate
-   the shared reveal system would apply is switched off here — two entrances on
-   one element fight each other and the tile lands twice. */
-.js-portrait-reveal .gallery-item.reveal {
-  opacity: 1;
-  transform: none;
-  transition: none;
+.editorial__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: var(--space-sm);
 }
 
-/* Restated at the same specificity as the rule above, which would otherwise
-   win over .gallery-item:hover and kill the lift. */
-.js-portrait-reveal .gallery-item.reveal:hover {
+.editorial__title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  color: var(--maroon);
+  margin-bottom: var(--space-xs);
+}
+
+.editorial__sub {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  max-width: 46ch;
+}
+
+/* Full-bleed so the strip runs off both edges — a strip that stops short of
+   the edge reads as a carousel rather than as a band you are moving through. */
+.editorial__viewport {
+  overflow: hidden;
+  padding-left: max(var(--space-xl), calc((100% - 1280px) / 2));
+}
+
+.editorial__track {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(2rem, 5vw, 5.5rem);
+  width: max-content;
+  will-change: transform;
+}
+
+/* .gallery-item brings a card's clothing with it — its own radius, shadow and
+   clipping — which the lightbox needs but this layout does not: the caption
+   lives outside the picture, so anything clipping the figure clips the words
+   off too. The frame is stripped back here and the picture wears the radius. */
+.editorial__item {
+  margin: 0;
+  flex: 0 0 auto;
+  position: relative;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  width: clamp(200px, 27vh, 320px);
+}
+
+.editorial__item--sm {
+  width: clamp(160px, 20vh, 250px);
+}
+
+.editorial__item--lg {
+  width: clamp(320px, 46vh, 540px);
+}
+
+/* The three heights. Without them the frames line up along their tops and the
+   scatter collapses back into a row.
+
+   Kept in vh and modest: the section is pinned to one screen, so an offset
+   that pushes a tall frame down far enough to fall off the bottom cannot be
+   scrolled to. The largest frame plus the deepest offset has to still fit. */
+.editorial__item--mid {
+  margin-top: clamp(30px, 7vh, 80px);
+}
+
+.editorial__item--low {
+  margin-top: clamp(56px, 14vh, 150px);
+}
+
+.editorial__cap {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.editorial__item img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  display: block;
+  box-shadow: 0 18px 44px rgba(74, 16, 24, 0.14);
+  transition: transform var(--transition-slow);
+}
+
+.editorial__item--lg img {
+  aspect-ratio: 4 / 3;
+}
+
+.editorial__item:hover img {
   transform: scale(1.03);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+/* The overlay is the lightbox's hover affordance. It has to sit over the
+   picture only, not over the caption above it. */
+.editorial__item .gallery-item__overlay {
+  top: auto;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  bottom: 0;
+  border-radius: var(--radius-md);
+}
+
+.editorial__item--lg .gallery-item__overlay {
+  aspect-ratio: 4 / 3;
+}
+
+/* No JS: the band stays usable by scrolling it directly. */
+.no-reel-motion .editorial__viewport {
+  overflow-x: auto;
+  padding-right: var(--space-xl);
+}
+
+@media (max-width: 899px) {
+  .editorial__item {
+    width: clamp(170px, 52vw, 240px);
+  }
+
+  .editorial__item--sm {
+    width: clamp(140px, 42vw, 200px);
+  }
+
+  .editorial__item--lg {
+    width: clamp(240px, 74vw, 340px);
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -3925,6 +4065,24 @@ table {
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
+}
+
+/* Both floats stand down once the footer is on screen. They are fixed to the
+   bottom corners, and the footer puts its brand text in the left one and its
+   contact column in the right, so at the end of every page the buttons were
+   sitting on top of the content. Hiding them there costs nothing — the footer
+   carries its own WhatsApp link and the page end is already the top of the
+   next scroll — and it keeps the last screen clean.
+
+   Set on <body> by js/main.js rather than per-button, so the two stay in step.
+   !important beats .float-scrollup.visible, which is managed independently by
+   the scroll handler and would otherwise fight this. */
+body.floats-tucked .float-whatsapp,
+body.floats-tucked .float-scrollup {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(14px) scale(0.92) !important;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
@@ -4426,7 +4584,7 @@ table {
   z-index: 0;
   background:
     radial-gradient(110% 85% at 50% 40%, rgba(201, 168, 76, 0.20), transparent 62%),
-    linear-gradient(168deg, #3a1019 0%, var(--maroon-dark) 40%, #24070d 100%);
+    linear-gradient(180deg, #3a1019 0%, var(--maroon-dark) 40%, #24070d 100%);
 }
 
 /* The dots carry a mask of their own, so they get their own layer rather than
@@ -4490,39 +4648,41 @@ table {
   filter: drop-shadow(0 0 70px rgba(201, 168, 76, 0.42));
 }
 
-/* The seam-killer. Everything the mark paints — backdrop, aura, particles —
-   has to arrive at #120406 by its bottom edge, because that is the colour
-   .hero-stage__backdrop starts on. Above the aura (z 1) and the stack (z 3) so
-   the logo dissolves into it on the way out; below the cue (z 4). */
+/* Retired. This poured a dark sink over the bottom 44% of the mark's section
+   to force it to #24070D by the bottom edge — but .hero-mark__backdrop already
+   ends on that colour by itself, so all the sink actually did was flatten the
+   lower half of the section into a slab and put a visible shelf under the
+   logo. The handover is now carried by the two backdrops agreeing on a colour
+   and by the photograph fading in over it, with nothing painted in between.
+   Kept as a rule rather than deleted so the markup in index.html stays valid
+   and the intent is on the record. */
 .hero-mark__foot {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 44%;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(36, 7, 13, 0) 0%, rgba(36, 7, 13, 0.72) 58%, #24070d 92%);
+  display: none;
 }
 
+/* Smaller and lower than it was. At 0.75rem with a 40px rule it carried about
+   as much weight as the wordmark it sits under and crowded the bottom of the
+   logo; a scroll cue should be the quietest thing on the screen. */
 .hero-mark__cue {
   position: absolute;
-  bottom: 28px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-sm);
-  color: var(--gold-light);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
+  gap: var(--space-xs);
+  color: rgba(232, 213, 163, 0.62);
+  font-size: 0.58rem;
+  letter-spacing: 2.6px;
   text-transform: uppercase;
 }
 
 .hero-mark__cue-line {
   width: 1px;
-  height: 40px;
-  background: rgba(232, 213, 163, 0.4);
+  height: 26px;
+  background: rgba(232, 213, 163, 0.28);
   position: relative;
   overflow: hidden;
 }
@@ -5060,6 +5220,69 @@ table {
   border-bottom: 5px solid transparent;
 }
 
+/* The Watch overlay — js/about-motion.js builds this on first use.
+   The clips are 9/16, so the height cap is what actually sizes them on a
+   landscape screen; the width cap only takes over on a phone. */
+.ceremony-player {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background: rgba(12, 4, 6, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: ceremonyPlayerIn 0.25s ease-out;
+}
+
+.ceremony-player[hidden] {
+  display: none;
+}
+
+@keyframes ceremonyPlayerIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ceremony-player__video {
+  max-width: min(100%, 52vh);
+  max-height: 92vh;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  background: #000;
+}
+
+.ceremony-player__close {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ivory);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-normal), transform var(--transition-normal);
+}
+
+.ceremony-player__close:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ceremony-player {
+    animation: none;
+  }
+}
+
 /* Right column — still + line */
 .ceremony-deck__aside {
   position: relative;
@@ -5414,11 +5637,14 @@ table {
    ramp has a constant first derivative, and the eye finds the two ends of it
    (where the rate of change starts and stops) as Mach bands. */
 :root {
-  /* Tall enough that the ramp is gentle. The old 70–130px had to cover the
-     full ivory-to-maroon contrast in a tenth of the screen, which is what made
-     it read as a band pasted on rather than as one surface changing colour. */
-  --flow-height: clamp(240px, 30vh, 420px);
-  --reel-flow-height: clamp(80px, 11vh, 140px);
+  /* Short on purpose. A long ramp does hide the seam, but it turns a third of
+     the screen into a dusty pink wash and drags headings and buttons into the
+     middle of it — the CTA's headline was sitting in mush rather than on a
+     colour. Restraint is the premium version of this: keep the handover to a
+     tight edge, and let every block be its own flat, confident colour by the
+     time any content lands on it. */
+  --flow-height: clamp(76px, 9vh, 128px);
+  --reel-flow-height: clamp(56px, 7vh, 96px);
 }
 
 /* Each dark block now dissolves *itself* to transparent at the edge, and the
@@ -5451,14 +5677,12 @@ table {
 .cta-banner {
   background: linear-gradient(
     180deg,
-    rgba(226, 191, 182, 0) 0,
-    rgba(214, 168, 162, 0.22) calc(var(--flow-height) * 0.20),
-    rgba(190, 134, 130, 0.46) calc(var(--flow-height) * 0.40),
-    rgba(158, 94, 96, 0.68) calc(var(--flow-height) * 0.58),
-    rgba(120, 56, 64, 0.86) calc(var(--flow-height) * 0.74),
-    rgba(88, 30, 38, 0.96) calc(var(--flow-height) * 0.88),
+    rgba(214, 168, 162, 0) 0,
+    rgba(176, 118, 116, 0.34) calc(var(--flow-height) * 0.28),
+    rgba(130, 62, 70, 0.68) calc(var(--flow-height) * 0.56),
+    rgba(92, 32, 40, 0.92) calc(var(--flow-height) * 0.80),
     var(--maroon-dark) var(--flow-height),
-    var(--maroon) calc(var(--flow-height) + 200px),
+    var(--maroon) calc(var(--flow-height) + 240px),
     var(--maroon-dark) 100%
   );
 }
@@ -5497,8 +5721,8 @@ table {
 .page-header::before {
   z-index: 0;
   background:
-    radial-gradient(circle at 30% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
-    linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, #5A1A25 100%);
+    radial-gradient(90% 70% at 18% 20%, rgba(201, 168, 76, 0.10) 0%, transparent 62%),
+    linear-gradient(180deg, #4f121c 0%, var(--maroon-dark) 58%, #3a0d15 100%);
   -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
   mask-image: linear-gradient(180deg, #000 calc(100% - var(--flow-height)), transparent 100%);
 }
@@ -5527,10 +5751,31 @@ table {
   background: transparent;
 }
 
-.hero-stage__backdrop,
-.hero-stage__frame {
+.hero-stage__backdrop {
   -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--hero-flow-height)), transparent 100%);
   mask-image: linear-gradient(180deg, #000 calc(100% - var(--hero-flow-height)), transparent 100%);
+}
+
+/* The frame fades at the top as well as the bottom. The photograph used to
+   begin at full strength on its first pixel row, so however well the two
+   backdrops agreed on a colour, the picture itself still cut in on a hard
+   line — which is the edge visible under the logo section. Fading it in over
+   the same short distance lets it rise out of the dark instead. */
+.hero-stage__frame {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 var(--hero-flow-height),
+    #000 calc(100% - var(--hero-flow-height)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 var(--hero-flow-height),
+    #000 calc(100% - var(--hero-flow-height)),
+    transparent 100%
+  );
 }
 
 /* The footer is the one block the page falls *into* rather than out of, so its

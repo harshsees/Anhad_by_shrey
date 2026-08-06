@@ -186,6 +186,26 @@ function initNavbar() {
   }
 
   initNavFollower(navLinks);
+  initFloatTuck();
+}
+
+
+/* ── Stand the floating buttons down over the footer ──
+   They are fixed to the bottom corners and the footer fills both of them, so
+   at the end of every page the WhatsApp button sat on the brand paragraph and
+   the social icons. An observer on the footer is enough — no scroll maths, and
+   it stays correct when the footer's height changes with the viewport. */
+function initFloatTuck() {
+  const footer = document.querySelector('.footer');
+  if (!footer || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => document.body.classList.toggle('floats-tucked', entry.isIntersecting),
+    // A margin from the bottom, so they are gone before the footer's first
+    // line of text reaches them rather than as it collides with them.
+    { rootMargin: '0px 0px -80px 0px', threshold: 0 }
+  );
+  observer.observe(footer);
 }
 
 

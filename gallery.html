@@ -104,73 +104,85 @@
   </section>
 
 
-  <!-- PHOTO GALLERY -->
-  <section class="section section--cream">
-    <div class="container">
-      <div class="section-header reveal">
-        <h2>Photo Gallery</h2>
-        <div class="ornament"><span class="ornament__icon">✦</span></div>
-        <p>Moments from pujas, temple events, and devotional performances</p>
-      </div>
+  <!-- ═══════════════════════════════════════════════════════════════
+       PHOTO GALLERY — the editorial band.
 
-      <!-- Category Filters -->
-      <div class="gallery-categories reveal">
-        <button class="gallery-cat-btn active" data-category="all">All</button>
-        <button class="gallery-cat-btn" data-category="puja">Puja Events</button>
-        <button class="gallery-cat-btn" data-category="temple">Temple Ceremonies</button>
-        <button class="gallery-cat-btn" data-category="paryushan">Paryushan</button>
-        <button class="gallery-cat-btn" data-category="portrait">Portraits</button>
-      </div>
+       Built on the portrait section of landonorris.com: the frames are not a
+       grid but a loose scatter at mixed sizes and mixed heights, each with a
+       small caption sitting above it, travelling sideways while the section is
+       pinned. Every frame also carries a drift of its own, so they cross the
+       screen at slightly different rates rather than sliding as one board.
+       Driven by js/gallery-motion.js.
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="editorial" id="editorialGallery" aria-label="Photo gallery">
+    <div class="editorial__head">
+      <p class="editorial__eyebrow">✦ The Archive ✦</p>
+      <h2 class="editorial__title">Photo Gallery</h2>
+      <p class="editorial__sub">Moments from pujas, temple events, and devotional performances</p>
+    </div>
 
-      <div class="gallery-grid--large stagger-children" id="photoGallery">
-        <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 0">
+    <div class="editorial__viewport">
+      <div class="editorial__track" id="photoGallery">
+        <figure class="gallery-item editorial__item editorial__item--md" data-category="puja" data-drift="0.9">
+          <figcaption class="editorial__cap">Siddha Chakra Puja</figcaption>
           <img src="assets/images/siddh_chakra_1.jpeg" alt="Siddha Chakra Puja" loading="lazy">
           <div class="gallery-item__overlay"><span>Siddha Chakra Puja</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 1">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--sm editorial__item--low" data-category="temple" data-drift="0.5">
+          <figcaption class="editorial__cap">Derasar Ceremony</figcaption>
           <img src="images/pictures/IMG-20260731-WA0018.jpg" alt="Derasar Ceremony" loading="lazy">
           <div class="gallery-item__overlay"><span>Derasar Ceremony</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="paryushan" style="--stagger-index: 2">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--lg" data-category="paryushan" data-drift="1">
+          <figcaption class="editorial__cap">Paryushan Felicitation</figcaption>
           <img src="images/pictures/IMG-20260731-WA0014.jpg" alt="Paryushan Felicitation" loading="lazy">
           <div class="gallery-item__overlay"><span>Paryushan Felicitation</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="portrait" style="--stagger-index: 3">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--sm editorial__item--mid" data-category="portrait" data-drift="0.35">
+          <figcaption class="editorial__cap">Artist Portrait</figcaption>
           <img src="images/potrait_1.jpeg" alt="Artist Portrait" loading="lazy">
           <div class="gallery-item__overlay"><span>Artist Portrait</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 4">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--md editorial__item--low" data-category="puja" data-drift="0.75">
+          <figcaption class="editorial__cap">Sakrastav Recital</figcaption>
           <img src="assets/images/sakrastav_1.jpeg" alt="Sakrastav Recital" loading="lazy">
           <div class="gallery-item__overlay"><span>Sakrastav Recital</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 5">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--md" data-category="temple" data-drift="0.45">
+          <figcaption class="editorial__cap">108 Parshwanath</figcaption>
           <img src="assets/images/108_parshwanath_1.jpeg" alt="108 Parshwanath" loading="lazy">
           <div class="gallery-item__overlay"><span>108 Parshwanath</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="paryushan" style="--stagger-index: 6">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--lg editorial__item--mid" data-category="paryushan" data-drift="1">
+          <figcaption class="editorial__cap">Samvatsari Sabha</figcaption>
           <img src="images/pictures/IMG-20260731-WA0015.jpg" alt="Samvatsari Sabha" loading="lazy">
           <div class="gallery-item__overlay"><span>Samvatsari Sabha</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 7">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--sm" data-category="puja" data-drift="0.3">
+          <figcaption class="editorial__cap">Navpad Oli</figcaption>
           <img src="assets/images/siddh_chakra_2.jpeg" alt="Navpad Oli" loading="lazy">
           <div class="gallery-item__overlay"><span>Navpad Oli</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 8">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--md editorial__item--low" data-category="temple" data-drift="0.85">
+          <figcaption class="editorial__cap">Temple Inauguration</figcaption>
           <img src="assets/images/108_parshwanath_2.jpeg" alt="Temple Inauguration" loading="lazy">
           <div class="gallery-item__overlay"><span>Temple Inauguration</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="portrait" style="--stagger-index: 9">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--sm editorial__item--mid" data-category="portrait" data-drift="0.55">
+          <figcaption class="editorial__cap">With the Sangha</figcaption>
           <img src="images/pictures/1.jpeg" alt="With the Sangha" loading="lazy">
           <div class="gallery-item__overlay"><span>With the Sangha</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="puja" style="--stagger-index: 10">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--lg" data-category="puja" data-drift="0.95">
+          <figcaption class="editorial__cap">Snatra Puja</figcaption>
           <img src="assets/images/sakrastav_2.jpeg" alt="Snatra Puja" loading="lazy">
           <div class="gallery-item__overlay"><span>Snatra Puja</span></div>
-        </div>
-        <div class="gallery-item reveal" data-category="temple" style="--stagger-index: 11">
+        </figure>
+        <figure class="gallery-item editorial__item editorial__item--md editorial__item--low" data-category="temple" data-drift="0.4">
+          <figcaption class="editorial__cap">Mangal Divo</figcaption>
           <img src="assets/images/siddh_chakra_3.jpeg" alt="Mangal Divo" loading="lazy">
           <div class="gallery-item__overlay"><span>Mangal Divo</span></div>
-        </div>
+        </figure>
       </div>
     </div>
   </section>

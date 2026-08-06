@@ -26,7 +26,7 @@
     } else {
       gsap.registerPlugin(ScrollTrigger);
       initReel();
-      initPortraitArrival();
+      initEditorialBand();
     }
 
     initFilter(noMotion);
@@ -34,68 +34,77 @@
 
 
   /* ══════════════════════════════════════════
-     The arrival — landonorris.com's portrait reveal
+     The editorial band — landonorris.com's portrait section
 
-     Each tile is clipped to an ellipse pinned to its top edge with no vertical
-     radius, so nothing of it shows. Opening that radius wipes the photograph
-     in downward behind a curved leading edge, while the image inside settles
-     back from a slight over-scale — the picture arrives into the frame rather
-     than the frame fading up around it.
+     Measured off the live site rather than guessed at. Two things are moving
+     at once there, and it is the combination that gives it its character:
 
-     The two tweens are deliberately different lengths: the wipe is quick and
-     the settle is slow, so the photograph is fully visible well before it has
-     finished coming to rest. Matching them makes the whole thing stop dead on
-     one frame, which is what reads as cheap.
+     1. The whole strip travels left while the section is pinned, so scrolling
+        down reads as moving along a wall of pictures.
+     2. Every frame *also* carries a small translate of its own, ramping from 0
+        to about 52px as it crosses and then holding at that cap. Because each
+        frame starts its ramp when it enters, no two are ever at the same
+        offset, so the wall has depth instead of sliding as one rigid board.
+
+     Point 2 is the whole trick, and it is the part that is invisible until you
+     look at the numbers: the drift is only ~52px, far too small to read as
+     movement on its own, but it is what stops the strip feeling like a slide.
+     `data-drift` scales it per frame so the larger, nearer-looking pictures
+     lag furthest.
      ══════════════════════════════════════════ */
 
-  function initPortraitArrival() {
-    const grid = document.getElementById('photoGallery');
-    if (!grid) return;
+  const DRIFT_MAX = 52;
 
-    const items = Array.from(grid.querySelectorAll('.gallery-item'));
+  function initEditorialBand() {
+    const band = document.getElementById('editorialGallery');
+    const track = document.getElementById('photoGallery');
+    if (!band || !track) return;
+
+    const items = Array.from(track.querySelectorAll('.editorial__item'));
     if (!items.length) return;
 
-    // Only claim the entrance once we know we can run it — the class is what
-    // switches the shared .reveal system off, so setting it before this point
-    // would leave the tiles invisible if anything above had bailed out.
-    grid.classList.add('js-portrait-reveal');
+    const distance = () => {
+      const viewport = track.parentElement;
+      return Math.max(0, track.scrollWidth - viewport.clientWidth);
+    };
 
+    // 1 — the strip.
+    const strip = gsap.to(track, {
+      x: () => -distance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: band,
+        start: 'top top',
+        end: () => '+=' + (distance() + window.innerHeight * 0.4),
+        pin: true,
+        anticipatePin: 1,
+        scrub: 0.8,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    // 2 — the per-frame lag. `containerAnimation` is what makes this possible:
+    // it measures each frame's start and end against its position along the
+    // strip's own tween rather than down the page. Without it every frame
+    // would fire together, because none of them ever moves vertically at all.
     items.forEach((item) => {
-      const img = item.querySelector('img');
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: item,
-          // Late enough that the tile is properly on screen before it starts,
-          // so the wipe is not already over by the time it is looked at.
-          start: 'top 88%',
-          once: true,
-        },
-      });
-
-      tl.fromTo(
+      const depth = parseFloat(item.dataset.drift || '0.6');
+      gsap.fromTo(
         item,
-        { clipPath: 'ellipse(140% 0% at 50% 0%)' },
-        { clipPath: 'ellipse(140% 155% at 50% 0%)', duration: 1.05, ease: 'power3.out' },
-        0
-      );
-
-      if (img) {
-        tl.fromTo(
-          img,
-          { scale: 1.14 },
-          {
-            scale: 1,
-            duration: 1.6,
-            ease: 'power3.out',
-            // Hand the image back to CSS afterwards, or the inline transform
-            // GSAP leaves behind outranks .gallery-item:hover img and the
-            // hover zoom silently stops working.
-            onComplete: () => gsap.set(img, { clearProps: 'transform' }),
+        { x: 0 },
+        {
+          x: DRIFT_MAX * depth,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: item,
+            containerAnimation: strip,
+            start: 'left right',
+            end: 'right left',
+            scrub: true,
+            invalidateOnRefresh: true,
           },
-          0
-        );
-      }
+        }
+      );
     });
   }
 

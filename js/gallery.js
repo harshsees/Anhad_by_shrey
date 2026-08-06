@@ -33,7 +33,12 @@ function initLightbox() {
           // `.gallery-grid--large` is a standalone class, not a modifier on
           // `.gallery-grid`, so matching only the latter found no container and
           // every click opened a lone image reading "1 / 1".
-          const gallery = item.closest('.gallery-grid, .gallery-grid--large, .modal__gallery');
+          // `.editorial__track` is the same container in the horizontal band
+          // the photo gallery now uses — without it the band's frames each
+          // opened alone for exactly that reason.
+          const gallery = item.closest(
+            '.gallery-grid, .gallery-grid--large, .editorial__track, .modal__gallery'
+          );
           if (gallery) {
             // Only what the category filter is currently showing — paging into
             // a hidden tile from a filtered view is disorienting.
